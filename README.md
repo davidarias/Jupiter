@@ -85,7 +85,7 @@ are created copying other objects.
 
 An Object in Jupiter is just an immutable [persistent](https://en.wikipedia.org/wiki/Persistent_data_structure) key-value collection of objects.
 The messages sent to objects don't modify the state of the object, instead return a new object with the updated state, therefore creating instances
-of objects ( cloing or copying prototypes ) is trivial.
+of objects ( cloning or copying prototypes ) is trivial.
 
 ## Internals
 
