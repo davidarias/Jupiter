@@ -1,0 +1,2 @@
+print
+    self toString print.

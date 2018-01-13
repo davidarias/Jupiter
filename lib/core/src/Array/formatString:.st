@@ -1,0 +1,2 @@
+formatString: aString
+    <primitive: arrayFormatString>

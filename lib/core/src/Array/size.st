@@ -1,0 +1,2 @@
+size
+    <primitive: arraySize>

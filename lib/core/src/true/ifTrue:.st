@@ -1,0 +1,2 @@
+ifTrue: block
+    block value

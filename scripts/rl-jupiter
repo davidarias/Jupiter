@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# get path of this file
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+rlwrap $DIR/../build/jupiter

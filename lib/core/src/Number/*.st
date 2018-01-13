@@ -1,0 +1,2 @@
+* aNumber
+    <Primitive: multiply>

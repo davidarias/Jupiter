@@ -1,0 +1,2 @@
+printBytecode
+    <primitive: printBytecode>

@@ -1,0 +1,2 @@
+isIdenticalTo: other
+    <primitive: isIdenticalTo>
