@@ -10,10 +10,10 @@ Jupiter is A dynamic object-oriented programming language based on Smalltalk, wi
 
 ## Build requirements
 
-### A ```C++``` compiler with ```C++14``` support ( I tested it with ```g++ 7.2.0``` )
-### [Scons](http://scons.org/) ( a better construction tool that use python scripts )
+#### A ```C++``` compiler with ```C++14``` support ( I tested it with ```g++ 7.2.0``` )
+#### [Scons](http://scons.org/) ( a better construction tool that use python scripts )
 
-### mpdecimal http://www.bytereef.org/mpdecimal/
+#### mpdecimal http://www.bytereef.org/mpdecimal/
 
 In Ubuntu and Debian can be installed with:
 ```bash
@@ -22,7 +22,7 @@ In Ubuntu and Debian can be installed with:
 Alternatively compile it from source:
 http://www.bytereef.org/mpdecimal/download.html
 
-### immer https://github.com/arximboldi/immer
+#### immer https://github.com/arximboldi/immer
 
 ```bash
 $ git clone https://github.com/arximboldi/immer.git
