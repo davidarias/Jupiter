@@ -53,6 +53,9 @@ namespace jupiter{
         add("eval2",  PrimitiveMethod(methodEval, 2) );
         add("eval3",  PrimitiveMethod(methodEval, 3) );
         add("printBytecode",  PrimitiveMethod(methodPrintByteCode, 0) );
+
+
+        add("loadPath",  PrimitiveMethod(loadPath, 1) );
     }
 
     Primitives::~Primitives(){}
@@ -285,6 +288,13 @@ namespace jupiter{
         method.getCompiledMethod()->printBytecode();
 
         return &method;
+    }
+
+    Object* loadPath(PrimitiveArguments& arguments){
+        auto path = dynamic_cast<String&>( *( arguments.get(0) ) );
+        World::instance().loadPackage( path.toString() );
+
+        return World::instance().getNil();
     }
 
 }

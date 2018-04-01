@@ -78,6 +78,8 @@ namespace jupiter{
     Object* methodEval(PrimitiveArguments& arguments);
     Object* methodPrintByteCode(PrimitiveArguments& arguments);
 
+    Object* loadPath(PrimitiveArguments& arguments);
+
 
 }
 #endif

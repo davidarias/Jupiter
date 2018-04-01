@@ -23,7 +23,6 @@ namespace jupiter{
 
         VM vm;
 
-        void loadPackage(const std::string& path);
 
     public:
         Map globals;
@@ -36,6 +35,8 @@ namespace jupiter{
             static World i;
             return i;
         }
+
+        void loadPackage(const std::string& path);
 
         void eval(std::string);
         Object* eval(Object* o);
