@@ -72,7 +72,7 @@ namespace jupiter{
 
     }
 
-        Object* print(PrimitiveArguments& arguments){
+    Object* print(PrimitiveArguments& arguments){
 
         std::cout << arguments.get(0)->toString();
         return arguments.getReceiver();
