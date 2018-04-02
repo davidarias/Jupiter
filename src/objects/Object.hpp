@@ -16,6 +16,7 @@
 #include <immer/box.hpp>
 #include <immer/map.hpp>
 
+
 namespace jupiter{
 
     class Object;
@@ -108,21 +109,7 @@ namespace jupiter{
         Object* persist();
     };
 
-    class String : public Object{
-    private:
-        std::string value;
-    protected:
-        int cmp(Object& other);
-    public:
-        String(const std::string& value);
 
-        std::string& getValue();
-
-        Object* at(const std::string& selector);
-        std::string toString();
-        void eval(Evaluator& evaluator);
-
-    };
 
     class Array : public Object{
     protected:
@@ -137,7 +124,7 @@ namespace jupiter{
 
         void mark();
 
-        Object* formatString(String& str);
+        Object* formatString(std::string& str);
         Object* at( int index );
         Object* push( Object* value );
         Object* size();

@@ -4,8 +4,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include <objects/Object.hpp>
-#include <objects/Number.hpp>
+#include <objects/Objects.hpp>
 
 #include <vm/MemoryManager.hpp>
 #include <vm/World.hpp>
@@ -170,32 +169,6 @@ namespace jupiter{
         return MemoryManager::instance().get<Map>( slots );
     }
 
-    String::String(const std::string& value): value(value) {}
-
-    std::string& String::getValue(){
-        return value;
-    }
-
-    int String::cmp(Object& other){
-        // we checked the type in the == operator
-        auto otherString = static_cast<String&>(other);
-        return value.compare(otherString.value);;
-    }
-
-    Object* String::at(const std::string& selector){
-        // globas are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().globals.at("String") ));
-        return behaviour.at( selector );
-    }
-
-    std::string String::toString(){
-        return value;
-    }
-
-    void String::eval(Evaluator& evaluator){
-        evaluator(*this);
-    }
-
     Array::Array(){}
     Array::Array( immer::flex_vector<Object*> values ) : values( values ){}
 
@@ -223,8 +196,8 @@ namespace jupiter{
         return MemoryManager::instance().get<Number>( values.size() );
     }
 
-    Object* Array::formatString(String& str){
-        return MemoryManager::instance().get<String>( format( str.getValue(), values ) );
+    Object* Array::formatString(std::string& str){
+        return MemoryManager::instance().get<String>( format( str, values ) );
     }
 
     Object* Array::at( int index ){

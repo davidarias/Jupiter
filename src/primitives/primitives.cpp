@@ -271,7 +271,7 @@ namespace jupiter{
         auto self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
         auto arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
 
-        return self.formatString( arg0 );
+        return self.formatString( arg0.getValue() );
 
     }
 

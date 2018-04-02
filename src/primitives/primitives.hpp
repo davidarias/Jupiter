@@ -9,8 +9,8 @@
 
 #include <misc/common.hpp>
 
-#include <objects/Object.hpp>
-#include <objects/Number.hpp>
+#include <objects/Objects.hpp>
+
 #include <objects/CompiledMethod.hpp>
 #include <primitives/PrimitiveArguments.hpp>
 

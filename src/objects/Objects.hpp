@@ -9,5 +9,6 @@
 
 #include <objects/Object.hpp>
 #include <objects/Number.hpp>
+#include <objects/String.hpp>
 
 #endif
