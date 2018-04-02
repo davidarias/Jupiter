@@ -52,11 +52,12 @@ namespace jupiter{
     Object* lessOrEqual(PrimitiveArguments& arguments);
     Object* isIdenticalTo(PrimitiveArguments& arguments);
 
-
     Object* plus(PrimitiveArguments& arguments);
     Object* minus(PrimitiveArguments& arguments);
     Object* multiply(PrimitiveArguments& arguments);
     Object* divide(PrimitiveArguments& arguments);
+
+    Object* stringConcat(PrimitiveArguments& arguments);
 
     Object* mapAt(PrimitiveArguments& arguments);
     Object* mapAtPut(PrimitiveArguments& arguments);
@@ -64,7 +65,6 @@ namespace jupiter{
     Object* mapTransient(PrimitiveArguments& arguments);
     Object* mapTransientPersist(PrimitiveArguments& arguments);
     Object* mapTransientAtPut(PrimitiveArguments& arguments);
-
 
     Object* arrayAt(PrimitiveArguments& arguments);
     Object* arrayPush(PrimitiveArguments& arguments);

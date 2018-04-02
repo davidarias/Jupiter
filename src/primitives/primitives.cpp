@@ -13,39 +13,40 @@ namespace jupiter{
 
         // common
         add("print",            PrimitiveMethod(print, 1) );
-        add("endl",            PrimitiveMethod(endl,0) );
+        add("endl",             PrimitiveMethod(endl,0) );
         add("isIdenticalTo",    PrimitiveMethod(isIdenticalTo, 1) );
-        add("equals",   PrimitiveMethod(equals, 1) );
-        add("greater",   PrimitiveMethod(greater, 1) );
+        add("equals",           PrimitiveMethod(equals, 1) );
+        add("greater",          PrimitiveMethod(greater, 1) );
         add("greaterOrEqual",   PrimitiveMethod(greaterOrEqual, 1) );
-        add("less",   PrimitiveMethod(less, 1) );
-        add("lessOrEqual",   PrimitiveMethod(lessOrEqual, 1) );
+        add("less",             PrimitiveMethod(less, 1) );
+        add("lessOrEqual",      PrimitiveMethod(lessOrEqual, 1) );
 
         // numbers
 
-        add("plus",           PrimitiveMethod(plus, 1) );
-        add("minus",           PrimitiveMethod(minus, 1) );
-        add("multiply",       PrimitiveMethod(multiply, 1) );
+        add("plus",         PrimitiveMethod(plus, 1) );
+        add("minus",        PrimitiveMethod(minus, 1) );
+        add("multiply",     PrimitiveMethod(multiply, 1) );
         add("divide",       PrimitiveMethod(divide, 1) );
 
         // strings
+        add("stringConcat", PrimitiveMethod(stringConcat, 1) );
 
         // arrays
         add("arrayAt",             PrimitiveMethod(arrayAt, 1) );
-        add("arrayPush",             PrimitiveMethod(arrayPush, 1) );
-        add("arraySize",             PrimitiveMethod(arraySize, 0) );
+        add("arrayPush",           PrimitiveMethod(arrayPush, 1) );
+        add("arraySize",           PrimitiveMethod(arraySize, 0) );
         add("arrayFormatString",   PrimitiveMethod(arrayFormatString, 1) );
 
-        add("arrayTransient",  PrimitiveMethod(arrayTransient, 0) );
-        add("arrayTransientPersist",  PrimitiveMethod(arrayTransientPersist, 0) );
-        add("arrayTransientPush",  PrimitiveMethod(arrayTransientPush, 1) );
+        add("arrayTransient",        PrimitiveMethod(arrayTransient, 0) );
+        add("arrayTransientPersist", PrimitiveMethod(arrayTransientPersist, 0) );
+        add("arrayTransientPush",    PrimitiveMethod(arrayTransientPush, 1) );
 
         // maps
-        add("mapAt",      PrimitiveMethod(mapAt, 1) );
-        add("mapAtPut",      PrimitiveMethod(mapAtPut, 2) );
-        add("mapTransient",  PrimitiveMethod(mapTransient, 0) );
-        add("mapTransientPersist",  PrimitiveMethod(mapTransientPersist, 0) );
-        add("mapTransientAtPut",  PrimitiveMethod(mapTransientAtPut, 2) );
+        add("mapAt",               PrimitiveMethod(mapAt, 1) );
+        add("mapAtPut",            PrimitiveMethod(mapAtPut, 2) );
+        add("mapTransient",        PrimitiveMethod(mapTransient, 0) );
+        add("mapTransientPersist", PrimitiveMethod(mapTransientPersist, 0) );
+        add("mapTransientAtPut",   PrimitiveMethod(mapTransientAtPut, 2) );
 
         // methods
         add("eval0",  PrimitiveMethod(methodEval, 0) );
@@ -180,6 +181,14 @@ namespace jupiter{
         Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
 
         return  self / arg0;
+
+    }
+
+    Object* stringConcat(PrimitiveArguments& arguments){
+        String& self = dynamic_cast<String&>( *( arguments.getReceiver() ) );
+        String& arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
+
+        return self + arg0;
 
     }
 

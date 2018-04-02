@@ -2,7 +2,7 @@ run
 
     tests := {
         self numbers,
-        self formatStrings,
+        self strings,
         self closureBlocks,
         self arrays,
         self objects,

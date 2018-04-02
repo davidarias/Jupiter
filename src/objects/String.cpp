@@ -1,5 +1,6 @@
 #include "String.hpp"
 
+#include <vm/MemoryManager.hpp>
 #include <vm/World.hpp>
 
 namespace jupiter{
@@ -14,6 +15,10 @@ namespace jupiter{
         // we checked the type in the == operator
         auto otherString = static_cast<String&>(other);
         return value.compare(otherString.value);;
+    }
+
+    String* String::operator+(String& other){
+        return MemoryManager::instance().get<String>(value + other.value);
     }
 
     Object* String::at(const std::string& selector){

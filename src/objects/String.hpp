@@ -17,6 +17,8 @@ namespace jupiter{
 
         std::string& getValue();
 
+        String* operator+(String& other);
+
         Object* at(const std::string& selector);
         std::string toString();
         void eval(Evaluator& evaluator);
