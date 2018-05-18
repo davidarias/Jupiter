@@ -56,46 +56,52 @@ namespace jupiter{
 
     void ObjectSerializer::deserializeMethod(std::string path, Map* obj){
 
-        std::ifstream fileReader(  path  );
+        if(path.substr(path.find_last_of(".") + 1) == "st") {
+            // only process files with .st extension
+            std::ifstream fileReader(  path  );
 
-        std::string signature = "";
-        std::string source = "";
+            std::string signature = "";
+            std::string source = "";
 
 
-        if ( fileReader && fileReader.good()  ){
+            if ( fileReader && fileReader.good()  ){
 
-            std::getline ( fileReader, signature );
+                std::getline ( fileReader, signature );
 
-            while ( fileReader.good() ){
-                std::string line;
-                std::getline ( fileReader, line );
-                line += "\n";
-                source += line;
+                while ( fileReader.good() ){
+                    std::string line;
+                    std::getline ( fileReader, line );
+                    line += "\n";
+                    source += line;
+                }
+
+
+            }else{
+                throw "could not open file: " + path;
             }
 
+            fileReader.close();
 
-        }else{
-            throw "could not open file: " + path;
+            Object* method;
+            std::string name;
+
+            try{
+                std::tie(name, method) = Compiler::compile( signature, source );
+            }catch (const char* s) {
+                std::cout << "CompilerException: "<< s  << std::endl << " in file: "<< path << std::endl << std::endl;
+
+            }catch (std::string s) {
+                std::cout << "CompilerException: " << s << std::endl << " in file: " << path << std::endl << std::endl;
+
+            }catch (std::exception& e) {
+                std::cout << "CompilerException: " << e.what() << std::endl << " in file: " << path << std::endl << std::endl;
+            }
+
+            obj->putAtMut( name, method );
+
         }
 
-        fileReader.close();
 
-        Object* method;
-        std::string name;
-
-        try{
-            std::tie(name, method) = Compiler::compile( signature, source );
-        }catch (const char* s) {
-            std::cout << "CompilerException: "<< s  << std::endl << " in file: "<< path << std::endl << std::endl;
-
-        }catch (std::string s) {
-            std::cout << "CompilerException: " << s << std::endl << " in file: " << path << std::endl << std::endl;
-
-        }catch (std::exception& e) {
-            std::cout << "CompilerException: " << e.what() << std::endl << " in file: " << path << std::endl << std::endl;
-        }
-
-        obj->putAtMut( name, method );
     }
 
     void ObjectSerializer::serialize(std::string path){
