@@ -2,11 +2,16 @@
 
 Jupiter is A dynamic object-oriented programming language based on Smalltalk, with a slightly diferent philosophy:
 
-* A set of simple core types: Numbers, Strings, Arrays ( number indexed collections ) and Maps ( String indexed collections ).
+* A set of simple core types: Numbers, Strings, Arrays (number indexed collections) and Maps (String indexed collections).
 * Immutable data structures.
 * There are no classes. Objects are created copying other objects ( prototypes ). Thanks to immutability no special semantics is needed to achieve this.
 * Code reuse through composition instead of inheritance. Deep hierarchies often are a source of incidental complexity.
 * Unix friendly: Its source code is stored in files, which is not the 'Smalltalk way', but this allow us easy interaction with other Unix tools, like git, grep, IDE's/text editors etc..
+
+## Juno IDE
+
+For a better programming experience (or at least more similar to other Smalltalk environments),
+you can use the [Juno IDE](https://github.com/davidarias/juno)
 
 ## Build requirements
 
