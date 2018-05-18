@@ -15,26 +15,10 @@ you can use the [Juno IDE](https://github.com/davidarias/juno)
 
 ## Build requirements
 
-#### A ```C++``` compiler with ```C++14``` support ( I tested it with ```g++ 7.2.0``` )
-#### [Scons](http://scons.org/) ( a better construction tool that use python scripts )
-
-#### mpdecimal http://www.bytereef.org/mpdecimal/
-
-In Ubuntu and Debian can be installed with:
-```bash
- $ sudo apt-get install libmpdec-dev
-```
-Alternatively compile it from source:
-http://www.bytereef.org/mpdecimal/download.html
-
-#### immer https://github.com/arximboldi/immer
-
-```bash
-$ git clone https://github.com/arximboldi/immer.git
-$ cd immer
-$ mkdir -p build && cd build
-$ cmake .. && sudo make install
-```
+- A ```C++``` compiler with ```C++14``` support ( I tested it with ```g++ 7.2.0``` )
+- [Scons](http://scons.org/) ( a better construction tool that use python scripts )
+- mpdecimal http://www.bytereef.org/mpdecimal/ (sudo apt-get install libmpdec-dev for Ubuntu/Debian users)
+- immer https://github.com/arximboldi/immer
 
 ## Setting the JUPITERHOME environment variable
 
