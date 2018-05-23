@@ -1,0 +1,2 @@
+ifFalse: block
+    self

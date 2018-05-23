@@ -34,6 +34,8 @@ namespace jupiter{
         // arrays
         add("arrayAt",             PrimitiveMethod(arrayAt, 1) );
         add("arrayPush",           PrimitiveMethod(arrayPush, 1) );
+        add("arrayTake",           PrimitiveMethod(arrayTake, 1) );
+        add("arrayDrop",           PrimitiveMethod(arrayDrop, 1) );
         add("arraySize",           PrimitiveMethod(arraySize, 0) );
         add("arrayFormatString",   PrimitiveMethod(arrayFormatString, 1) );
 
@@ -204,6 +206,20 @@ namespace jupiter{
         Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
 
         return self.push( arguments.get(0) );
+    }
+
+    Object* arrayTake(PrimitiveArguments& arguments){
+        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
+        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
+
+        return self.take( arg0.truncate() );
+    }
+
+    Object* arrayDrop(PrimitiveArguments& arguments){
+        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
+        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
+
+        return self.drop( arg0.truncate() );
     }
 
     Object* arraySize(PrimitiveArguments& arguments){

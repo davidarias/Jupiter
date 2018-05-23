@@ -1,6 +1,4 @@
 to: stop do: aBlock
-    nextValue := self.
-    [nextValue <= stop]
-        whileTrue:
-            [aBlock value: nextValue.
-            nextValue := nextValue + 1]
+	self <= stop ifTrue: [ 
+    	aBlock value: self. 
+        self + 1 to: stop do: aBlock ]

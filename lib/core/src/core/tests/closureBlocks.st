@@ -1,7 +1,7 @@
 closureBlocks
     upvalue := 'original value'.
 
-    test Group name: 'Format Strings' tests: {
+    test Group name: 'Closure Blocks' tests: {
 
         test Case description: 'Closure upvalues retrieval 1' assert: [
             upvalue == 'original value'.
@@ -9,7 +9,7 @@ closureBlocks
 
         test Case description: 'Closure upvalues modify 1' assert: [
             block := [ upvalue := 42 ]. block value.
-            upvalue == 42
+            upvalue == 'original value'
         ],
 
         test Case description: 'Closure upvalues retrieval in nested closures' assert: [
@@ -38,7 +38,7 @@ closureBlocks
                 blockNested value.
                 otherUpvalue
             ].
-            block value == 26
+            block value == 'Nope'
         ],
 
         test Case description: 'Closure upvalues siblings blocks retrieval' assert: [
@@ -51,13 +51,13 @@ closureBlocks
                 ].
 
                 blockNestedSibling2 := [
-                    otherUpvalue := otherUpvalue + 2
+                    otherUpvalue := otherUpvalue + 'Nope'.
+                    otherUpvalue
                 ].
                 blockNestedSibling value.
-                blockNestedSibling2 value.
-                otherUpvalue
+                blockNestedSibling2 value
             ].
-            block value == 2
+            block value == 'NopeNope'
         ],
 
         test Case description: 'Closure closed upvalues' assert: [

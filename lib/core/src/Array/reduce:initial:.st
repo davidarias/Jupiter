@@ -1,3 +1,4 @@
 reduce: aBlock initial: acc
-    self do: [ :n | acc := aBlock value: acc value: n ].
-    acc
+
+	self empty ifTrue: [ acc ] else: [
+        self tail reduce: aBlock initial: (aBlock value: acc value: self head) ]
