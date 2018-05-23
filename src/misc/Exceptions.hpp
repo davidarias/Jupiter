@@ -22,6 +22,12 @@ namespace jupiter{
         SyntaxError( std::string what ) : DisturbanceInTheForce( "(Syntax Error) " + what ){}
     };
 
+
+    class CompilerError : public DisturbanceInTheForce {
+    public:
+        CompilerError( std::string what ) : DisturbanceInTheForce( what ){}
+    };
+
     class RuntimeException : public DisturbanceInTheForce {
     public:
         RuntimeException ( std::string what ) : DisturbanceInTheForce( "(Runtime error) " + what ){}

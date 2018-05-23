@@ -15,16 +15,6 @@
 
 namespace jupiter{
 
-    UpValue::UpValue(unsigned stackReference ){
-        state = UpValue::STATE::OPEN;
-        value.stackReference = stackReference;
-    }
-
-    void UpValue::close(Object* object){
-        state = UpValue::STATE::CLOSED;
-        value.object = object;
-    }
-
     void GCObject::mark(){
         marked = true;
     }
@@ -192,6 +182,14 @@ namespace jupiter{
         return MemoryManager::instance().get<Array>( values.push_back(value) );
     }
 
+    Object* Array::take( int elems ){
+        return MemoryManager::instance().get<Array>( values.take( elems ) );
+    }
+
+    Object* Array::drop( int elems ){
+        return MemoryManager::instance().get<Array>( values.drop( elems ) );
+    }
+
     Object* Array::size(){
         return MemoryManager::instance().get<Number>( values.size() );
     }
@@ -307,20 +305,13 @@ namespace jupiter{
 
     void Method::mark(){
         marked = true;
+
         if ( self != nullptr ) self->mark();
+
         for(auto& pair : upvalues){
             auto upvalue = pair.second;
-            switch ( upvalue->state ){
-            case UpValue::STATE::OPEN:
-                // object is in the stack, so it should be marked
-                break;
-            case UpValue::STATE::CLOSED:
-                upvalue->value.object->mark();
-                break;
-            default:
-                throw RuntimeException( "GC mark. Unexpected Upvalue state" );
-                break;
-            }
+            upvalue->mark();
+
         }
     }
 

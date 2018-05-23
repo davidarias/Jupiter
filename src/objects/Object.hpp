@@ -21,21 +21,6 @@ namespace jupiter{
 
     class Object;
 
-    struct UpValue {
-
-        enum class STATE { OPEN, CLOSED } state;
-
-        union {
-            Object* object; // closed
-            unsigned stackReference; // open
-        } value;
-
-
-        UpValue( unsigned stackReference );
-        void close( Object* object );
-
-    };
-
     class GCObject{
     protected:
         bool marked = false;
@@ -127,6 +112,8 @@ namespace jupiter{
         Object* formatString(std::string& str);
         Object* at( int index );
         Object* push( Object* value );
+        Object* take( int elems );
+        Object* drop( int elems );
         Object* size();
         Object* transient();
 
@@ -157,7 +144,7 @@ namespace jupiter{
         Object* self;
 
         // TODO optimize this ( maybe using a sparse vector? )
-        std::unordered_map<unsigned, std::shared_ptr<UpValue>> upvalues;
+        std::unordered_map<unsigned, Object*> upvalues;
 
     protected:
         int cmp(Object& other);

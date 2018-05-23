@@ -18,6 +18,36 @@ arrays
 
             doubleNumbers == { 2, 4, 6 }
 
+        ],
+        
+        test Case description: 'Array reduce' assert: [
+
+            numbers := { 1, 2, 3 }.
+
+            sum := numbers reduce: [ :acc :number | acc + number ].
+
+            sum == 6
+
+        ],
+        
+        test Case description: 'Array drop' assert: [
+
+            numbers := { 1, 2, 3, 4, 5, 6 }.
+
+            dropped3 := numbers drop: 3.
+
+            dropped3 == { 4, 5, 6 }
+
+        ],
+        
+        test Case description: 'Array take' assert: [
+
+            numbers := { 1, 2, 3, 4, 5, 6 }.
+
+            take3 := numbers take: 3.
+
+            take3 == { 1, 2, 3 }
+
         ]
 
     }

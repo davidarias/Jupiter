@@ -68,6 +68,8 @@ namespace jupiter{
 
     Object* arrayAt(PrimitiveArguments& arguments);
     Object* arrayPush(PrimitiveArguments& arguments);
+    Object* arrayTake(PrimitiveArguments& arguments);
+    Object* arrayDrop(PrimitiveArguments& arguments);
     Object* arraySize(PrimitiveArguments& arguments);
     Object* arrayFormatString(PrimitiveArguments& arguments);
 

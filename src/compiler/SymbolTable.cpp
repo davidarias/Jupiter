@@ -25,6 +25,18 @@ namespace jupiter{
 
     }
 
+    int SymbolTable::createIfNotExists(std::string& symbol){
+        auto mapIterator = symbolTable.find( symbol );
+
+        if ( mapIterator == symbolTable.end() ){
+            auto index = nextIndex;
+            symbolTable[symbol] = index; nextIndex++;
+            return index;
+        }
+
+        return -1;
+    }
+
     unsigned SymbolTable::size(){
         return nextIndex;
     }

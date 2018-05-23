@@ -3,22 +3,22 @@ name: groupName tests: testArray
     ( '- Test group: {0}' format: { groupName } ) print.
     os cout endl.
 
-    errors := 0.
-    testArray do: [ :case |
+    errors := testArray reduce: [ :errors :case |
         description := case at: 'description'.
         block := case at: 'assert'.
         block value
             ifTrue: [
                 os cout write: '  ✔ ';
                         write: description;
-                        endl
+                        endl.
+                        errors.
             ] ifFalse: [
                 os cout write: '  ✘ ';
                         write: description;
                         endl.
-                        errors := errors + 1
+                        errors + 1
             ]
-    ].
+    ] initial: 0.
 
     total := testArray size.
     passed := total - errors.

@@ -19,6 +19,8 @@
 #include <compiler/Lexer.hpp>
 #include <compiler/Parser.hpp>
 
+#include <misc/Exceptions.hpp>
+
 namespace jupiter{
 
     Object* Compiler::compile(std::string& source){
@@ -262,21 +264,31 @@ namespace jupiter{
 
     void Compiler::visit( AssignmentNode& node ){
 
-        // get or create upvalue ( if any in upper contexts )
-        int upvalueIndex = createUpValuesRecursive( node.symbol->value );
-
-        if ( upvalueIndex >= 0){
-            node.value->accept(*this); // compile right side;
-            method->addInstruction( POP_INTO_UPVALUE, upvalueIndex );
-            return;
-        }
-
-        auto index = locals.getOrCreate( node.symbol->value );
-
-        checkLocalsLimit( index );
+        // first compile right side, to allow create a local
+        // with the same name of an upvalue and use that upvalue:
+        //
+        // eg. upvalue := upvalue + 1
+        // this code will create a local named 'upvalue'
+        // using the upvalue from enclosing context
+        //
+        // if we compile right side after the creation of the local
+        // it will try to get the unasigned newly created local
+        // and crash
 
         node.value->accept(*this);
-        method->addInstruction( POP_INTO, index );
+
+        auto index = locals.createIfNotExists( node.symbol->value );
+
+        if ( index >= 0){
+            checkLocalsLimit( index );
+
+            method->addInstruction( POP_INTO, index );
+
+        }else{
+
+            throw CompilerError("Cannot reassign a variable value.");
+        }
+
 
     }
 

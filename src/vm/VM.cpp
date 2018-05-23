@@ -49,28 +49,12 @@ namespace jupiter{
     }
 
     ExecutionFrame::~ExecutionFrame(){
-        closeUpvalues();
         // return the last expresion in the stack
         // the compiler should take care of not pop this last expresion
         stack.set( returnIndex , stack.pop() );
         stack.resize( localsBaseIndex );
     }
 
-
-    void ExecutionFrame::closeUpvalues(){
-        for(auto upvalue : openUpvalues ){
-            switch ( upvalue->state ){
-            case UpValue::STATE::OPEN:
-                upvalue->close( stack.get( upvalue->value.stackReference ));
-                break;
-            case UpValue::STATE::CLOSED:
-                break;
-            default:
-                throw RuntimeException( "Unexpected Upvalue state" );
-                break;
-            }
-        }
-    }
 
     std::string& ExecutionFrame::getStringConstant(unsigned id){
         // TODO use interned strings
@@ -123,16 +107,13 @@ namespace jupiter{
         newClosure->upvalues = method.upvalues; // copy enclosing context upvalues
         newClosure->self = self;
 
-        openUpvalues.reserve( compiledMethod->upvalues.size() );
-
         // initialize enclosing context upvalues
         for (auto& pair : compiledClosure->upvalues ){
             // pair.first is the upvalue index
             // pair.second is the local index
-            auto index = getLocalIndex( pair.second );
-            auto upvalue = std::make_shared<UpValue>(index);
+            auto upvalue = getLocal( pair.second );
             newClosure->upvalues[pair.first] = upvalue;
-            openUpvalues.push_back( upvalue );
+
         }
         stack.push( newClosure );
 
@@ -140,35 +121,7 @@ namespace jupiter{
 
     void ExecutionFrame::pushUpValue( unsigned id ){
         auto upvalue = method.upvalues[ id ];
-        switch ( upvalue->state ){
-        case UpValue::STATE::OPEN:
-            stack.push( stack.get( upvalue->value.stackReference ) );
-            break;
-        case UpValue::STATE::CLOSED:
-            stack.push( upvalue->value.object );
-            break;
-        default:
-            throw RuntimeException( "Unexpected Upvalue state" );
-            break;
-        }
-
-    }
-
-    void ExecutionFrame::popIntoUpvalue( unsigned id ){
-        Object* obj = stack.pop();
-        auto upvalue = method.upvalues[ id ];
-
-         switch ( upvalue->state ){
-         case UpValue::STATE::OPEN:
-             stack.set( upvalue->value.stackReference, obj );
-             break;
-         case UpValue::STATE::CLOSED:
-             upvalue->value.object = obj;
-             break;
-         default:
-             throw RuntimeException( "Unexpected Upvalue state" );
-             break;
-         }
+        stack.push( upvalue );
     }
 
     void ExecutionFrame::popInto(unsigned id){
@@ -240,11 +193,6 @@ namespace jupiter{
 
         case PUSH_UPVALUE:
             pushUpValue( instruction.argument );
-            break;
-
-        case POP_INTO_UPVALUE:
-
-            popIntoUpvalue( instruction.argument );
             break;
 
         case POP_INTO:

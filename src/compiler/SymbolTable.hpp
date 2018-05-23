@@ -21,6 +21,8 @@ namespace jupiter{
         SymbolTable();
 
         unsigned getOrCreate(std::string& symbol);
+        int createIfNotExists(std::string& symbol);
+
         unsigned size();
         int find(std::string& symbol);
 

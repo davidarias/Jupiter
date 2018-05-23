@@ -36,13 +36,10 @@ namespace jupiter{
         // where are located the locals in the stack
         unsigned localsBaseIndex;
         unsigned returnIndex;
-        std::vector<std::shared_ptr<UpValue> > openUpvalues; // closed when framed is destroyed
 
         std::string& getStringConstant( unsigned id);
         Object* getLocal( unsigned index );
         unsigned getLocalIndex( unsigned index );
-
-        void closeUpvalues();
 
         void pushConstant( unsigned id );
         void pushLocal( unsigned id );
@@ -50,7 +47,6 @@ namespace jupiter{
         void pushSelf();
         void pushClosure( unsigned id );
         void pushUpValue( unsigned id );
-        void popIntoUpvalue( unsigned id );
         void popInto( unsigned id );
         void pop();
         void popNIntoArray( unsigned n );
