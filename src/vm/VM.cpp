@@ -101,7 +101,7 @@ namespace jupiter{
 
         auto compiledClosure = closure->getCompiledMethod();
 
-        Method* newClosure = MemoryManager::instance().get<Method>( compiledClosure );
+        Method* newClosure = MemoryManager<Method>::instance().get( compiledClosure );
 
         newClosure->upvalues.reserve( method.upvalues.size() + compiledClosure->upvalues.size() );
         newClosure->upvalues = method.upvalues; // copy enclosing context upvalues
@@ -141,7 +141,7 @@ namespace jupiter{
         auto start = stack.begin() + i;
         auto end = stack.begin() + size;
 
-        auto array = MemoryManager::instance().get<Array>(start, end);
+        auto array = MemoryManager<Array>::instance().get(start, end);
 
         stack.resize( size - n );
         stack.push( array );
@@ -235,14 +235,12 @@ namespace jupiter{
     }
 
     void VM::gc(){
-        // new objects are created markd = false, so when the cycle is false, they wont be collected
+
         for( auto it = stack.begin(); it != stack.end(); ++it){
             if (*it != nullptr){
                 (*it)->mark();
             }
         }
-        MemoryManager::instance().sweep();
-
     }
 
     Object* VM::eval(Object* object){

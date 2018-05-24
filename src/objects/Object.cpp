@@ -129,7 +129,7 @@ namespace jupiter{
     }
 
     Object* Map::putAt(const std::string& key, Object* value){
-        return MemoryManager::instance().get<Map>( slots.set( key, value ) );
+        return MemoryManager<Map>::instance().get( slots.set( key, value ) );
     }
 
     void Map::putAtMut(const std::string& key, Object* value){
@@ -137,9 +137,10 @@ namespace jupiter{
     }
 
     Object* Map::transient(){
-        return MemoryManager::instance().get<MapTransient>( slots );
+        return MemoryManager<MapTransient>::instance().get( slots );
     }
 
+    MapTransient::MapTransient() {}
     MapTransient::MapTransient(immer::map<std::string, Object* > slots) : Map(slots) {}
 
     Object* MapTransient::at(const std::string& selector){
@@ -156,7 +157,7 @@ namespace jupiter{
     }
 
     Object* MapTransient::persist(){
-        return MemoryManager::instance().get<Map>( slots );
+        return MemoryManager<Map>::instance().get( slots );
     }
 
     Array::Array(){}
@@ -179,23 +180,23 @@ namespace jupiter{
     }
 
     Object* Array::push( Object* value ){
-        return MemoryManager::instance().get<Array>( values.push_back(value) );
+        return MemoryManager<Array>::instance().get( values.push_back(value) );
     }
 
     Object* Array::take( int elems ){
-        return MemoryManager::instance().get<Array>( values.take( elems ) );
+        return MemoryManager<Array>::instance().get( values.take( elems ) );
     }
 
     Object* Array::drop( int elems ){
-        return MemoryManager::instance().get<Array>( values.drop( elems ) );
+        return MemoryManager<Array>::instance().get( values.drop( elems ) );
     }
 
     Object* Array::size(){
-        return MemoryManager::instance().get<Number>( values.size() );
+        return MemoryManager<Number>::instance().get( values.size() );
     }
 
     Object* Array::formatString(std::string& str){
-        return MemoryManager::instance().get<String>( format( str, values ) );
+        return MemoryManager<String>::instance().get( format( str, values ) );
     }
 
     Object* Array::at( int index ){
@@ -273,9 +274,10 @@ namespace jupiter{
     }
 
     Object* Array::transient(){
-        return MemoryManager::instance().get<ArrayTransient>( values );
+        return MemoryManager<ArrayTransient>::instance().get( values );
     }
 
+    ArrayTransient::ArrayTransient() {}
     ArrayTransient::ArrayTransient(immer::flex_vector<Object*> values) : Array( values ) {}
 
     Object* ArrayTransient::at(const std::string& selector){
@@ -291,8 +293,10 @@ namespace jupiter{
     }
 
     Object* ArrayTransient::persist(){
-        return MemoryManager::instance().get<Array>( values );
+        return MemoryManager<Array>::instance().get( values );
     }
+
+    Method::Method(){}
 
     Method::Method(std::string& name, std::string& signature, std::string& source,
                    std::shared_ptr<CompiledMethod> compiledMethod)

@@ -5,6 +5,7 @@
 
 namespace jupiter{
 
+    String::String() {}
     String::String(const std::string& value): value(value) {}
 
     std::string& String::getValue(){
@@ -18,7 +19,7 @@ namespace jupiter{
     }
 
     String* String::operator+(String& other){
-        return MemoryManager::instance().get<String>(value + other.value);
+        return MemoryManager<String>::instance().get(value + other.value);
     }
 
     Object* String::at(const std::string& selector){

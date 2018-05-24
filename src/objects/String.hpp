@@ -13,6 +13,7 @@ namespace jupiter{
     protected:
         int cmp(Object& other);
     public:
+        String();
         String(const std::string& value);
 
         std::string& getValue();

@@ -57,7 +57,7 @@ namespace jupiter{
 
     Number* Number::operator+(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qadd( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -65,7 +65,7 @@ namespace jupiter{
 
     Number* Number::operator-(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qsub( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -73,14 +73,14 @@ namespace jupiter{
 
     Number* Number::operator*(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qmul( &result->value, &value, &other.value, getMpdContext(), &status );
         return result;
     }
 
     Number* Number::operator/(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qdiv( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
