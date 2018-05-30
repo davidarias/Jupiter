@@ -16,6 +16,8 @@
 
 // #include <cxxabi.h>
 
+#define INIT_POOL_SIZE 16384
+
 namespace jupiter{
 
     class Object;
@@ -30,14 +32,11 @@ namespace jupiter{
     class ObjectPool{
 
     private:
-        char* initMem;
         std::vector<T*> objects;
-
+        unsigned capacity;
     public:
-        ObjectPool(){
-            // initMem = new char[sizeof(T) * 4096];
-
-            for(unsigned i = 0; i < 16384; i++ ){
+        ObjectPool() : capacity(INIT_POOL_SIZE) {
+            for(unsigned i = 0; i < capacity; i++ ){
                 objects.push_back(new T);
             }
 
@@ -67,16 +66,20 @@ namespace jupiter{
         }
 
         void grow(){
-            unsigned capacity = objects.capacity() * 2;
+            capacity *= 2;
             objects.reserve(capacity);
             // LOG("Capacity: " << capacity);
-            for(unsigned i = 0; i < capacity; i++){
+            for(unsigned i = objects.size() - 1; i < capacity; i++){
                 objects.push_back(new T);
             }
         }
 
         bool empty(){
             return objects.empty();
+        }
+
+        unsigned getCapacity(){
+            return capacity;
         }
 
         unsigned size(){
@@ -126,10 +129,6 @@ namespace jupiter{
         std::list<T*> constants;
         ObjectPool<T> pool;
 
-        unsigned gcCycles = 0;
-
-        std::chrono::time_point<std::chrono::high_resolution_clock> lastCycle;
-        double cycleDtAverage = 0;
     public:
         static MemoryManager& instance() {
             static MemoryManager i;
@@ -155,24 +154,12 @@ namespace jupiter{
 
                 // execute sweep in all managers
                 MemoryManagers::instance().sweep();
-                gcCycles++;
 
-
-                auto time = std::chrono::high_resolution_clock::now();
-                std::chrono::duration<double> dt = time - lastCycle;
-                lastCycle = std::chrono::high_resolution_clock::now();
-
-                cycleDtAverage = (dt.count() + cycleDtAverage) / gcCycles;
-
-                // adjust pool size usign average gc time
-                // if ( cycleDtAverage < 0.1 ){
-                //     LOG("dt average " << cycleDtAverage);
-                //     pool.grow();
-                //     LOG("pool size " << pool.size());
-
-                //     cycleDtAverage = 0;
-                //     gcCycles = 0;
-                // }
+                if ( pool.size() < pool.getCapacity() * 0.1 ){
+                    // if pool size after sweep is less than 10% of capacity,
+                    // we need a bigger pool
+                    pool.grow();
+                }
 
 
             }
@@ -237,7 +224,6 @@ namespace jupiter{
 
     private:
         MemoryManager(){
-            lastCycle = std::chrono::high_resolution_clock::now();
             // save this instance
             MemoryManagers::instance().add(this);
         };
