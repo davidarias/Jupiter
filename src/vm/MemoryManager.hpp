@@ -44,15 +44,10 @@ namespace jupiter{
 
         ~ObjectPool(){
 
-            auto it = objects.begin();
-            while (it != objects.end() ){
-                if (*it != nullptr){
-                    delete (*it);
-                }
-                it++;
+            for (auto obj : objects ){
+                delete obj;
             }
 
-            objects.clear();
         }
 
         T* obtain(){
@@ -125,8 +120,10 @@ namespace jupiter{
     template<class T>
     class MemoryManager : public MemoryManagerInterface{
     private:
-        std::list<T*> allocatedOjects;
-        std::list<T*> constants;
+        std::vector<T*> from;
+        std::vector<T*> to;
+
+        std::vector<T*> inmortal;
         ObjectPool<T> pool;
 
     public:
@@ -140,11 +137,16 @@ namespace jupiter{
         T* get(Args... args){
             auto p = pool.obtain();
 
-            p->~T(); // reset/call destructor
+            // p->~T(); // reset/call destructor
 
             new(p) T(args...); // reuse old memory
 
-            allocatedOjects.push_back(p);
+            if ( from.size() == 0){
+                from.push_back(p);
+            }else{
+                to.push_back(p);
+            }
+
 
             if ( pool.empty() ){
 
@@ -170,7 +172,7 @@ namespace jupiter{
         template<typename... Args>
         T* permanent(Args... args){
             auto p = new T(args...);
-            constants.push_back(p);
+            inmortal.push_back(p);
             return p;
         }
 
@@ -182,44 +184,60 @@ namespace jupiter{
 
             // LOG("Total GC cicles: " << gcCycles << " for " << demangled_name);
 
-            auto it1 = allocatedOjects.begin();
-            while (it1 != allocatedOjects.end() ){
-                if (*it1 != nullptr){
-                    delete (*it1);
-                }
-                it1++;
+            for (auto obj : from ){
+                delete obj;
             }
 
-            allocatedOjects.clear();
-
-            auto it2 = constants.begin();
-            while (it2 != constants.end() ){
-                if (*it2 != nullptr){
-                    delete (*it2);
-                }
-                it2++;
+            for (auto obj : to ){
+                delete obj;
             }
 
-            constants.clear();
+            for (auto obj : inmortal ){
+                delete obj;
+            }
+
         }
 
         void sweep(){
 
-            auto it = allocatedOjects.begin();
-            while (it != allocatedOjects.end() ){
-                auto obj = (*it);
+            if ( from.size() == 0){
 
-                if (! obj->isMarked() ){
+                for ( auto obj : from ){
 
-                    pool.release( obj );
-                    allocatedOjects.erase(it++);
+                    if (! obj->isMarked() ){
 
-                }else{
-                    obj->unmark();
-                    ++it;
+                        pool.release( obj );
+
+                    }else{
+                        obj->unmark();
+                        to.push_back(obj);
+                    }
                 }
 
+                // this should call destructors on every object reclaimed
+                from.clear();
+
+            }else{
+
+                for ( auto obj : to ){
+
+                    if (! obj->isMarked() ){
+
+                        pool.release( obj );
+
+                    }else{
+                        obj->unmark();
+                        from.push_back(obj);
+                    }
+                }
+
+                // this should call destructors on every object reclaimed
+                to.clear();
             }
+
+
+
+
         }
 
     private:
