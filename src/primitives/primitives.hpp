@@ -56,6 +56,7 @@ namespace jupiter{
     Object* minus(PrimitiveArguments& arguments);
     Object* multiply(PrimitiveArguments& arguments);
     Object* divide(PrimitiveArguments& arguments);
+    Object* sqrt(PrimitiveArguments& arguments);
 
     Object* stringConcat(PrimitiveArguments& arguments);
 

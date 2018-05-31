@@ -23,10 +23,11 @@ namespace jupiter{
 
         // numbers
 
-        add("plus",         PrimitiveMethod(plus, 1) );
-        add("minus",        PrimitiveMethod(minus, 1) );
-        add("multiply",     PrimitiveMethod(multiply, 1) );
-        add("divide",       PrimitiveMethod(divide, 1) );
+        add("plus",       PrimitiveMethod(plus, 1) );
+        add("minus",      PrimitiveMethod(minus, 1) );
+        add("multiply",   PrimitiveMethod(multiply, 1) );
+        add("divide",     PrimitiveMethod(divide, 1) );
+        add("sqrt",       PrimitiveMethod(sqrt, 0) );
 
         // strings
         add("stringConcat", PrimitiveMethod(stringConcat, 1) );
@@ -184,6 +185,13 @@ namespace jupiter{
 
         return  self / arg0;
 
+    }
+
+
+    Object* sqrt(PrimitiveArguments& arguments){
+        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
+
+        return self.sqrt();
     }
 
     Object* stringConcat(PrimitiveArguments& arguments){

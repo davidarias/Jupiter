@@ -75,6 +75,7 @@ namespace jupiter{
         uint32_t status = 0;
         Number* result = MemoryManager<Number>::instance().get();
         mpd_qmul( &result->value, &value, &other.value, getMpdContext(), &status );
+        addStatus(status);
         return result;
     }
 
@@ -82,6 +83,14 @@ namespace jupiter{
         uint32_t status = 0;
         Number* result = MemoryManager<Number>::instance().get();
         mpd_qdiv( &result->value, &value, &other.value, getMpdContext(), &status );
+        addStatus(status);
+        return result;
+    }
+
+    Number* Number::sqrt(){
+        uint32_t status = 0;
+        Number* result = MemoryManager<Number>::instance().get();
+        mpd_qsqrt( &result->value, &value, getMpdContext(), &status);
         addStatus(status);
         return result;
     }

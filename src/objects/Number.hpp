@@ -52,6 +52,8 @@ namespace jupiter{
         Number* operator*(Number& other);
         Number* operator/(Number& other);
 
+        Number* sqrt();
+
         int64_t truncate();
 
         Object* at(const std::string& selector);

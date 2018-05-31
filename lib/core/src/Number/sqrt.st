@@ -1,0 +1,2 @@
+sqrt
+	<Primitive: sqrt>
