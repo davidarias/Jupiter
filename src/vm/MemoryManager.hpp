@@ -10,8 +10,6 @@
 #include <misc/common.hpp>
 #include <vm/World.hpp>
 
-#include <list>
-
 #include <chrono>
 
 // #include <cxxabi.h>
