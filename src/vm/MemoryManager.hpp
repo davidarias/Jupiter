@@ -10,9 +10,11 @@
 #include <misc/common.hpp>
 #include <vm/World.hpp>
 
+#ifdef BENCHMARK
 #include <chrono>
+#include <cxxabi.h> // get demagled names with gcc
+#endif
 
-// #include <cxxabi.h>
 
 #define INIT_POOL_SIZE 16384
 
@@ -124,6 +126,12 @@ namespace jupiter{
         std::vector<T*> inmortal;
         ObjectPool<T> pool;
 
+        #ifdef BENCHMARK
+        unsigned gcCycles = 0;
+        double markTime = 0;
+        double sweepTime = 0;
+        #endif
+
     public:
         static MemoryManager& instance() {
             static MemoryManager i;
@@ -147,10 +155,27 @@ namespace jupiter{
 
 
             if ( pool.empty() ){
+                #ifdef BENCHMARK
+                gcCycles++;
+                #endif
 
                 // dont collect this new created object!
                 p->mark();
+
+                #ifdef BENCHMARK
+
+                auto t1 = std::chrono::high_resolution_clock::now();
                 World::instance().gc();
+                auto t2 = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double> dt =  t2 - t1;
+                double time = dt.count();
+                markTime += time;
+                LOG("Mark time "  << time << " gcCycle: " << gcCycles);
+                #else
+
+                World::instance().gc();
+
+                #endif
 
                 // execute sweep in all managers
                 MemoryManagers::instance().sweep();
@@ -159,6 +184,9 @@ namespace jupiter{
                     // if pool size after sweep is less than 10% of capacity,
                     // we need a bigger pool
                     pool.grow();
+                    #ifdef BENCHMARK
+                    LOG("GROW gcCycle " << gcCycles);
+                    #endif
                 }
 
 
@@ -176,11 +204,16 @@ namespace jupiter{
 
 
         ~MemoryManager(){
-            // int status;
-            // std::string tname = typeid(T).name();
-            // char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
 
-            // LOG("Total GC cicles: " << gcCycles << " for " << demangled_name);
+            #ifdef BENCHMARK
+            int status;
+            std::string tname = typeid(T).name();
+            char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
+            LOG("-------------------------------");
+            LOG(demangled_name);
+            LOG("Total GC cicles: " << gcCycles << " total Mark Time: " << markTime);
+
+            #endif
 
             for (auto obj : from ){
                 delete obj;
