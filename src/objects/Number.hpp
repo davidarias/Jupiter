@@ -41,6 +41,8 @@ namespace jupiter{
         static NumberContext context;
         static mpd_context_t* getMpdContext();
 
+        static Number* random();
+
         Number();
         Number( int64_t value );
         Number( std::string& value);

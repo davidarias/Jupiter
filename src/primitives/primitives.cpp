@@ -29,6 +29,8 @@ namespace jupiter{
         add("divide",     PrimitiveMethod(divide, 1) );
         add("sqrt",       PrimitiveMethod(sqrt, 0) );
 
+        add("random",      PrimitiveMethod(random, 0) );
+
         // strings
         add("stringConcat", PrimitiveMethod(stringConcat, 1) );
 
@@ -192,6 +194,11 @@ namespace jupiter{
         Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
 
         return self.sqrt();
+    }
+
+
+    Object* random(PrimitiveArguments& arguments){
+        return Number::random();
     }
 
     Object* stringConcat(PrimitiveArguments& arguments){

@@ -9,6 +9,9 @@
 #include <vm/MemoryManager.hpp>
 #include <vm/World.hpp>
 
+#include <random>
+
+
 namespace jupiter{
 
     NumberContext::NumberContext(){
@@ -23,6 +26,14 @@ namespace jupiter{
 
     mpd_context_t* Number::getMpdContext(){
         return &( context.mpd_context );
+    }
+
+    Number* Number::random(){
+        std::ostringstream numberString;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        numberString << std::generate_canonical<double, 10>(gen);
+        return MemoryManager<Number>::instance().get(numberString.str());
     }
 
     Number::Number()/* value( mpd_qnew() )*/ {}

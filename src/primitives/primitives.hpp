@@ -58,6 +58,8 @@ namespace jupiter{
     Object* divide(PrimitiveArguments& arguments);
     Object* sqrt(PrimitiveArguments& arguments);
 
+    Object* random(PrimitiveArguments& arguments);
+
     Object* stringConcat(PrimitiveArguments& arguments);
 
     Object* mapAt(PrimitiveArguments& arguments);
