@@ -15,9 +15,9 @@ namespace jupiter{
         managers.push_back(manager);
     }
 
-    void MemoryManagers::sweep(){
+    void MemoryManagers::sweep(bool full){
         for( auto manager : managers){
-            manager->sweep();
+            manager->sweep(full);
         }
     }
 

@@ -15,17 +15,17 @@ namespace jupiter{
 
     class World{
         // the primitive eval function can acces directly the vm
-        friend Object* methodEval(PrimitiveArguments& arguments);
+        // friend Object* methodEval(PrimitiveArguments& arguments);
     private:
         World();
         World(const World& ) = delete;
         void operator=(const World& ) = delete;
 
-        VM vm;
 
 
     public:
         Map globals;
+        VM vm;
 
         Object* getTrue();
         Object* getFalse();
@@ -41,8 +41,6 @@ namespace jupiter{
         void eval(std::string);
         Object* eval(Object* o);
         Object* eval(Object* o, Object* self);
-
-        void gc();
 
     };
 }

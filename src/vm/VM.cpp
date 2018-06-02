@@ -234,13 +234,25 @@ namespace jupiter{
 
     }
 
-    void VM::gc(){
+    void VM::gc(bool full){
 
-        for( auto it = stack.begin(); it != stack.end(); ++it){
-            if (*it != nullptr){
-                (*it)->mark();
+        if ( full ){
+            for( auto it = stack.begin(); it != stack.end(); ++it){
+                if (*it != nullptr){
+                    (*it)->mark();
+                }
+            }
+        }else{
+            for( auto it = stack.begin(); it != stack.end(); ++it){
+                if (*it != nullptr){
+                    if ( ! (*it)->istenured() ){
+                        (*it)->mark();
+                    }
+
+                }
             }
         }
+
     }
 
     Object* VM::eval(Object* object){

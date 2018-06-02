@@ -90,7 +90,7 @@ namespace jupiter{
 
     class MemoryManagerInterface{
     public:
-        virtual void sweep() = 0;
+        virtual void sweep(bool full) = 0;
     };
 
     // contain all the memory manager instances
@@ -108,7 +108,7 @@ namespace jupiter{
         }
 
         void add(MemoryManagerInterface* manager);
-        void sweep();
+        void sweep(bool full);
 
 
     private:
@@ -120,14 +120,17 @@ namespace jupiter{
     template<class T>
     class MemoryManager : public MemoryManagerInterface{
     private:
+        std::vector<T*> eden;
+
         std::vector<T*> from;
         std::vector<T*> to;
 
         std::vector<T*> inmortal;
         ObjectPool<T> pool;
 
-        #ifdef BENCHMARK
         unsigned gcCycles = 0;
+
+        #ifdef BENCHMARK
         double markTime = 0;
         double sweepTime = 0;
         #endif
@@ -141,56 +144,69 @@ namespace jupiter{
 
         template<typename... Args>
         T* get(Args... args){
-            auto p = pool.obtain();
-
-            // p->~T(); // reset/call destructor
-
-            new(p) T(args...); // reuse old memory
-
-            if ( from.size() == 0){
-                from.push_back(p);
-            }else{
-                to.push_back(p);
-            }
-
 
             if ( pool.empty() ){
                 #ifdef BENCHMARK
                 gcCycles++;
                 #endif
 
-                // dont collect this new created object!
-                p->mark();
-
                 #ifdef BENCHMARK
 
                 auto t1 = std::chrono::high_resolution_clock::now();
-                World::instance().gc();
+
+                if (gcCycles % 15 == 0){
+                    World::instance().vm.gc(true);
+                }else{
+                    World::instance().vm.gc(false);
+                }
+
                 auto t2 = std::chrono::high_resolution_clock::now();
                 std::chrono::duration<double> dt =  t2 - t1;
                 double time = dt.count();
                 markTime += time;
-                LOG("Mark time "  << time << " gcCycle: " << gcCycles);
+
                 #else
 
-                World::instance().gc();
+                if (gcCycles % 15 == 0){
+                    World::instance().vm.gc(true);
+                }else{
+                    World::instance().vm.gc(false);
+                }
 
                 #endif
 
                 // execute sweep in all managers
-                MemoryManagers::instance().sweep();
+                if (gcCycles % 15 == 0){
+                    MemoryManagers::instance().sweep(true);
+                }else{
+                    MemoryManagers::instance().sweep(false);
+                }
 
                 if ( pool.size() < pool.getCapacity() * 0.1 ){
                     // if pool size after sweep is less than 10% of capacity,
                     // we need a bigger pool
                     pool.grow();
+
                     #ifdef BENCHMARK
-                    LOG("GROW gcCycle " << gcCycles);
+                    int status;
+                    std::string tname = typeid(T).name();
+                    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
+                    LOG("Grow cicles: " << gcCycles << "  " << demangled_name);
+
                     #endif
+
                 }
 
 
             }
+
+            auto p = pool.obtain();
+
+            p->~T(); // reset/call destructor
+
+            new(p) T(args...); // reuse old memory
+
+            eden.push_back(p);
             return p;
         }
 
@@ -229,45 +245,62 @@ namespace jupiter{
 
         }
 
-        void sweep(){
+        void sweep(bool full){
 
-            if ( from.size() == 0){
+            // first sweep tenured, then we can promote from eden if necesary
+            if ( full ){
 
-                for ( auto obj : from ){
+                if ( to.size() == 0){
 
-                    if (! obj->isMarked() ){
+                    for ( auto obj : from ){
 
-                        pool.release( obj );
+                        if (! obj->isMarked() ){
+                            pool.release( obj );
 
+                        }else{
+                            obj->unmark();
+                            to.push_back(obj);
+                        }
+                    }
+
+                    from.clear();
+
+                }else{
+
+                    for ( auto obj : to ){
+
+                        if (! obj->isMarked() ){
+                            pool.release( obj );
+
+                        }else{
+                            obj->unmark();
+                            from.push_back(obj);
+                        }
+                    }
+
+                    to.clear();
+                }
+            }
+
+            for ( auto obj : eden ){
+
+                if (! obj->isMarked() ){
+
+                    pool.release( obj );
+
+                }else{
+                    obj->unmark();
+                    obj->setTenured();
+
+                    if (to.size() == 0){
+                        from.push_back(obj);
                     }else{
-                        obj->unmark();
                         to.push_back(obj);
                     }
                 }
-
-                // this should call destructors on every object reclaimed
-                from.clear();
-
-            }else{
-
-                for ( auto obj : to ){
-
-                    if (! obj->isMarked() ){
-
-                        pool.release( obj );
-
-                    }else{
-                        obj->unmark();
-                        from.push_back(obj);
-                    }
-                }
-
-                // this should call destructors on every object reclaimed
-                to.clear();
             }
 
-
-
+            eden.clear();
 
         }
 

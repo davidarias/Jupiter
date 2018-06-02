@@ -27,6 +27,14 @@ namespace jupiter{
         return marked;
     }
 
+    bool GCObject::istenured(){
+        return tenured;
+    }
+
+    void GCObject::setTenured(){
+        tenured = true;
+    }
+
     Object::Object(){}
     Object::~Object(){}
 

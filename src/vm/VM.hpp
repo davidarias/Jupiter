@@ -67,7 +67,7 @@ namespace jupiter{
     public:
         VM();
 
-        void gc();
+        void gc(bool full);
 
         void pop();
 

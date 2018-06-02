@@ -24,10 +24,15 @@ namespace jupiter{
     class GCObject{
     protected:
         bool marked = false;
+        bool tenured = false;
     public:
         virtual void mark();
         virtual void unmark();
         bool isMarked();
+
+        bool istenured();
+        void setTenured();
+
     };
 
     class Evaluator;
