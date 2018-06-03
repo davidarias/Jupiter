@@ -164,6 +164,25 @@ namespace jupiter{
 
     }
 
+
+    void ExecutionFrame::jumpIfFalse( uint16_t id ){
+        Object* obj = stack.pop();
+        if ( obj == World::instance().getFalse()){
+            instructionCounter = id -1; // main loop will increment this rightafter this
+        }
+    }
+
+    void ExecutionFrame::jumpIfTrue( uint16_t id ){
+        Object* obj = stack.pop();
+        if ( obj == World::instance().getTrue()){
+            instructionCounter = id -1;
+        }
+    }
+
+    void ExecutionFrame::jump( uint16_t id ){
+        instructionCounter = id;
+    }
+
     void ExecutionFrame::dispatch( Instruction instruction ){
 
         switch( instruction.bytecode ){
@@ -218,6 +237,21 @@ namespace jupiter{
             send( instruction.argument, instruction.shortArgument );
             break;
 
+        case JUMP_IFFALSE:
+
+            jumpIfFalse( instruction.argument );
+            break;
+
+        case JUMP_IFTRUE:
+
+            jumpIfTrue( instruction.argument );
+            break;
+
+        case JUMP:
+
+            jump( instruction.argument );
+            break;
+
         default:
             break;
         }
@@ -227,9 +261,9 @@ namespace jupiter{
     void ExecutionFrame::execute(){
         std::vector<Instruction>& instructions = compiledMethod->instructions;
         auto size = instructions.size();
-        unsigned i = 0;
-        for (; i < size; i++){
-            dispatch( instructions[i] );
+        instructionCounter = 0;
+        for (; instructionCounter < size; instructionCounter++){
+            dispatch( instructions[instructionCounter] );
         }
 
     }

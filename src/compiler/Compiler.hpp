@@ -67,6 +67,9 @@ namespace jupiter{
         void visit( PragmaNode& node );
         void visit( ClosureBlockNode& node );
 
+        void compileInlineIf(MessageNode& node);
+        void compileInlineBlock(std::shared_ptr<ASTNode> node);
+
     };
 
     // TODO better pragma compiler, check errors etc..

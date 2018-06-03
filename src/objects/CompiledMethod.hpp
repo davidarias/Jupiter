@@ -31,12 +31,15 @@ namespace jupiter{
         POP_N_INTO_OBJECT,
         RETURN_TOP,
         DUP,
-        SEND
+        SEND,
+        JUMP_IFTRUE,
+        JUMP_IFFALSE,
+        JUMP,
     };
 
     struct Instruction{
-        uint8_t bytecode;
         uint16_t argument;
+        uint8_t bytecode;
         uint8_t shortArgument;
     };
 
@@ -66,6 +69,11 @@ namespace jupiter{
         void addInstruction(Bytecode code, uint16_t argument, uint8_t shortArgument);
         void addInstruction(Bytecode code, uint16_t argument);
         void addInstruction(Bytecode code);
+
+        void modifyInstruction(unsigned pos, Bytecode code, uint16_t argument);
+        void modifyInstruction(unsigned pos, Bytecode code);
+
+        unsigned size();
 
         void setLocals( int _locals );
         void setArity( int _arity );
