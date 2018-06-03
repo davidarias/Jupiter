@@ -15,6 +15,10 @@ numbers
         test Case description: 'Decimal multiplication 1' assert: [
             12.42 * 0.2345 == 2.91249
         ],
+        
+        test Case description: 'factorial' assert: [
+            4 factorial == 24
+        ],
 
         test Case description: 'Comparisions 1' assert: [
             0.0001 > 0.00001

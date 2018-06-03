@@ -27,7 +27,7 @@ points
 
             p := 42 @ 144.
 
-            p toString == '(Point x: 42 y: 144)'
+            p toString == '(Point x: 42 y: 144 z: 0)'
         ]
 
     }
