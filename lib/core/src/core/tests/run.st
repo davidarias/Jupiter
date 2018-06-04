@@ -3,6 +3,7 @@ run
     tests := {
         self numbers,
         self strings,
+        self controlStructures,
         self closureBlocks,
         self arrays,
         self objects,
