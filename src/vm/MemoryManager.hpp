@@ -148,9 +148,6 @@ namespace jupiter{
             if ( pool.empty() ){
                 #ifdef BENCHMARK
                 gcCycles++;
-                #endif
-
-                #ifdef BENCHMARK
 
                 auto t1 = std::chrono::high_resolution_clock::now();
 
@@ -167,7 +164,6 @@ namespace jupiter{
 
                 #else
 
-                LOG("GC MARK");
                 if (gcCycles % 15 == 0){
                     World::instance().vm.gc(true);
                 }else{
