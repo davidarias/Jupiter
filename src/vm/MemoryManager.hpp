@@ -167,6 +167,7 @@ namespace jupiter{
 
                 #else
 
+                LOG("GC MARK");
                 if (gcCycles % 15 == 0){
                     World::instance().vm.gc(true);
                 }else{
@@ -186,14 +187,6 @@ namespace jupiter{
                     // if pool size after sweep is less than 10% of capacity,
                     // we need a bigger pool
                     pool.grow();
-
-                    #ifdef BENCHMARK
-                    int status;
-                    std::string tname = typeid(T).name();
-                    char *demangled_name = abi::__cxa_demangle(tname.c_str(), NULL, NULL, &status);
-                    LOG("Grow cicles: " << gcCycles << "  " << demangled_name);
-
-                    #endif
 
                 }
 

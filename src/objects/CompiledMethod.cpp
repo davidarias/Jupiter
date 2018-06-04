@@ -162,7 +162,7 @@ namespace jupiter{
                 LOG("SEND " << argument
                     <<
                     ": '"<< ConstantsTable::instance().get( argument )->toString() << "'" <<
-                    ", arity: " << (unsigned) currentInstruction.shortArgument );
+                    ", arity: " << (unsigned) currentInstruction.shortArgument -1 );
                 break;
 
             case JUMP_IFTRUE:

@@ -153,14 +153,54 @@ namespace jupiter{
 
     void ExecutionFrame::send( uint16_t id, uint8_t receiverRelPos ){
         // the receiver position should be overwrite with the return value
+
         auto receiverIndex = stack.size() - receiverRelPos;
         Object* receiver = stack.get( receiverIndex );
 
         auto selector = getStringConstant( id );
+        auto nextMethod = receiver->at(selector);
+
+        #ifndef NO_TAIL_CALL
+        // tail call optimization
+        // since we need to search the receiver for the message
+        // we cannot know at compile time
+        // if we can perform tail call optimization
+
+        // if last call is the same method we are running we can use tail call  optimization
+        if ( compiledMethod->instructions.size() == instructionCounter + 1 && &method == nextMethod){
+            // copy arguments to correct positions
+            // the arguments had been pushed before the call
+
+            if ( compiledMethod->arity > 0 ){
+                auto firstArgumentIndex = 0;
+                auto lastArgumentIndex = compiledMethod->arity -1;
+
+                for( int i = lastArgumentIndex; i >= firstArgumentIndex; i-- ){
+                    stack.set( getLocalIndex( i ), stack.pop() );
+                }
+
+            }
+
+            // replace old receiver with new
+            stack.set( returnIndex, stack.pop() );
+            stack.resize( getLocalIndex(localsBaseIndex + compiledMethod->locals ) );
+
+            self = receiver;
+            // start again the method
+            instructionCounter = -1;
+
+        }else{
+
+            Evaluator evaluator(receiver, stack);
+            nextMethod->eval( evaluator );
+        }
+
+        #else
 
         Evaluator evaluator(receiver, stack);
+        nextMethod->eval( evaluator );
 
-        receiver->at(selector)->eval( evaluator );
+        #endif
 
     }
 
