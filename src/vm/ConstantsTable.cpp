@@ -18,7 +18,7 @@ namespace jupiter{
         auto it = numbers.find(number);
         if ( it == numbers.end() ){
             auto index = constants.size();
-            auto obj = MemoryManager::instance().permanent<Number>( number );
+            auto obj = MemoryManager<Number>::instance().permanent( number );
             constants.push_back(obj);
             numbers[number] = index;
             return index;
@@ -31,7 +31,7 @@ namespace jupiter{
         auto it = strings.find(string);
         if ( it == strings.end() ){
             auto index = constants.size();
-            auto obj = MemoryManager::instance().permanent<String>( string );
+            auto obj = MemoryManager<String>::instance().permanent( string );
             constants.push_back(obj);
             strings[string] = index;
             return index;

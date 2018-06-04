@@ -86,7 +86,7 @@ namespace jupiter{
 
         }
         // TODO pop last value of stack
-        vm.gc();
+        vm.gc(true);
 
     }
 
@@ -96,10 +96,6 @@ namespace jupiter{
 
     Object* World::eval(Object* o, Object* self){
         return vm.eval(o, self);
-    }
-
-    void World::gc(){
-        vm.gc();
     }
 
 }

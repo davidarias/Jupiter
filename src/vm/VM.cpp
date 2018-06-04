@@ -101,7 +101,7 @@ namespace jupiter{
 
         auto compiledClosure = closure->getCompiledMethod();
 
-        Method* newClosure = MemoryManager::instance().get<Method>( compiledClosure );
+        Method* newClosure = MemoryManager<Method>::instance().get( compiledClosure );
 
         newClosure->upvalues.reserve( method.upvalues.size() + compiledClosure->upvalues.size() );
         newClosure->upvalues = method.upvalues; // copy enclosing context upvalues
@@ -141,7 +141,7 @@ namespace jupiter{
         auto start = stack.begin() + i;
         auto end = stack.begin() + size;
 
-        auto array = MemoryManager::instance().get<Array>(start, end);
+        auto array = MemoryManager<Array>::instance().get(start, end);
 
         stack.resize( size - n );
         stack.push( array );
@@ -153,15 +153,74 @@ namespace jupiter{
 
     void ExecutionFrame::send( uint16_t id, uint8_t receiverRelPos ){
         // the receiver position should be overwrite with the return value
+
         auto receiverIndex = stack.size() - receiverRelPos;
         Object* receiver = stack.get( receiverIndex );
 
         auto selector = getStringConstant( id );
+        auto nextMethod = receiver->at(selector);
+
+        #ifndef NO_TAIL_CALL
+        // tail call optimization
+        // since we need to search the receiver for the message
+        // we cannot know at compile time
+        // if we can perform tail call optimization
+
+        // if last call is the same method we are running we can use tail call  optimization
+        if ( compiledMethod->instructions.size() == instructionCounter + 1 && &method == nextMethod){
+            // copy arguments to correct positions
+            // the arguments had been pushed before the call
+
+            if ( compiledMethod->arity > 0 ){
+                auto firstArgumentIndex = 0;
+                auto lastArgumentIndex = compiledMethod->arity -1;
+
+                for( int i = lastArgumentIndex; i >= firstArgumentIndex; i-- ){
+                    stack.set( getLocalIndex( i ), stack.pop() );
+                }
+
+            }
+
+            // replace old receiver with new
+            stack.set( returnIndex, stack.pop() );
+            stack.resize( getLocalIndex(localsBaseIndex + compiledMethod->locals ) );
+
+            self = receiver;
+            // start again the method
+            instructionCounter = -1;
+
+        }else{
+
+            Evaluator evaluator(receiver, stack);
+            nextMethod->eval( evaluator );
+        }
+
+        #else
 
         Evaluator evaluator(receiver, stack);
+        nextMethod->eval( evaluator );
 
-        receiver->at(selector)->eval( evaluator );
+        #endif
 
+    }
+
+
+    void ExecutionFrame::jumpIfFalse( uint16_t id ){
+        Object* obj = stack.pop();
+        if ( obj == World::instance().getFalse()){
+            instructionCounter = id -1; // main loop will increment this rightafter this
+        }
+    }
+
+    void ExecutionFrame::jumpIfTrue( uint16_t id ){
+        Object* obj = stack.pop();
+        if ( obj == World::instance().getTrue()){
+            instructionCounter = id -1;
+        }
+    }
+
+    void ExecutionFrame::jump( uint16_t id ){
+        instructionCounter = id;
     }
 
     void ExecutionFrame::dispatch( Instruction instruction ){
@@ -218,6 +277,21 @@ namespace jupiter{
             send( instruction.argument, instruction.shortArgument );
             break;
 
+        case JUMP_IFFALSE:
+
+            jumpIfFalse( instruction.argument );
+            break;
+
+        case JUMP_IFTRUE:
+
+            jumpIfTrue( instruction.argument );
+            break;
+
+        case JUMP:
+
+            jump( instruction.argument );
+            break;
+
         default:
             break;
         }
@@ -227,21 +301,31 @@ namespace jupiter{
     void ExecutionFrame::execute(){
         std::vector<Instruction>& instructions = compiledMethod->instructions;
         auto size = instructions.size();
-        unsigned i = 0;
-        for (; i < size; i++){
-            dispatch( instructions[i] );
+        instructionCounter = 0;
+        for (; instructionCounter < size; instructionCounter++){
+            dispatch( instructions[instructionCounter] );
         }
 
     }
 
-    void VM::gc(){
-        // new objects are created markd = false, so when the cycle is false, they wont be collected
-        for( auto it = stack.begin(); it != stack.end(); ++it){
-            if (*it != nullptr){
-                (*it)->mark();
+    void VM::gc(bool full){
+
+        if ( full ){
+            for( auto it = stack.begin(); it != stack.end(); ++it){
+                if (*it != nullptr){
+                    (*it)->mark();
+                }
+            }
+        }else{
+            for( auto it = stack.begin(); it != stack.end(); ++it){
+                if (*it != nullptr){
+                    if ( ! (*it)->istenured() ){
+                        (*it)->mark();
+                    }
+
+                }
             }
         }
-        MemoryManager::instance().sweep();
 
     }
 

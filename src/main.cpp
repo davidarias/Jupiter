@@ -10,7 +10,7 @@
 #include <string>
 #include <iostream>
 
-#define VERSION "0.1.0-alpha"
+#define VERSION "0.2.0"
 
 using namespace jupiter;
 
@@ -44,6 +44,15 @@ void repl(std::string prompt){
 }
 
 int main(int argc, char* argv[]){
+
+    if ( argc > 2){
+        if (std::string(argv[1]) == "-e" ){
+            World& world = World::instance();
+            world.eval( argv[2] );
+            return 0;
+        }
+    }
+
     intro();
     repl("jupiter> ");
     return 0;

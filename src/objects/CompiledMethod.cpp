@@ -50,6 +50,36 @@ namespace jupiter{
         instructions.push_back( inst );
     }
 
+    void print_vec(const std::vector<int>& vec)
+    {
+        for (auto x: vec) {
+            std::cout << ' ' << x;
+        }
+        std::cout << '\n';
+    }
+
+    void CompiledMethod::modifyInstruction(unsigned pos, Bytecode code, uint16_t argument){
+        Instruction inst;
+        inst.bytecode = code;
+        inst.argument = argument;
+
+        instructions[pos] = inst;
+
+    }
+
+    void CompiledMethod::modifyInstruction(unsigned pos, Bytecode code){
+        Instruction inst;
+        inst.bytecode = code;
+        inst.argument = 0;
+
+        instructions[pos] = inst;
+
+    }
+
+    unsigned CompiledMethod::size(){
+        return instructions.size();
+    }
+
     void CompiledMethod::setLocals( int _locals ){
         locals = _locals;
     }
@@ -132,11 +162,23 @@ namespace jupiter{
                 LOG("SEND " << argument
                     <<
                     ": '"<< ConstantsTable::instance().get( argument )->toString() << "'" <<
-                    ", arity: " << (unsigned) currentInstruction.shortArgument );
+                    ", arity: " << (unsigned) currentInstruction.shortArgument -1 );
+                break;
+
+            case JUMP_IFTRUE:
+                LOG("JUMP_IFTRUE " << argument );
+                break;
+
+            case JUMP_IFFALSE:
+                LOG("JUMP_IFFALSE " << argument );
+                break;
+
+            case JUMP:
+                LOG("JUMP " << argument );
                 break;
 
             default:
-                break;
+                LOG("!! Bytecode not recognized !! " );
             }
 
         }

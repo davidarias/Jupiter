@@ -41,6 +41,8 @@ namespace jupiter{
         static NumberContext context;
         static mpd_context_t* getMpdContext();
 
+        static Number* random();
+
         Number();
         Number( int64_t value );
         Number( std::string& value);
@@ -51,6 +53,8 @@ namespace jupiter{
         Number* operator-(Number& other);
         Number* operator*(Number& other);
         Number* operator/(Number& other);
+
+        Number* sqrt();
 
         int64_t truncate();
 

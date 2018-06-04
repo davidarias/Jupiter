@@ -33,7 +33,7 @@ namespace jupiter{
 
                     if ( name != "." && name != ".." ){
 
-                        auto obj = MemoryManager::instance().permanent<Map>();
+                        auto obj = MemoryManager<Map>::instance().permanent();
 
                         root->putAtMut(name, obj);
                         deserialize( path + "/" + name, obj);

@@ -24,10 +24,15 @@ namespace jupiter{
     class GCObject{
     protected:
         bool marked = false;
+        bool tenured = false;
     public:
         virtual void mark();
         virtual void unmark();
         bool isMarked();
+
+        bool istenured();
+        void setTenured();
+
     };
 
     class Evaluator;
@@ -88,6 +93,7 @@ namespace jupiter{
 
     class MapTransient : public Map{
     public:
+        MapTransient();
         MapTransient(immer::map<std::string, Object* > slots);
         Object* at(const std::string& key);
         void putAt(const std::string& key, Object* value);
@@ -125,6 +131,7 @@ namespace jupiter{
 
     class ArrayTransient : public Array{
     public:
+        ArrayTransient();
         ArrayTransient(immer::flex_vector<Object*> values);
         Object* at(const std::string& key);
         Object* push( Object* value );
@@ -150,7 +157,7 @@ namespace jupiter{
         int cmp(Object& other);
         bool equal(Object& other);
     public:
-
+        Method();
         Method(std::string& name, std::string& signature, std::string& source,
                std::shared_ptr<CompiledMethod> compiledMethod);
 

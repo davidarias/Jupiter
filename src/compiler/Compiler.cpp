@@ -37,7 +37,7 @@ namespace jupiter{
 
             ast->accept( compiler );
 
-            return MemoryManager::instance().get<Method>( compiler.getCompiledMethod() );
+            return MemoryManager<Method>::instance().get( compiler.getCompiledMethod() );
 
         }catch (const char* s) {
             std::cout << "CompilerException: ";
@@ -76,7 +76,7 @@ namespace jupiter{
 
         ast->accept( compiler );
 
-        auto method = MemoryManager::instance().permanent<Method>( name, signature, source,
+        auto method = MemoryManager<Method>::instance().permanent( name, signature, source,
                                                                    compiler.getCompiledMethod() );
 
         return std::make_tuple(name, method);
@@ -301,11 +301,121 @@ namespace jupiter{
 
     }
 
+    bool messageIsIfExpresion(std::string& message ){
+        if (message == "ifFalse:" ||
+            message == "ifFalse:else:" ||
+            message == "ifFalse:ifTrue:" ||
+            message == "ifTrue:" ||
+            message == "ifTrue:else:" ||
+            message == "ifTrue:ifFalse:" ){
+
+            return true;
+        }
+
+        return false;
+    }
+
+    void Compiler::compileInlineBlock(std::shared_ptr<ASTNode> node){
+        auto closureBlock = std::dynamic_pointer_cast<ClosureBlockNode>( node );
+        if (! closureBlock ){
+            throw CompilerError("Error Compiling if inline. Argument(s) must be a closureBlock");
+        }
+        closureBlock->code->accept(*this);
+
+    }
+
+    void Compiler::compileInlineIf(MessageNode& node){
+        if ( node.arguments.size() > 2 || node.arguments.size() < 1){
+            throw CompilerError("Error Compiling if inline. Argument(s) must be 2 at most");
+        }
+
+        auto ifFalse = ConstantsTable::instance().string( "ifFalse:" );
+        auto ifFalseelse = ConstantsTable::instance().string( "ifFalse:else:" );
+        auto ifFalseifTrue = ConstantsTable::instance().string( "ifFalse:ifTrue:" );
+        auto ifTrue = ConstantsTable::instance().string( "ifTrue:" );
+        auto ifTrueelse = ConstantsTable::instance().string( "ifTrue:else:" );
+        auto ifTrueifFalse = ConstantsTable::instance().string( "ifTrue:ifFalse:" );
+
+        auto selector = ConstantsTable::instance().string( node.selector );
+
+        if ( selector == ifFalse ){
+            // save to add later the jump index
+            unsigned jumpInstrIndex = method->size();
+            method->addInstruction( JUMP_IFTRUE );
+
+            // add inline the block code
+            compileInlineBlock( node.arguments.at(0) );
+            unsigned jumpIndex = method->size();
+
+            // modify jump instruction to add correct index
+            method->modifyInstruction(jumpInstrIndex, JUMP_IFTRUE, jumpIndex  );
+
+        }else if( selector == ifFalseelse || selector == ifFalseifTrue ){
+            if (  node.arguments.size() < 2 )
+                 throw CompilerError("Error Compiling if inline. Argument(s) must be 2 for ifFalse:else: or ifFalse:ifTrue:");
+
+            // save to add later the jump index
+            unsigned jumpInstrIndex = method->size();
+            method->addInstruction( JUMP_IFTRUE );
+            // add inline the block code
+            compileInlineBlock( node.arguments.at(0) );
+            unsigned jumpIndex = method->size() + 1; // +1 because we are adding a JUMP
+            method->modifyInstruction(jumpInstrIndex, JUMP_IFTRUE, jumpIndex );
+
+            jumpInstrIndex = method->size();
+            method->addInstruction( JUMP );
+            compileInlineBlock( node.arguments.at(1) );
+            jumpIndex = method->size();
+            method->modifyInstruction(jumpInstrIndex, JUMP, jumpIndex );
+
+        }else if( selector == ifTrue  ){
+
+                        // save to add later the jump index
+            unsigned jumpInstrIndex = method->size();
+            method->addInstruction( JUMP_IFFALSE );
+
+            // add inline the block code
+            compileInlineBlock( node.arguments.at(0) );
+            unsigned jumpIndex = method->size();
+
+            // modify jump instruction to add correct index
+            method->modifyInstruction(jumpInstrIndex, JUMP_IFFALSE, jumpIndex  );
+
+
+        }else if( selector == ifTrueelse || selector == ifTrueifFalse ){
+            if (  node.arguments.size() < 2 )
+                 throw CompilerError("Error Compiling if inline. Argument(s) must be 2 for ifTrue:else: or ifTrue:ifFalse:");
+
+            // save to add later the jump index
+            unsigned jumpInstrIndex = method->size();
+            method->addInstruction( JUMP_IFFALSE );
+            // add inline the block code
+            compileInlineBlock( node.arguments.at(0) );
+            unsigned jumpIndex = method->size() + 1; // +1 because we are adding a JUMP
+            method->modifyInstruction(jumpInstrIndex, JUMP_IFFALSE, jumpIndex );
+
+            jumpInstrIndex = method->size();
+            method->addInstruction( JUMP );
+            compileInlineBlock( node.arguments.at(1) );
+            jumpIndex = method->size();
+            method->modifyInstruction(jumpInstrIndex, JUMP, jumpIndex );
+        }
+
+
+    }
+
     void Compiler::visit( MessageNode& node ){
 
         checkArgumentsLimit( node.arguments.size() );
 
         node.receiver->accept(*this);
+
+        #ifndef NO_INLINE_IF
+        if ( messageIsIfExpresion( node.selector)  ){
+            compileInlineIf( node );
+            return;
+        }
+        #endif
 
         for (auto node : node.arguments){
             node->accept(*this);
@@ -368,7 +478,7 @@ namespace jupiter{
         node.code->accept( closureCompiler );
         auto compiledMethod = closureCompiler.getCompiledMethod();
 
-        Method* methodObject = MemoryManager::instance().permanent<Method>( compiledMethod );
+        Method* methodObject = MemoryManager<Method>::instance().permanent( compiledMethod );
         auto index = method->addClosure( methodObject );
 
         method->addInstruction( PUSH_CLOSURE, index );

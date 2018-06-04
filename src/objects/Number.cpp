@@ -9,6 +9,9 @@
 #include <vm/MemoryManager.hpp>
 #include <vm/World.hpp>
 
+#include <random>
+
+
 namespace jupiter{
 
     NumberContext::NumberContext(){
@@ -23,6 +26,14 @@ namespace jupiter{
 
     mpd_context_t* Number::getMpdContext(){
         return &( context.mpd_context );
+    }
+
+    Number* Number::random(){
+        std::ostringstream numberString;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        numberString << std::generate_canonical<double, 10>(gen);
+        return MemoryManager<Number>::instance().get(numberString.str());
     }
 
     Number::Number()/* value( mpd_qnew() )*/ {}
@@ -57,7 +68,7 @@ namespace jupiter{
 
     Number* Number::operator+(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qadd( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -65,7 +76,7 @@ namespace jupiter{
 
     Number* Number::operator-(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qsub( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -73,15 +84,24 @@ namespace jupiter{
 
     Number* Number::operator*(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qmul( &result->value, &value, &other.value, getMpdContext(), &status );
+        addStatus(status);
         return result;
     }
 
     Number* Number::operator/(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager::instance().get<Number>();
+        Number* result = MemoryManager<Number>::instance().get();
         mpd_qdiv( &result->value, &value, &other.value, getMpdContext(), &status );
+        addStatus(status);
+        return result;
+    }
+
+    Number* Number::sqrt(){
+        uint32_t status = 0;
+        Number* result = MemoryManager<Number>::instance().get();
+        mpd_qsqrt( &result->value, &value, getMpdContext(), &status);
         addStatus(status);
         return result;
     }

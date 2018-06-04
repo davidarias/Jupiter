@@ -37,6 +37,8 @@ namespace jupiter{
         unsigned localsBaseIndex;
         unsigned returnIndex;
 
+        unsigned instructionCounter;
+
         std::string& getStringConstant( unsigned id);
         Object* getLocal( unsigned index );
         unsigned getLocalIndex( unsigned index );
@@ -52,6 +54,9 @@ namespace jupiter{
         void popNIntoArray( unsigned n );
         void dup();
         void send( uint16_t id, uint8_t receiverRelPos );
+        void jumpIfFalse( uint16_t id );
+        void jumpIfTrue( uint16_t id );
+        void jump( uint16_t id );
 
         void dispatch( Instruction instruction );
 
@@ -67,7 +72,7 @@ namespace jupiter{
     public:
         VM();
 
-        void gc();
+        void gc(bool full);
 
         void pop();
 
