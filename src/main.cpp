@@ -10,7 +10,7 @@
 #include <string>
 #include <iostream>
 
-#define VERSION "0.1.0-alpha"
+#define VERSION "0.2.0"
 
 using namespace jupiter;
 
