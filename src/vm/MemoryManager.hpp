@@ -220,6 +220,10 @@ namespace jupiter{
 
             #endif
 
+            for (auto obj : eden ){
+                delete obj;
+            }
+
             for (auto obj : from ){
                 delete obj;
             }
