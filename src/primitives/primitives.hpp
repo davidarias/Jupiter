@@ -14,7 +14,6 @@
 #include <objects/CompiledMethod.hpp>
 #include <primitives/PrimitiveArguments.hpp>
 
-#include <vm/World.hpp>
 
 namespace jupiter{
 
@@ -36,55 +35,11 @@ namespace jupiter{
             return i;
         }
 
-        void add(std::string name, PrimitiveMethod primitive);
+        void add(std::string name, unsigned arity, PrimitiveFunction primitiveFunction);
         Object* get(std::string& name);
 
 
     };
-
-    Object* print(PrimitiveArguments& arguments);
-    Object* endl(PrimitiveArguments& arguments);
-
-    Object* equals(PrimitiveArguments& arguments);
-    Object* greater(PrimitiveArguments& arguments);
-    Object* less(PrimitiveArguments& arguments);
-    Object* greaterOrEqual(PrimitiveArguments& arguments);
-    Object* lessOrEqual(PrimitiveArguments& arguments);
-    Object* isIdenticalTo(PrimitiveArguments& arguments);
-
-    Object* plus(PrimitiveArguments& arguments);
-    Object* minus(PrimitiveArguments& arguments);
-    Object* multiply(PrimitiveArguments& arguments);
-    Object* divide(PrimitiveArguments& arguments);
-    Object* sqrt(PrimitiveArguments& arguments);
-
-    Object* random(PrimitiveArguments& arguments);
-
-    Object* stringConcat(PrimitiveArguments& arguments);
-
-    Object* mapAt(PrimitiveArguments& arguments);
-    Object* mapAtPut(PrimitiveArguments& arguments);
-
-    Object* mapTransient(PrimitiveArguments& arguments);
-    Object* mapTransientPersist(PrimitiveArguments& arguments);
-    Object* mapTransientAtPut(PrimitiveArguments& arguments);
-
-    Object* arrayAt(PrimitiveArguments& arguments);
-    Object* arrayPush(PrimitiveArguments& arguments);
-    Object* arrayTake(PrimitiveArguments& arguments);
-    Object* arrayDrop(PrimitiveArguments& arguments);
-    Object* arraySize(PrimitiveArguments& arguments);
-    Object* arrayFormatString(PrimitiveArguments& arguments);
-
-    Object* arrayTransient(PrimitiveArguments& arguments);
-    Object* arrayTransientPersist(PrimitiveArguments& arguments);
-    Object* arrayTransientPush(PrimitiveArguments& arguments);
-
-    Object* methodEval(PrimitiveArguments& arguments);
-    Object* methodPrintByteCode(PrimitiveArguments& arguments);
-
-    Object* loadPath(PrimitiveArguments& arguments);
-
 
 }
 #endif
