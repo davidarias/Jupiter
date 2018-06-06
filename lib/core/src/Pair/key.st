@@ -1,2 +1,2 @@
 key
-    self pair at: 0
+    self pair at: 1

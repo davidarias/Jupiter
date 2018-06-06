@@ -1,6 +1,6 @@
 name: groupName tests: testArray
 
-    ( '- Test group: {0}' format: { groupName } ) print.
+    ( '- Test group: {1}' format: { groupName } ) print.
     os cout endl.
 
     errors := testArray reduce: [ :errors :case |
@@ -25,7 +25,7 @@ name: groupName tests: testArray
 
     os cout endl.
 
-    ( '  {0}/{1} Test passed' format: { passed, total } ) print.
+    ( '  {1}/{2} Test passed' format: { passed, total } ) print.
 
     os cout endl.
     errors

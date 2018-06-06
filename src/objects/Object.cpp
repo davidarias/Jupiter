@@ -216,7 +216,7 @@ namespace jupiter{
     }
 
     Object* Array::at( int index ){
-        return values.at( index );
+        return values.at( index - 1 ); // arrays starts at index 1
     }
 
     bool Array::equal(Object& other){

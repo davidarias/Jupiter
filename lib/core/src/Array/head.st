@@ -1,2 +1,2 @@
 head
-    self at: 0
+    self at: 1

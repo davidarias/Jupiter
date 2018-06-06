@@ -1,2 +1,2 @@
 toString
-    'Pair {0} -> {1}' format: { self key, self value }
+    'Pair {1} -> {2}' format: { self key, self value }

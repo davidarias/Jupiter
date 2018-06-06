@@ -4,11 +4,11 @@ strings
             'string1' + 'string2' == 'string1string2'
         ],
         test Case description: 'Format String 1' assert: [
-            ( '{0}, {1}!' format: {'Hello', 'world'} ) == 'Hello, world!'
+            ( '{1}, {2}!' format: {'Hello', 'world'} ) == 'Hello, world!'
         ],
 
         test Case description: 'Format String 2' assert: [
-            ( 'fruits: {0}, {1}, {2}' format: {'banana','orange', 'apple'} ) ==
+            ( 'fruits: {1}, {2}, {3}' format: {'banana','orange', 'apple'} ) ==
                     'fruits: banana, orange, apple'
         ]
     }

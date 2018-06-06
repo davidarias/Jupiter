@@ -5,9 +5,9 @@ arrays
             text := 'text'.
             array := { 1 + 3, text, 'other text' }.
 
-            ( (array at: 0) == 4 ) &
-            ( (array at: 1) == 'text' ) &
-            ( (array at: 2) == 'other text' )
+            ( (array at: 1) == 4 ) &
+            ( (array at: 2) == 'text' ) &
+            ( (array at: 3) == 'other text' )
         ],
 
         test Case description: 'Array map' assert: [

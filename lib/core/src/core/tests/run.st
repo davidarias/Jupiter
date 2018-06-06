@@ -11,4 +11,4 @@ run
     }.
 
     totalErrors := tests reduce: [ :acc :n | acc + n ].
-    ('Total tests failing: {0}' format: { totalErrors }) print.
+    ('Total tests failing: {1}' format: { totalErrors }) print.

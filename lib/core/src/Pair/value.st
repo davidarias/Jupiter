@@ -1,2 +1,2 @@
 value
-    self pair at: 1
+    self pair at: 2

@@ -43,7 +43,7 @@ std::string format(const std::string& formatString, Args& args){
             // TODO think how detect when key is integer and when key is string
             auto index = std::stoi( argNameBuffer );
             // TODO think how to do this generic (avoid toString)
-            out << args.at( index )->toString();
+            out << args.at( index -1 )->toString();
         }else{
             out << c;
         }
