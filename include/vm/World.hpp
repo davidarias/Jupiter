@@ -18,10 +18,11 @@ namespace jupiter{
         // friend Object* methodEval(PrimitiveArguments& arguments);
     private:
         World();
+        ~World();
         World(const World& ) = delete;
         void operator=(const World& ) = delete;
 
-
+        std::unordered_map<std::string, void*> nativeLibs;
 
     public:
         Map globals;
@@ -36,7 +37,10 @@ namespace jupiter{
             return i;
         }
 
+        Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
+
         void loadPackage(const std::string& path);
+        void loadNative(const std::string& path);
 
         void eval(std::string);
         Object* eval(Object* o);

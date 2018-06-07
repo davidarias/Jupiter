@@ -12,6 +12,12 @@
 
 #include <vm/MemoryManager.hpp>
 
+#include <misc/Exceptions.hpp>
+
+#include <utils/files.hpp>
+
+#include <dlfcn.h>
+
 #ifdef BENCHMARK
 #include <chrono>
 #endif
@@ -33,6 +39,15 @@ namespace jupiter{
 
     }
 
+    World::~World(){
+
+        // close open libraries
+        for(auto& pair : nativeLibs ){
+            dlclose(pair.second);
+        }
+
+    }
+
     Object* World::getTrue(){
         static auto trueObj = globals.at("true");
         return trueObj;
@@ -49,10 +64,50 @@ namespace jupiter{
     }
 
     void World::loadPackage(const std::string& path){
-        std::cout << "Loading package" << path << std::endl << std::endl;
 
         ObjectSerializer serializer;
         serializer.deserialize(path, &globals);
+    }
+
+    void World::loadNative(const std::string& path){
+
+        void* handle = dlopen (path.c_str(), RTLD_LAZY);
+
+        if (!handle) {
+
+            std::ostringstream message;
+            message << "Error loading native library: " << path;
+            message << " | dlopen error: " << dlerror();
+
+            throw RuntimeException(message.str());
+
+        }else{
+
+            auto fileName = getFileName(path);
+            LOG("native lib filename " << fileName );
+            nativeLibs[fileName] = handle;
+
+        }
+
+    }
+
+    Object* World::getNativeExtensionMethod(const std::string& lib, const std::string& name){
+        auto librayHandle = nativeLibs.at(lib);
+
+        // FIXME clear memory
+        auto method =
+            new PrimitiveMethod (reinterpret_cast<PrimitiveFunction>( dlsym( librayHandle, name.c_str() ) ), 0 );
+
+        char *error = NULL;
+        if ( (error = dlerror() ) != NULL)  {
+            std::ostringstream message;
+            message << "Error loading native method in library: " << lib;
+            message << " | dlerror: " << error;
+
+            throw RuntimeException(message.str());
+        }
+
+        return method;
     }
 
 

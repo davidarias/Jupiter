@@ -267,6 +267,14 @@ namespace jupiter{
         return World::instance().getNil();
     }
 
+    Object* loadNative(PrimitiveArguments& arguments){
+        auto path = dynamic_cast<String&>( *( arguments.get(0) ) );
+
+        World::instance().loadNative( path.toString() );
+
+        return World::instance().getNil();
+    }
+
     Primitives::Primitives(){
         primitives.reserve(22);
 
@@ -321,6 +329,7 @@ namespace jupiter{
 
 
         add("loadPath", 1, loadPath );
+        add("loadNative", 1, loadNative );
     }
 
     Primitives::~Primitives(){}
