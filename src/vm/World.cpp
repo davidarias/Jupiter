@@ -95,8 +95,9 @@ namespace jupiter{
         auto librayHandle = nativeLibs.at(lib);
 
         // FIXME clear memory
+        auto sym = dlsym( librayHandle, name.c_str() );
         auto method =
-            new PrimitiveMethod (reinterpret_cast<PrimitiveFunction>( dlsym( librayHandle, name.c_str() ) ), 0 );
+            new NativeMethod (reinterpret_cast<NativeFunction>( sym ), 0 );
 
         char *error = NULL;
         if ( (error = dlerror() ) != NULL)  {

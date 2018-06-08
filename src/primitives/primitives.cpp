@@ -11,22 +11,22 @@
 
 namespace jupiter{
 
-    Object* print(PrimitiveArguments& arguments){
+    Object* print(Object* self, Object** args){
 
-        std::cout << arguments.get(0)->toString();
-        return arguments.getReceiver();
+        std::cout << args[0]->toString();
+        return self;
     }
 
-    Object* endl(PrimitiveArguments& arguments){
+    Object* endl(Object* self, Object** args){
 
         std::cout << std::endl;
-        return arguments.getReceiver();
+        return self;
     }
 
 
-    Object* equals(PrimitiveArguments& arguments){
+    Object* equals(Object* self, Object** args){
 
-        if ( *( arguments.getReceiver() ) == *( arguments.get(0) ) ){
+        if ( *self == *( args[0] ) ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
@@ -34,9 +34,9 @@ namespace jupiter{
     }
 
 
-    Object* greater(PrimitiveArguments& arguments){
+    Object* greater(Object* self, Object** args){
 
-        if ( *( arguments.getReceiver() ) > *( arguments.get(0) ) ){
+        if ( *self > *( args[0] ) ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
@@ -44,9 +44,9 @@ namespace jupiter{
     }
 
 
-    Object* less(PrimitiveArguments& arguments){
+    Object* less(Object* self, Object** args){
 
-        if ( *( arguments.getReceiver() ) < *( arguments.get(0) ) ){
+        if ( *self < *( args[0] ) ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
@@ -54,9 +54,9 @@ namespace jupiter{
     }
 
 
-    Object* greaterOrEqual(PrimitiveArguments& arguments){
+    Object* greaterOrEqual(Object* self, Object** args){
 
-        if ( *( arguments.getReceiver() ) >= *( arguments.get(0) ) ){
+        if ( *self >= *( args[0] ) ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
@@ -64,9 +64,9 @@ namespace jupiter{
     }
 
 
-    Object* lessOrEqual(PrimitiveArguments& arguments){
+    Object* lessOrEqual(Object* self, Object** args){
 
-        if ( *( arguments.getReceiver() ) <= *( arguments.get(0) ) ){
+        if ( *self <= *( args[0] ) ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
@@ -74,201 +74,204 @@ namespace jupiter{
     }
 
 
-    Object* isIdenticalTo(PrimitiveArguments& arguments){
+    Object* isIdenticalTo(Object* self, Object** args){
 
-        if ( arguments.getReceiver() == arguments.get(0) ){
+        if ( self == args[0] ){
             return World::instance().getTrue();
         }else{
             return World::instance().getFalse();
         }
     }
 
-    Object* plus(PrimitiveArguments& arguments){
+    Object* plus(Object* self, Object** args){
 
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
+        Number& _self = dynamic_cast<Number&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
-        return  self + arg0;
-
-    }
-
-    Object* minus(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self - arg0;
+        return  _self + arg0;
 
     }
 
-    Object* multiply(PrimitiveArguments& arguments){
+    Object* minus(Object* self, Object** args){
 
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
+        Number& _self = dynamic_cast<Number&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
-        return  self * arg0;
-
-    }
-
-    Object* divide(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self / arg0;
+        return  _self - arg0;
 
     }
 
+    Object* multiply(Object* self, Object** args){
 
-    Object* sqrt(PrimitiveArguments& arguments){
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
+        Number& _self = dynamic_cast<Number&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
-        return self.sqrt();
+        return  _self * arg0;
+
+    }
+
+    Object* divide(Object* self, Object** args){
+
+        Number& _self = dynamic_cast<Number&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
+
+        return  _self / arg0;
+
     }
 
 
-    Object* random(PrimitiveArguments& arguments){
+    Object* sqrt(Object* self, Object** args){
+        Number& _self = dynamic_cast<Number&>( *self );
+
+        return _self.sqrt();
+    }
+
+
+    Object* random(Object* self, Object** args){
         return Number::random();
     }
 
-    Object* stringConcat(PrimitiveArguments& arguments){
-        String& self = dynamic_cast<String&>( *( arguments.getReceiver() ) );
-        String& arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
+    Object* stringConcat(Object* self, Object** args){
 
-        return self + arg0;
+        String& _self = dynamic_cast<String&>( *self );
+        String& arg0 = dynamic_cast<String&>( *( args[0] ) );
 
-    }
-
-
-    Object* arrayAt(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.at( arg0.truncate() );
-    }
-
-    Object* arrayPush(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.push( arguments.get(0) );
-    }
-
-    Object* arrayTake(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.take( arg0.truncate() );
-    }
-
-    Object* arrayDrop(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.drop( arg0.truncate() );
-    }
-
-    Object* arraySize(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.size();
-    }
-
-    Object* arrayTransient(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.transient();
-    }
-
-    Object* arrayTransientPersist(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<ArrayTransient*>( arguments.getReceiver() );
-
-        if (self == nullptr ) throw std::bad_cast();
-
-        return self->persist();;
+        return _self + arg0;
 
     }
 
-    Object* arrayTransientPush(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<ArrayTransient*>( arguments.getReceiver() );
 
-        if (self == nullptr ) throw std::bad_cast();
+    Object* arrayAt(Object* self, Object** args){
+        Array& _self = dynamic_cast<Array&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
-        return self->push( arguments.get(0) );
+        return _self.at( arg0.truncate() );
+    }
+
+    Object* arrayPush(Object* self, Object** args){
+
+        Array& _self = dynamic_cast<Array&>( *self );
+
+        return _self.push( args[0] );
+    }
+
+    Object* arrayTake(Object* self, Object** args){
+
+        Array& _self = dynamic_cast<Array&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
+
+        return _self.take( arg0.truncate() );
+    }
+
+    Object* arrayDrop(Object* self, Object** args){
+        Array& _self = dynamic_cast<Array&>( *self );
+        Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
+
+        return _self.drop( arg0.truncate() );
+    }
+
+    Object* arraySize(Object* self, Object** args){
+        Array& _self = dynamic_cast<Array&>( *self );
+
+        return _self.size();
+    }
+
+    Object* arrayTransient(Object* self, Object** args){
+        auto _self = dynamic_cast<Array&>( *self );
+
+        return _self.transient();
+    }
+
+    Object* arrayTransientPersist(Object* self, Object** args){
+        auto _self = dynamic_cast<ArrayTransient*>( self );
+
+        if (_self == nullptr ) throw std::bad_cast();
+
+        return _self->persist();;
+
+    }
+
+    Object* arrayTransientPush(Object* self, Object** args){
+        auto _self = dynamic_cast<ArrayTransient*>( self );
+
+        if (_self == nullptr ) throw std::bad_cast();
+
+        return _self->push( args[0] );
     }
 
 
-    Object* mapAt(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
-        auto arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
+    Object* mapAt(Object* self, Object** args){
+        auto _self = dynamic_cast<Map&>( *self );
+        auto arg0 = dynamic_cast<String&>( *( args[0] ) );
 
-        return self.at( arg0.getValue() );
+        return _self.at( arg0.getValue() );
     }
 
-    Object* mapAtPut(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
-        auto index = dynamic_cast<String&>( *( arguments.get( 0 ) ) );
+    Object* mapAtPut(Object* self, Object** args){
+        auto _self = dynamic_cast<Map&>( *self );
+        auto index = dynamic_cast<String&>( *( args[0] ) );
 
-        return self.putAt( index.getValue(), arguments.get( 1 ) );
+        return _self.putAt( index.getValue(), args[1] );
     }
 
-    Object* mapTransient(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
+    Object* mapTransient(Object* self, Object** args){
+        auto _self = dynamic_cast<Map&>( *self );
 
-        auto t = self.transient();
+        auto t = _self.transient();
         return t;
     }
 
-    Object* mapTransientPersist(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<MapTransient*>( arguments.getReceiver() );
+    Object* mapTransientPersist(Object* self, Object** args){
+        auto _self = dynamic_cast<MapTransient*>( self );
 
         if (self == nullptr ) throw std::bad_cast();
 
-        return self->persist();;
+        return _self->persist();;
     }
 
-    Object* mapTransientAtPut(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<MapTransient*>( arguments.getReceiver() );
-        auto index = dynamic_cast<String&>( *( arguments.get( 0 ) ) );
+    Object* mapTransientAtPut(Object* self, Object** args){
+        auto _self = dynamic_cast<MapTransient*>( self );
+        auto index = dynamic_cast<String&>( *( args[0] ) );
 
         if (self == nullptr ) throw std::bad_cast();
 
-        self->putAt( index.getValue(), arguments.get( 1 ) );
+        _self->putAt( index.getValue(), args[1] );
 
-        return arguments.getReceiver();
+        return self;
     }
 
-    Object* arrayFormatString(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        auto arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
+    Object* arrayFormatString(Object* self, Object** args){
+        auto _self = dynamic_cast<Array&>( *self );
+        auto arg0 = dynamic_cast<String&>( *( args[0] ) );
 
-        return self.formatString( arg0.getValue() );
+        return _self.formatString( arg0.getValue() );
 
     }
 
-    Object* methodEval(PrimitiveArguments& arguments){
+    Object* methodEval(Object* self, Object** args){
         World& world = World::instance();
-        Method& method = dynamic_cast<Method&>( *( arguments.getReceiver() ));
+        Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
         return world.vm.eval( method, nullptr );
     }
 
-    Object* methodPrintByteCode(PrimitiveArguments& arguments){
-        Method& method = dynamic_cast<Method&>( *( arguments.getReceiver() ));
+    Object* methodPrintByteCode(Object* self, Object** args){
+        Method& method = dynamic_cast<Method&>( *self );
 
         method.getCompiledMethod()->printBytecode();
 
         return &method;
     }
 
-    Object* loadPath(PrimitiveArguments& arguments){
-        auto path = dynamic_cast<String&>( *( arguments.get(0) ) );
+    Object* loadPath(Object* self, Object** args){
+        auto path = dynamic_cast<String&>( *( args[0] ) );
         World::instance().loadPackage( path.toString() );
 
         return World::instance().getNil();
     }
 
-    Object* loadNative(PrimitiveArguments& arguments){
-        auto path = dynamic_cast<String&>( *( arguments.get(0) ) );
+    Object* loadNative(Object* self, Object** args){
+        auto path = dynamic_cast<String&>( *( args[0] ) );
 
         World::instance().loadNative( path.toString() );
 
@@ -334,8 +337,8 @@ namespace jupiter{
 
     Primitives::~Primitives(){}
 
-    void Primitives::add(std::string name, unsigned arity, PrimitiveFunction primitiveFunction){
-        PrimitiveMethod primitive(primitiveFunction, arity);
+    void Primitives::add(std::string name, unsigned arity, NativeFunction primitiveFunction){
+        NativeMethod primitive(primitiveFunction, arity);
         unsigned index = primitives.size();
         primitives.push_back(primitive);
         primitivesMap[name] = index;

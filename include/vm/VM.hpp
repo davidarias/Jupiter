@@ -8,7 +8,6 @@
 #define __VM_H
 
 #include <misc/common.hpp>
-#include <primitives/PrimitiveArguments.hpp>
 #include <vm/Stack.hpp>
 
 namespace jupiter{
@@ -20,7 +19,7 @@ namespace jupiter{
     class Array;
     class Method;
 
-    class PrimitiveMethod;
+    class NativeMethod;
 
     class CompiledMethod;
     class UpValue;
@@ -93,7 +92,7 @@ namespace jupiter{
         void operator()(String&);
         void operator()(Array&);
         void operator()(Method&);
-        void operator()(PrimitiveMethod&);
+        void operator()(NativeMethod&);
 
     };
 }

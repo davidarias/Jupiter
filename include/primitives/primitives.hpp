@@ -12,8 +12,6 @@
 #include <objects/Objects.hpp>
 
 #include <objects/CompiledMethod.hpp>
-#include <primitives/PrimitiveArguments.hpp>
-
 
 namespace jupiter{
 
@@ -25,7 +23,7 @@ namespace jupiter{
         Primitives(const Primitives& ) = delete;
         void operator=(const Primitives& ) = delete;
 
-        std::vector<PrimitiveMethod> primitives;
+        std::vector<NativeMethod> primitives;
         std::unordered_map<std::string, unsigned> primitivesMap;
 
     public:
@@ -35,7 +33,7 @@ namespace jupiter{
             return i;
         }
 
-        void add(std::string name, unsigned arity, PrimitiveFunction primitiveFunction);
+        void add(std::string name, unsigned arity, NativeFunction primitiveFunction);
         Object* get(std::string& name);
 
 

@@ -385,19 +385,16 @@ namespace jupiter{
         newFrame.execute();
     }
 
-    void Evaluator::operator()(PrimitiveMethod& method){
+    void Evaluator::operator()(NativeMethod& method){
 
         auto stackSize = stack.size();
 
         unsigned localsBaseIndex = stackSize - method.arity;
         unsigned returnIndex = localsBaseIndex - 1; // where the receiver was
 
-        PrimitiveArguments arguments(stack,
-                                     method.arity,
-                                     localsBaseIndex,
-                                     receiver);
+        Object** args = stack.begin() + localsBaseIndex;
 
-        stack.set( returnIndex, method.fn( arguments ) );
+            stack.set( returnIndex, method.fn( receiver, args ) );
         stack.resize( localsBaseIndex );
     }
 
