@@ -7,6 +7,7 @@
 #include <vm/Stack.hpp>
 
 #include <objects/Object.hpp>
+#include <vm/World.hpp>
 
 namespace jupiter{
 
@@ -57,16 +58,25 @@ namespace jupiter{
     }
 
     void Stack::resize(unsigned newSize){
+
+        auto currentSize = size();
         if ( newSize >= _capacity){
-            auto oldSize = size();
             _capacity *= 2;
             auto newMem = std::realloc(first, sizeof(Object*) * _capacity );
             if ( newMem == nullptr) throw std::bad_alloc();
             first = reinterpret_cast<Object**>( newMem );
-            last = first + oldSize -1;
+            last = first + currentSize -1;
             return;
         }
-        last = first + newSize;
+        // if the stack grows we need to put an object that implements the mark method
+        // so the GC dont crash on marking phase
+        if ( newSize > currentSize ){
+            for(unsigned i = currentSize; i<= newSize; i++ ){
+                push(&dummy);
+            }
+        }else{
+            last = first + newSize;
+        }
     }
 
     void Stack::clear(){

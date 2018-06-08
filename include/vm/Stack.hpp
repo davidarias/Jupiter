@@ -8,6 +8,7 @@
 #define __STACK_H
 
 #include <misc/common.hpp>
+#include <objects/Objects.hpp>
 
 namespace jupiter{
 
@@ -18,6 +19,8 @@ namespace jupiter{
         Object** first;
         Object** last;
         size_t _capacity;
+
+        Map dummy; // to insert at empty spaces
 
     public:
         Stack();

@@ -20,7 +20,7 @@
 namespace jupiter{
 
     VM::VM(){
-        stack.push(nullptr); // to avoid stack underflow and crash
+        stack.push(MemoryManager<Map>::instance().get()); // to avoid stack underflow and crash
     }
 
     ExecutionFrame::ExecutionFrame(Stack& stack, Method& method, Object* self)
@@ -183,7 +183,7 @@ namespace jupiter{
 
             // replace old receiver with new
             stack.set( returnIndex, stack.pop() );
-            stack.resize( getLocalIndex(localsBaseIndex + compiledMethod->locals ) );
+            stack.resize( localsBaseIndex + compiledMethod->locals );
 
             self = receiver;
             // start again the method
@@ -312,17 +312,12 @@ namespace jupiter{
 
         if ( full ){
             for( auto it = stack.begin(); it != stack.end(); ++it){
-                if (*it != nullptr){
-                    (*it)->mark();
-                }
+                (*it)->mark();
             }
         }else{
             for( auto it = stack.begin(); it != stack.end(); ++it){
-                if (*it != nullptr){
-                    if ( ! (*it)->istenured() ){
-                        (*it)->mark();
-                    }
-
+                if ( ! (*it)->istenured() ){
+                    (*it)->mark();
                 }
             }
         }
