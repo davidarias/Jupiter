@@ -1,2 +1,2 @@
 loadPath: path
-    <Primitive: loadPath>
+    <primitive: loadPath>

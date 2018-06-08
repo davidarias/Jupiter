@@ -1,2 +1,2 @@
 push: value
-    <Primitive: arrayPush>
+    <primitive: arrayPush>

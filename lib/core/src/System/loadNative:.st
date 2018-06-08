@@ -1,2 +1,2 @@
 loadNative:path
-    <Primitive: loadNative>
+    <primitive: loadNative>

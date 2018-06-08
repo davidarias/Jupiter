@@ -1,2 +1,2 @@
 value: arg
-    <Primitive: eval1>
+    <primitive: eval1>

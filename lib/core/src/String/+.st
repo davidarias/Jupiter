@@ -1,2 +1,2 @@
 + aString
-    <Primitive: stringConcat>
+    <primitive: stringConcat>

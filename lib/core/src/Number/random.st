@@ -1,2 +1,2 @@
 random
-    <Primitive: random>
+    <primitive: random>

@@ -526,10 +526,13 @@ namespace jupiter{
             argument->accept(*this);
         }
 
-        if ( node.selector == "Primitive:"){
+        if ( node.selector == "primitive:"){
             primitive = Primitives::instance().get( arguments[0] );
         }else if( node.selector == "nativeExtension:function:" ){
             primitive = World::instance().getNativeExtensionMethod(arguments[0], arguments[1]);
+        }else{
+            std::string message = "Pragma selector not found: " + node.selector;
+            throw CompilerError(message);
         }
 
     }

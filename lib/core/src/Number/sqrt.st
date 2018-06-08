@@ -1,2 +1,2 @@
 sqrt
-	<Primitive: sqrt>
+	<primitive: sqrt>

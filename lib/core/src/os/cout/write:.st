@@ -1,2 +1,2 @@
 write: aString
-    <Primitive: print>
+    <primitive: print>
