@@ -111,7 +111,7 @@ namespace jupiter{
     public:
         Array();
         Array(immer::flex_vector<Object*> values);
-        Array(std::vector<Object*>::iterator start, std::vector<Object*>::iterator end);
+        Array(Object** start, Object** end);
 
         void mark();
 

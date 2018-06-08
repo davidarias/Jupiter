@@ -15,9 +15,13 @@ namespace jupiter{
 
     class Stack{
     private:
-        std::vector<Object*> stack;
+        Object** first;
+        Object** last;
+        size_t _capacity;
+
     public:
         Stack();
+        ~Stack();
 
         void push(Object* obj);
         Object* pop();
@@ -33,8 +37,8 @@ namespace jupiter{
         Object* get(unsigned index);
         void set(unsigned index, Object* value);
 
-        std::vector<Object*>::iterator begin();
-        std::vector<Object*>::iterator end();
+        Object** begin();
+        Object** end();
 
         void printStack();
 

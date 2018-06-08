@@ -179,7 +179,7 @@ namespace jupiter{
     Array::Array(){}
     Array::Array( immer::flex_vector<Object*> values ) : values( values ){}
 
-    Array::Array(std::vector<Object*>::iterator start, std::vector<Object*>::iterator end)
+    Array::Array(Object** start, Object** end)
         : values( start, end ) {}
 
     void Array::mark(){
