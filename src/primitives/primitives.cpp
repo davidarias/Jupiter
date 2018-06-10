@@ -6,67 +6,74 @@
 
 #include <primitives/primitives.hpp>
 
+#include <objects/Objects.hpp>
+#include <vm/World.hpp>
+
+#include <primitives/functions.hpp>
+
 namespace jupiter{
 
     Primitives::Primitives(){
         primitives.reserve(22);
 
         // common
-        add("print",            PrimitiveMethod(print, 1) );
-        add("endl",             PrimitiveMethod(endl,0) );
-        add("isIdenticalTo",    PrimitiveMethod(isIdenticalTo, 1) );
-        add("equals",           PrimitiveMethod(equals, 1) );
-        add("greater",          PrimitiveMethod(greater, 1) );
-        add("greaterOrEqual",   PrimitiveMethod(greaterOrEqual, 1) );
-        add("less",             PrimitiveMethod(less, 1) );
-        add("lessOrEqual",      PrimitiveMethod(lessOrEqual, 1) );
+        add("print", 1, print);
+        add("endl", 0, endl );
+
+        add("isIdenticalTo", 1, isIdenticalTo);
+        add("equals",          1, equals ) ;
+        add("greater",         1, greater ) ;
+        add("greaterOrEqual",  1, greaterOrEqual ) ;
+        add("less",            1, less ) ;
+        add("lessOrEqual",     1, lessOrEqual ) ;
 
         // numbers
+        add("plus",      1, plus ) ;
+        add("minus",     1, minus ) ;
+        add("multiply",  1, multiply ) ;
+        add("divide",    1, divide ) ;
+        add("sqrt",      0, sqrt ) ;
 
-        add("plus",       PrimitiveMethod(plus, 1) );
-        add("minus",      PrimitiveMethod(minus, 1) );
-        add("multiply",   PrimitiveMethod(multiply, 1) );
-        add("divide",     PrimitiveMethod(divide, 1) );
-        add("sqrt",       PrimitiveMethod(sqrt, 0) );
-
-        add("random",      PrimitiveMethod(random, 0) );
+        add("random",     0, random ) ;
 
         // strings
-        add("stringConcat", PrimitiveMethod(stringConcat, 1) );
+        add("stringConcat", 1, stringConcat ) ;
 
         // arrays
-        add("arrayAt",             PrimitiveMethod(arrayAt, 1) );
-        add("arrayPush",           PrimitiveMethod(arrayPush, 1) );
-        add("arrayTake",           PrimitiveMethod(arrayTake, 1) );
-        add("arrayDrop",           PrimitiveMethod(arrayDrop, 1) );
-        add("arraySize",           PrimitiveMethod(arraySize, 0) );
-        add("arrayFormatString",   PrimitiveMethod(arrayFormatString, 1) );
+        add("arrayAt",            1, arrayAt ) ;
+        add("arrayPush",          1, arrayPush ) ;
+        add("arrayTake",          1, arrayTake ) ;
+        add("arrayDrop",          1, arrayDrop ) ;
+        add("arraySize",          0, arraySize ) ;
+        add("arrayFormatString",  1, arrayFormatString ) ;
 
-        add("arrayTransient",        PrimitiveMethod(arrayTransient, 0) );
-        add("arrayTransientPersist", PrimitiveMethod(arrayTransientPersist, 0) );
-        add("arrayTransientPush",    PrimitiveMethod(arrayTransientPush, 1) );
+        add("arrayTransient",        0, arrayTransient ) ;
+        add("arrayTransientPersist", 0, arrayTransientPersist ) ;
+        add("arrayTransientPush",    1, arrayTransientPush ) ;
 
         // maps
-        add("mapAt",               PrimitiveMethod(mapAt, 1) );
-        add("mapAtPut",            PrimitiveMethod(mapAtPut, 2) );
-        add("mapTransient",        PrimitiveMethod(mapTransient, 0) );
-        add("mapTransientPersist", PrimitiveMethod(mapTransientPersist, 0) );
-        add("mapTransientAtPut",   PrimitiveMethod(mapTransientAtPut, 2) );
+        add("mapAt",               1, mapAt ) ;
+        add("mapAtPut",            2, mapAtPut ) ;
+        add("mapTransient",        0, mapTransient );
+        add("mapTransientPersist", 0, mapTransientPersist ) ;
+        add("mapTransientAtPut",   2, mapTransientAtPut ) ;
 
         // methods
-        add("eval0",  PrimitiveMethod(methodEval, 0) );
-        add("eval1",  PrimitiveMethod(methodEval, 1) );
-        add("eval2",  PrimitiveMethod(methodEval, 2) );
-        add("eval3",  PrimitiveMethod(methodEval, 3) );
-        add("printBytecode",  PrimitiveMethod(methodPrintByteCode, 0) );
+        add("eval0",  0, methodEval );
+        add("eval1",  1, methodEval );
+        add("eval2",  2, methodEval );
+        add("eval3",  3, methodEval );
+        add("printBytecode", 0, methodPrintByteCode );
 
 
-        add("loadPath",  PrimitiveMethod(loadPath, 1) );
+        add("loadPath", 1, loadPath );
+        add("loadNative", 1, loadNative );
     }
 
     Primitives::~Primitives(){}
 
-    void Primitives::add(std::string name, PrimitiveMethod primitive){
+    void Primitives::add(std::string name, unsigned arity, NativeFunction primitiveFunction){
+        NativeMethod primitive(primitiveFunction, arity);
         unsigned index = primitives.size();
         primitives.push_back(primitive);
         primitivesMap[name] = index;
@@ -81,260 +88,5 @@ namespace jupiter{
 
     }
 
-    Object* print(PrimitiveArguments& arguments){
-
-        std::cout << arguments.get(0)->toString();
-        return arguments.getReceiver();
-    }
-
-    Object* endl(PrimitiveArguments& arguments){
-
-        std::cout << std::endl;
-        return arguments.getReceiver();
-    }
-
-
-    Object* equals(PrimitiveArguments& arguments){
-
-        if ( *( arguments.getReceiver() ) == *( arguments.get(0) ) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-
-    Object* greater(PrimitiveArguments& arguments){
-
-        if ( *( arguments.getReceiver() ) > *( arguments.get(0) ) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-
-    Object* less(PrimitiveArguments& arguments){
-
-        if ( *( arguments.getReceiver() ) < *( arguments.get(0) ) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-
-    Object* greaterOrEqual(PrimitiveArguments& arguments){
-
-        if ( *( arguments.getReceiver() ) >= *( arguments.get(0) ) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-
-    Object* lessOrEqual(PrimitiveArguments& arguments){
-
-        if ( *( arguments.getReceiver() ) <= *( arguments.get(0) ) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-
-    Object* isIdenticalTo(PrimitiveArguments& arguments){
-
-        if ( arguments.getReceiver() == arguments.get(0) ){
-            return World::instance().getTrue();
-        }else{
-            return World::instance().getFalse();
-        }
-    }
-
-    Object* plus(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self + arg0;
-
-    }
-
-    Object* minus(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self - arg0;
-
-    }
-
-    Object* multiply(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self * arg0;
-
-    }
-
-    Object* divide(PrimitiveArguments& arguments){
-
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return  self / arg0;
-
-    }
-
-
-    Object* sqrt(PrimitiveArguments& arguments){
-        Number& self = dynamic_cast<Number&>( *( arguments.getReceiver() ) );
-
-        return self.sqrt();
-    }
-
-
-    Object* random(PrimitiveArguments& arguments){
-        return Number::random();
-    }
-
-    Object* stringConcat(PrimitiveArguments& arguments){
-        String& self = dynamic_cast<String&>( *( arguments.getReceiver() ) );
-        String& arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
-
-        return self + arg0;
-
-    }
-
-
-    Object* arrayAt(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.at( arg0.truncate() );
-    }
-
-    Object* arrayPush(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.push( arguments.get(0) );
-    }
-
-    Object* arrayTake(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.take( arg0.truncate() );
-    }
-
-    Object* arrayDrop(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        Number& arg0 = dynamic_cast<Number&>( *( arguments.get(0) ) );
-
-        return self.drop( arg0.truncate() );
-    }
-
-    Object* arraySize(PrimitiveArguments& arguments){
-        Array& self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.size();
-    }
-
-    Object* arrayTransient(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-
-        return self.transient();
-    }
-
-    Object* arrayTransientPersist(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<ArrayTransient*>( arguments.getReceiver() );
-
-        if (self == nullptr ) throw std::bad_cast();
-
-        return self->persist();;
-
-    }
-
-    Object* arrayTransientPush(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<ArrayTransient*>( arguments.getReceiver() );
-
-        if (self == nullptr ) throw std::bad_cast();
-
-        return self->push( arguments.get(0) );
-    }
-
-
-    Object* mapAt(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
-        auto arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
-
-        return self.at( arg0.getValue() );
-    }
-
-    Object* mapAtPut(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
-        auto index = dynamic_cast<String&>( *( arguments.get( 0 ) ) );
-
-        return self.putAt( index.getValue(), arguments.get( 1 ) );
-    }
-
-    Object* mapTransient(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Map&>( *( arguments.getReceiver() ) );
-
-        auto t = self.transient();
-        return t;
-    }
-
-    Object* mapTransientPersist(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<MapTransient*>( arguments.getReceiver() );
-
-        if (self == nullptr ) throw std::bad_cast();
-
-        return self->persist();;
-    }
-
-    Object* mapTransientAtPut(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<MapTransient*>( arguments.getReceiver() );
-        auto index = dynamic_cast<String&>( *( arguments.get( 0 ) ) );
-
-        if (self == nullptr ) throw std::bad_cast();
-
-        self->putAt( index.getValue(), arguments.get( 1 ) );
-
-        return arguments.getReceiver();
-    }
-
-    Object* arrayFormatString(PrimitiveArguments& arguments){
-        auto self = dynamic_cast<Array&>( *( arguments.getReceiver() ) );
-        auto arg0 = dynamic_cast<String&>( *( arguments.get(0) ) );
-
-        return self.formatString( arg0.getValue() );
-
-    }
-
-    Object* methodEval(PrimitiveArguments& arguments){
-        World& world = World::instance();
-        Method& method = dynamic_cast<Method&>( *( arguments.getReceiver() ));
-        // TODO check arity
-        return world.vm.eval( method, nullptr );
-    }
-
-    Object* methodPrintByteCode(PrimitiveArguments& arguments){
-        Method& method = dynamic_cast<Method&>( *( arguments.getReceiver() ));
-
-        method.getCompiledMethod()->printBytecode();
-
-        return &method;
-    }
-
-    Object* loadPath(PrimitiveArguments& arguments){
-        auto path = dynamic_cast<String&>( *( arguments.get(0) ) );
-        World::instance().loadPackage( path.toString() );
-
-        return World::instance().getNil();
-    }
 
 }

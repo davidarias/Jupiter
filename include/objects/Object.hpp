@@ -111,7 +111,7 @@ namespace jupiter{
     public:
         Array();
         Array(immer::flex_vector<Object*> values);
-        Array(std::vector<Object*>::iterator start, std::vector<Object*>::iterator end);
+        Array(Object** start, Object** end);
 
         void mark();
 
@@ -176,19 +176,18 @@ namespace jupiter{
 
     };
 
-    class PrimitiveArguments;
-    typedef Object* (*PrimitiveFunction)(PrimitiveArguments&);
+    typedef Object* (*NativeFunction)(Object*, Object**);
 
-    class PrimitiveMethod : public Object {
+    class NativeMethod : public Object {
         friend struct Evaluator;
     private:
-        PrimitiveFunction fn;
+        NativeFunction fn;
         unsigned arity;
     protected:
         bool equal(Object& other);
         int cmp(Object&);
     public:
-        PrimitiveMethod(PrimitiveFunction fn, unsigned arity);
+        NativeMethod(NativeFunction fn, unsigned arity);
 
         Object* at(const std::string& selector);
         std::string toString();

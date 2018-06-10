@@ -1,2 +1,2 @@
 at: index
-    <Primitive: arrayAt>
+    <primitive: arrayAt>

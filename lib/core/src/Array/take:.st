@@ -1,2 +1,2 @@
 take: value
-    <Primitive: arrayTake>
+    <primitive: arrayTake>

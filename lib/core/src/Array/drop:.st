@@ -1,2 +1,2 @@
 drop: value
-    <Primitive: arrayDrop>
+    <primitive: arrayDrop>

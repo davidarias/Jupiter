@@ -76,13 +76,14 @@ namespace jupiter{
     class PragmaCompiler : public ASTVisitor {
     private:
         Object* primitive;
+        std::vector<std::string> arguments;
     public:
         PragmaCompiler();
         Object* getPrimitive();
 
         void visit( NumberNode& ){};
         void visit( SymbolNode& node );
-        void visit( StringNode& ){};
+        void visit( StringNode& node);
         void visit( ArrayNode& ){};
         void visit( ObjectLiteralNode& ){};
         void visit( CodeBlockNode& );

@@ -490,10 +490,21 @@ namespace jupiter{
         return primitive;
     }
 
+
     void PragmaCompiler::visit( SymbolNode& node ){
         //  get the primitive by name
         // TODO capture std::out_of_range exception
-        primitive = Primitives::instance().get( node.value );
+
+        arguments.push_back(node.value);
+        //primitive = Primitives::instance().get( node.value );
+    }
+
+    void PragmaCompiler::visit( StringNode& node ){
+        //  get the primitive by name
+        // TODO capture std::out_of_range exception
+
+        arguments.push_back(node.value);
+        //primitive = Primitives::instance().get( node.value );
     }
 
     void PragmaCompiler::visit( CodeBlockNode& node ){
@@ -507,9 +518,22 @@ namespace jupiter{
     void PragmaCompiler::visit( PragmaNode& node ){
         // get first argument
         // TODO check in empty
-        node.arguments[0]->accept(*this);
+        // node.arguments[0]->accept(*this);
         // TODO check selector
 
+
+        for( auto argument : node.arguments){
+            argument->accept(*this);
+        }
+
+        if ( node.selector == "primitive:"){
+            primitive = Primitives::instance().get( arguments[0] );
+        }else if( node.selector == "nativeExtension:function:" ){
+            primitive = World::instance().getNativeExtensionMethod(arguments[0], arguments[1]);
+        }else{
+            std::string message = "Pragma selector not found: " + node.selector;
+            throw CompilerError(message);
+        }
 
     }
 

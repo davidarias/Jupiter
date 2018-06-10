@@ -1,2 +1,2 @@
 at: index
-    <Primitive: mapAt>
+    <primitive: mapAt>

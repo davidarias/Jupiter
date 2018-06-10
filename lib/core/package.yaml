@@ -1,6 +1,0 @@
-name: core
-version: 0.1.0
-author: David Arias
-license: MPL-2.0
-dependencies:
-    - jupiter: 0.1.0

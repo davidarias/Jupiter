@@ -179,7 +179,7 @@ namespace jupiter{
     Array::Array(){}
     Array::Array( immer::flex_vector<Object*> values ) : values( values ){}
 
-    Array::Array(std::vector<Object*>::iterator start, std::vector<Object*>::iterator end)
+    Array::Array(Object** start, Object** end)
         : values( start, end ) {}
 
     void Array::mark(){
@@ -377,28 +377,28 @@ namespace jupiter{
         evaluator(*this);
     }
 
-    PrimitiveMethod::PrimitiveMethod(PrimitiveFunction fn, unsigned arity) :
+    NativeMethod::NativeMethod(NativeFunction fn, unsigned arity) :
         fn(fn), arity(arity) {}
 
-    bool PrimitiveMethod::equal(Object& other){
+    bool NativeMethod::equal(Object& other){
         if (&other == this) return true;
         return false;
     }
-    int PrimitiveMethod::cmp(Object&){
+    int NativeMethod::cmp(Object&){
         throw "Primitive methods cannot be compared";
     }
 
-    Object* PrimitiveMethod::at(const std::string& selector){
+    Object* NativeMethod::at(const std::string& selector){
         throw  "Selector \'" + selector + "\' not found in " + this->toString();
     }
 
-    std::string PrimitiveMethod::toString(){
+    std::string NativeMethod::toString(){
         std::stringstream buffer;
         buffer << "Primitive Method " << this;
         return buffer.str();
     }
 
-    void PrimitiveMethod::eval(Evaluator& evaluator){
+    void NativeMethod::eval(Evaluator& evaluator){
         evaluator(*this);
     }
 

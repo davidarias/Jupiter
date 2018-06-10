@@ -1,0 +1,2 @@
+loadNative:path
+    <primitive: loadNative>

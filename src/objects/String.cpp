@@ -1,4 +1,4 @@
-#include "String.hpp"
+#include <objects/String.hpp>
 
 #include <vm/MemoryManager.hpp>
 #include <vm/World.hpp>

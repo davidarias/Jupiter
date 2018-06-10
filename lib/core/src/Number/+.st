@@ -1,2 +1,2 @@
 + aNumber
-    <Primitive: plus>
+    <primitive: plus>

@@ -7,66 +7,96 @@
 #include <vm/Stack.hpp>
 
 #include <objects/Object.hpp>
+#include <vm/World.hpp>
 
 namespace jupiter{
 
 
     Stack::Stack() {
-        stack.reserve(1024);
+        _capacity = 128;
+        auto newMem = std::malloc(sizeof(Object*) * _capacity );
+        if ( newMem == nullptr) throw std::bad_alloc();
+        first = reinterpret_cast<Object**>( newMem );
+        last = first;
+    }
+
+    Stack::~Stack() {
+
+        std::free(first);
+
     }
 
     void Stack::push(Object* obj){
-        stack.push_back(obj);
+        *last = obj;
+        last++;
     }
 
     Object* Stack::pop(){
-        auto returnValue = stack.back();
-        stack.pop_back();
-        return returnValue;
+        last--;
+        return *last;
     }
 
     Object* Stack::back(){
-        return stack.back();
+        return *(last - 1);
     }
 
     Object* Stack::back(Object* value){
-        return stack.back() = value;
+        *(last - 1) = value;
+        return value;
     }
 
     void Stack::dup(){
-        stack.push_back( stack.back() );
+        push( back() );
     }
 
     unsigned Stack::size(){
-        return stack.size();
+        return last - first;
     }
 
     unsigned Stack::capacity(){
-        return stack.capacity();
+        return _capacity;
     }
 
     void Stack::resize(unsigned newSize){
-        stack.resize( newSize );
+
+        auto currentSize = size();
+        if ( newSize >= _capacity){
+            _capacity *= 2;
+            auto newMem = std::realloc(first, sizeof(Object*) * _capacity );
+            if ( newMem == nullptr) throw std::bad_alloc();
+            first = reinterpret_cast<Object**>( newMem );
+            last = first + currentSize -1;
+            return;
+        }
+        // if the stack grows we need to put an object that implements the mark method
+        // so the GC dont crash on marking phase
+        if ( newSize > currentSize ){
+            for(unsigned i = currentSize; i<= newSize; i++ ){
+                push(&dummy);
+            }
+        }else{
+            last = first + newSize;
+        }
     }
 
     void Stack::clear(){
-        stack.clear();
+        last = first;
     }
 
     Object* Stack::get(unsigned index){
-        return stack[index];
+        return first[index];
     }
 
     void Stack::set(unsigned index, Object* value){
-        stack[index] = value;
+        first[index] = value;
     }
 
-    std::vector<Object*>::iterator Stack::begin(){
-        return stack.begin();
+    Object** Stack::begin(){
+        return first;
     }
 
-    std::vector<Object*>::iterator Stack::end(){
-        return stack.end();
+    Object** Stack::end(){
+        return last;
     }
 
     void Stack::printStack(){
@@ -75,9 +105,9 @@ namespace jupiter{
         LOG( "------------------" );
         LOG( "" );
 
-        auto it = stack.begin();
+        auto it = begin();
         int counter = 0;
-        for(; it != stack.end(); it++){
+        for(; it != end(); it++){
             auto obj = (*it);
             LOG_INLINE(" " << counter);
             if ( obj != nullptr ){

@@ -19,9 +19,9 @@ for key, value in ARGLIST:
 
 env = Environment(
     CPPDEFINES = cppdefines,
-    CPPPATH=['./src'],
+    CPPPATH=['./include'],
     CCFLAGS=['-Wall', '-Wextra', '-std=c++14', '-O3'],
-    LIBS='mpdec'
+    LIBS=['mpdec', 'dl']
 )
 
 sources = get_sources('src/compiler', 'cpp')
