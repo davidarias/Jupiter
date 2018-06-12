@@ -1,2 +1,2 @@
-random
+canonical
     <primitive: random>

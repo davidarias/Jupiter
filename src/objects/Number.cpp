@@ -132,7 +132,7 @@ namespace jupiter{
 
     Object* Number::at(const std::string& selector){
         // globals are always maps
-        static Map& behaviour = static_cast<Map&>( *( World::instance().globals.at("Number") ));
+        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("Number") ));
         return behaviour.at( selector );
     }
 

@@ -24,7 +24,7 @@ namespace jupiter{
 
     Object* String::at(const std::string& selector){
         // globas are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().globals.at("String") ));
+        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("String") ));
         return behaviour.at( selector );
     }
 

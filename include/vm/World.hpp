@@ -26,6 +26,7 @@ namespace jupiter{
 
     public:
         Map globals;
+        Map prototypes;
         VM vm;
 
         Object* getTrue();
@@ -39,6 +40,7 @@ namespace jupiter{
 
         Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
 
+        void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
         void loadNative(const std::string& path);
 

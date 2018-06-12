@@ -113,7 +113,7 @@ namespace jupiter{
         auto o = slots.find( selector );
         if ( o ) return *o;
         // globals are always maps
-        static Map& mapBehaviour = static_cast<Map&>( *( World::instance().globals.at("Map") ));
+        static Map& mapBehaviour = static_cast<Map&>( *( World::instance().prototypes.at("Map") ));
         try{
             return mapBehaviour.slots.at( selector );
         }catch(std::exception& e){
@@ -154,7 +154,7 @@ namespace jupiter{
     Object* MapTransient::at(const std::string& selector){
 
         // globals are always maps
-        static Map& behaviour = static_cast<Map&>( *( World::instance().globals.at("MapTransient") ));
+        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("MapTransient") ));
 
         return behaviour.at( selector );
 
@@ -191,7 +191,7 @@ namespace jupiter{
 
     Object* Array::at(const std::string& selector){
         // globals are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().globals.at("Array") ));
+        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("Array") ));
         return behaviour.at( selector );
     }
 
@@ -298,7 +298,7 @@ namespace jupiter{
 
     Object* ArrayTransient::at(const std::string& selector){
 
-        static Map& behaviour = static_cast<Map&>( *( World::instance().globals.at("ArrayTransient") ));
+        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("ArrayTransient") ));
         return behaviour.at( selector );
 
     }
@@ -363,7 +363,7 @@ namespace jupiter{
 
     Object* Method::at(const std::string& selector){
         // globals are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().globals.at("Method") ));
+        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("Method") ));
         return behaviour.at( selector );
     }
 

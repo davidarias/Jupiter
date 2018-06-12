@@ -29,7 +29,8 @@ namespace jupiter{
     World::World(){
 
         if ( const char* path = getenv( "JUPITERHOME" )) {
-            loadPackage(std::string(path) + "/src");
+            loadPrototypes(std::string(path) + "/core-types");
+            loadPackage(std::string(path) + "/core");
         }else{
             std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
             std::cout << "| Core library is not loaded, you probably can't do much without it" << std::endl;
@@ -67,6 +68,12 @@ namespace jupiter{
 
         ObjectSerializer serializer;
         serializer.deserialize(path, &globals);
+    }
+
+    void World::loadPrototypes(const std::string& path){
+
+        ObjectSerializer serializer;
+        serializer.deserialize(path, &prototypes);
     }
 
     void World::loadNative(const std::string& path){
