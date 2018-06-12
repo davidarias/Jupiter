@@ -1,0 +1,37 @@
+// Copyright (C) 2018 David Arias.
+
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+#include <objects/NativeMethod.hpp>
+
+#include <vm/World.hpp>
+
+namespace jupiter{
+
+    NativeMethod::NativeMethod(NativeFunction fn, unsigned arity) :
+        fn(fn), arity(arity) {}
+
+    bool NativeMethod::equal(Object& other){
+        if (&other == this) return true;
+        return false;
+    }
+    int NativeMethod::cmp(Object&){
+        throw "Primitive methods cannot be compared";
+    }
+
+    Object* NativeMethod::at(const std::string& selector){
+        throw  "Selector \'" + selector + "\' not found in " + this->toString();
+    }
+
+    std::string NativeMethod::toString(){
+        std::stringstream buffer;
+        buffer << "Primitive Method " << this;
+        return buffer.str();
+    }
+
+    void NativeMethod::eval(Evaluator& evaluator){
+        evaluator(*this);
+    }
+}

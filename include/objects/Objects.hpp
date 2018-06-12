@@ -10,5 +10,9 @@
 #include <objects/Object.hpp>
 #include <objects/Number.hpp>
 #include <objects/String.hpp>
+#include <objects/Map.hpp>
+#include <objects/Array.hpp>
+#include <objects/Method.hpp>
+#include <objects/NativeMethod.hpp>
 
 #endif

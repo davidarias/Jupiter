@@ -9,7 +9,7 @@
 
 #include <misc/common.hpp>
 #include <vm/VM.hpp>
-#include <objects/Object.hpp>
+#include <objects/Objects.hpp>
 
 namespace jupiter{
 
