@@ -28,27 +28,7 @@ namespace jupiter{
 
     World::World(){
 
-        if ( const char* path = getenv( "JUPITERHOME" )) {
-            loadPrototypes(std::string(path) + "/core-types");
 
-            // Create core types globals with the right type
-            globals.putAtMut("Number", MemoryManager<Number>::instance().permanent(0) );
-            globals.putAtMut("Array", MemoryManager<Array>::instance().permanent() );
-            globals.putAtMut("String", MemoryManager<String>::instance().permanent() );
-
-            globals.putAtMut("Map",
-                             MemoryManager<Map>::instance()
-                             .permanent( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
-
-            globals.putAtMut("Method", MemoryManager<Method>::instance().permanent());
-
-            loadPackage(std::string(path) + "/core");
-        }else{
-            std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
-            std::cout << "| Core library is not loaded, you probably can't do much without it" << std::endl;
-            std::cout << "| Try the following command ( assuming you are in the Jupiter source code folder )" << std::endl;
-            std::cout << "| export JUPITERHOME=$PWD/lib/core" << std::endl << std::endl;
-        }
 
     }
 
@@ -58,6 +38,45 @@ namespace jupiter{
         for(auto& pair : nativeLibs ){
             dlclose(pair.second);
         }
+
+    }
+
+
+    void World::init(){
+
+        if ( ! initialized ){
+            if ( const char* path = getenv( "JUPITERHOME" )) {
+
+                // init Map prototype with an empty Map
+                prototypes.putAtMut("Map", MemoryManager<Map>::instance().get() );
+
+                loadPrototypes(std::string(path) + "/core-types");
+                //now in prototypes.at("Map") there is the real map prototype
+
+
+                // Create core types globals with the right type
+                globals.putAtMut("Number", MemoryManager<Number>::instance().permanent(0) );
+                globals.putAtMut("Array", MemoryManager<Array>::instance().permanent() );
+                globals.putAtMut("String", MemoryManager<String>::instance().permanent() );
+
+                globals.putAtMut("Map",
+                                 MemoryManager<Map>::instance()
+                                 .permanent( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
+
+                globals.putAtMut("Method", MemoryManager<Method>::instance().permanent());
+
+                loadPackage(std::string(path) + "/core");
+
+            }else{
+                std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
+                std::cout << "| Core library is not loaded, you probably can't do much without it" << std::endl;
+                std::cout << "| Try the following command ( assuming you are in the Jupiter source code folder )" << std::endl;
+                std::cout << "| export JUPITERHOME=$PWD/lib/core" << std::endl << std::endl;
+            }
+
+            initialized = true;
+        }
+
 
     }
 

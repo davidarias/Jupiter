@@ -44,10 +44,12 @@ void repl(std::string prompt){
 }
 
 int main(int argc, char* argv[]){
+    World& world = World::instance();
+    world.init();
 
     if ( argc > 2){
         if (std::string(argv[1]) == "-e" ){
-            World& world = World::instance();
+
             world.eval( argv[2] );
             return 0;
         }

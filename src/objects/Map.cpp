@@ -40,12 +40,8 @@ namespace jupiter{
     }
 
     Object* Map::at(const std::string& selector){
-        auto o = slots.find( selector );
-        if ( o ) return *o;
-        // globals are always maps
-        static Map& mapBehaviour = static_cast<Map&>( *( World::instance().prototypes.at("Map") ));
         try{
-            return mapBehaviour.slots.at( selector );
+            return slots.at( selector );
         }catch(std::exception& e){
             throw  "Selector \'" + selector + "\' not found in " + this->toString();
         }

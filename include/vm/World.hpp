@@ -14,8 +14,6 @@
 namespace jupiter{
 
     class World{
-        // the primitive eval function can acces directly the vm
-        // friend Object* methodEval(PrimitiveArguments& arguments);
     private:
         World();
         ~World();
@@ -23,6 +21,8 @@ namespace jupiter{
         void operator=(const World& ) = delete;
 
         std::unordered_map<std::string, void*> nativeLibs;
+
+        bool initialized = false;
 
     public:
         Map globals;
@@ -37,6 +37,10 @@ namespace jupiter{
             static World i;
             return i;
         }
+
+        // to avoid recursive_init_error
+        void init();
+
 
         Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
 
