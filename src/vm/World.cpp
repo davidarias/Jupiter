@@ -30,6 +30,18 @@ namespace jupiter{
 
         if ( const char* path = getenv( "JUPITERHOME" )) {
             loadPrototypes(std::string(path) + "/core-types");
+
+            // Create core types globals with the right type
+            globals.putAtMut("Number", MemoryManager<Number>::instance().permanent(0) );
+            globals.putAtMut("Array", MemoryManager<Array>::instance().permanent() );
+            globals.putAtMut("String", MemoryManager<String>::instance().permanent() );
+
+            globals.putAtMut("Map",
+                             MemoryManager<Map>::instance()
+                             .permanent( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
+
+            globals.putAtMut("Method", MemoryManager<Method>::instance().permanent());
+
             loadPackage(std::string(path) + "/core");
         }else{
             std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;

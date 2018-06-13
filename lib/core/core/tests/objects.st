@@ -1,6 +1,6 @@
 objects
     text := 'text'.
-    object := Object from: {
+    object := Map from: {
         'number' -> ( 2 + 3 ),
         'aText' -> text,
         'otherText' -> 'other text'
@@ -35,7 +35,7 @@ objects
 
         test Case description: 'Objects equality and identity' assert: [
 
-            o2 := Object from: {
+            o2 := Map from: {
                 'number' -> 5,
                 'aText' -> text,
                 'otherText' -> 'other text'

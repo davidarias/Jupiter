@@ -6,12 +6,13 @@
 
 #include <objects/Method.hpp>
 #include <objects/Map.hpp>
+#include <objects/CompiledMethod.hpp>
 
 #include <vm/World.hpp>
 
 namespace jupiter{
 
-    Method::Method(){}
+    Method::Method() {}
 
     Method::Method(std::string& name, std::string& signature, std::string& source,
                    std::shared_ptr<CompiledMethod> compiledMethod)

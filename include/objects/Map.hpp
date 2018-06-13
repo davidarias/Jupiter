@@ -20,10 +20,12 @@ namespace jupiter{
 
         int cmp(Object&);
         bool equal(Object& other);
-    public:
+
         immer::map<std::string, Object* > slots;
+    public:
 
         Map();
+        Map(Map& other);
         Map(immer::map<std::string, Object* > slots);
 
         void mark();

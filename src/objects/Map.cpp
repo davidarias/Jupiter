@@ -10,6 +10,7 @@
 namespace jupiter{
 
     Map::Map(){};
+    Map::Map(Map& other) : slots( other.slots ){};
     Map::Map(immer::map<std::string, Object* > slots) : slots(slots) {}
 
     void Map::mark(){

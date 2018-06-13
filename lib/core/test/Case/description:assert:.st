@@ -1,2 +1,2 @@
 description: description assert: aBlock
-    Object from: { 'description' -> description, 'assert' -> aBlock }
+    Map from: { 'description' -> description, 'assert' -> aBlock }
