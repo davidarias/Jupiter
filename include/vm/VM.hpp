@@ -19,51 +19,6 @@ namespace jupiter{
     class Array;
     class Method;
 
-    class NativeMethod;
-
-    class CompiledMethod;
-    class UpValue;
-
-    struct Instruction;
-
-    class ExecutionFrame{
-    private:
-        Stack& stack;
-        Method& method;
-        std::shared_ptr<CompiledMethod> compiledMethod;
-        Object* self;
-        // where are located the locals in the stack
-        unsigned localsBaseIndex;
-        unsigned returnIndex;
-
-        unsigned instructionCounter;
-
-        std::string& getStringConstant( unsigned id);
-        Object* getLocal( unsigned index );
-        unsigned getLocalIndex( unsigned index );
-
-        void pushConstant( unsigned id );
-        void pushLocal( unsigned id );
-        void pushGlobal( unsigned id );
-        void pushSelf();
-        void pushClosure( unsigned id );
-        void pushUpValue( unsigned id );
-        void popInto( unsigned id );
-        void pop();
-        void popNIntoArray( unsigned n );
-        void dup();
-        void send( uint16_t id, uint8_t receiverRelPos );
-        void jumpIfFalse( uint16_t id );
-        void jumpIfTrue( uint16_t id );
-        void jump( uint16_t id );
-
-        void dispatch( Instruction instruction );
-
-    public:
-        ExecutionFrame(Stack& stack, Method& method, Object* self);
-        ~ExecutionFrame();
-        void execute();
-    };
 
     class VM{
     private:

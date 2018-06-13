@@ -16,7 +16,7 @@ namespace jupiter{
     class CompiledMethod;
 
     class Method : public Object {
-        friend class ExecutionFrame;
+        friend class Frame;
     private:
         std::string name;
         std::string signature;
