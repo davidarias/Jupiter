@@ -50,7 +50,7 @@ namespace jupiter{
     std::string Map::toString(){
         auto o = slots.find( "toString" );
         if ( o ){
-            auto result = World::instance().eval(*o, this);
+            auto result = World::instance().eval(*o);
             return result->toString();
         }
         std::ostringstream buffer;

@@ -7,7 +7,6 @@
 #include <vm/Frame.hpp>
 #include <vm/VM.hpp>
 
-#include <vm/World.hpp>
 #include <vm/MemoryManager.hpp>
 #include <vm/Stack.hpp>
 #include <vm/ConstantsTable.hpp>
@@ -22,14 +21,12 @@
 namespace jupiter{
 
 
-    Frame::Frame(Stack& stack, Method& method, Object* self)
-        : stack(stack), method(method), self(self)
+    Frame::Frame(VM& vm, Method& method)
+        : vm(vm), globals(vm.globals), stack(vm.stack), method(method)
     {
         compiledMethod = method.compiledMethod;
         // closures block have self of the context where was created
-        if ( method.self ){
-            this->self = method.self;
-        }
+
 
         // LOG
         // compiledMethod->printBytecode();
@@ -41,6 +38,12 @@ namespace jupiter{
 
         localsBaseIndex = stackSize - arity;
         returnIndex = localsBaseIndex - 1; // where the receiver was
+
+        if ( method.self ){
+            this->self = method.self;
+        }else{
+            this->self = stack.get(returnIndex); // receiver is in the return index (locals - 1)
+        }
 
         // resize to acomodate the locals
         stack.resize( stackSize + (locals - arity) ); // locals include arity
@@ -83,7 +86,7 @@ namespace jupiter{
         auto globalSymbol = getStringConstant( id );
         try{
 
-            Object* global = World::instance().globals.at(globalSymbol);
+            Object* global = globals.at(globalSymbol);
             stack.push( global );
 
         }catch(std::exception& e){
@@ -190,13 +193,13 @@ namespace jupiter{
 
         }else{
 
-            Evaluator evaluator(receiver, stack);
+            Evaluator evaluator(vm);
             nextMethod->eval( evaluator );
         }
 
         #else
 
-        Evaluator evaluator(receiver, stack);
+        Evaluator evaluator(receiver, stack, globals);
         nextMethod->eval( evaluator );
 
         #endif
@@ -206,14 +209,14 @@ namespace jupiter{
 
     void Frame::jumpIfFalse( uint16_t id ){
         Object* obj = stack.pop();
-        if ( obj == World::instance().getFalse()){
-            instructionCounter = id -1; // main loop will increment this rightafter this
+        if ( obj == vm.cachedFalse() ){
+            instructionCounter = id -1; // main loop will increment this right after this
         }
     }
 
     void Frame::jumpIfTrue( uint16_t id ){
         Object* obj = stack.pop();
-        if ( obj == World::instance().getTrue()){
+        if ( obj == vm.cachedTrue() ){
             instructionCounter = id -1;
         }
     }

@@ -253,7 +253,7 @@ namespace jupiter{
         World& world = World::instance();
         Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
-        return world.vm.eval( method, nullptr );
+        return world.vm.eval( method );
     }
 
     Object* methodPrintByteCode(Object* self, Object** args){

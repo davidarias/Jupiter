@@ -13,6 +13,7 @@
 
 namespace jupiter{
 
+
     class World{
     private:
         World();
@@ -50,7 +51,6 @@ namespace jupiter{
 
         void eval(std::string);
         Object* eval(Object* o);
-        Object* eval(Object* o, Object* self);
 
     };
 }

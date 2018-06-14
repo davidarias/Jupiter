@@ -26,9 +26,7 @@
 namespace jupiter{
 
 
-    World::World(){
-
-
+    World::World() : vm(globals){
 
     }
 
@@ -186,10 +184,6 @@ namespace jupiter{
 
     Object* World::eval(Object* o){
         return vm.eval(o);
-    }
-
-    Object* World::eval(Object* o, Object* self){
-        return vm.eval(o, self);
     }
 
 }

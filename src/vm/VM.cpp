@@ -21,8 +21,23 @@
 
 namespace jupiter{
 
-    VM::VM(){
+    VM::VM(Map& globals) : globals(globals) {
         stack.push(MemoryManager<Map>::instance().get()); // to avoid stack underflow and crash
+    }
+
+    Object* VM::cachedTrue(){
+        static auto trueObj = globals.at("true");
+        return trueObj;
+    }
+
+    Object* VM::cachedFalse(){
+        static auto falseObj = globals.at("false");
+        return falseObj;
+    }
+
+    Object* VM::cachedNil(){
+        static auto nil = globals.at("nil");
+        return nil;
     }
 
     void VM::gc(bool full){
@@ -41,12 +56,9 @@ namespace jupiter{
 
     }
 
-    Object* VM::eval(Object* object){
-        return eval(object, nullptr);
-    }
 
-    Object* VM::eval(Object* object, Object* self){
-        Evaluator evaluator(self, stack);
+    Object* VM::eval(Object* object){
+        Evaluator evaluator(*this);
         try{
 
             object->eval(evaluator);
@@ -62,8 +74,8 @@ namespace jupiter{
         return stack.back();
     }
 
-    Object* VM::eval(Method& method, Object* self){
-        Evaluator evaluator(self, stack);
+    Object* VM::eval(Method& method){
+        Evaluator evaluator(*this);
         evaluator(method);
         return stack.back();
     }
@@ -73,41 +85,43 @@ namespace jupiter{
     }
 
 
-    Evaluator::Evaluator(Object* receiver, Stack& stack) : receiver(receiver), stack(stack){}
+    Evaluator::Evaluator(VM& vm)
+        : vm(vm){}
 
     void Evaluator::operator()(Map& obj){
-        stack.back(&obj);
+        vm.stack.back(&obj);
     }
 
     void Evaluator::operator()(Number& obj){
-        stack.back( &obj );
+        vm.stack.back( &obj );
     }
 
     void Evaluator::operator()(String& obj ){
-        stack.back( &obj );
+        vm.stack.back( &obj );
     }
 
     void Evaluator::operator()(Array& obj ){
-        stack.back( &obj );
+        vm.stack.back( &obj );
     }
 
     void Evaluator::operator()(Method& obj ){
 
-        Frame newFrame(stack, obj, receiver );
+        Frame newFrame(vm, obj);
         newFrame.execute();
     }
 
     void Evaluator::operator()(NativeMethod& method){
 
-        auto stackSize = stack.size();
+        auto stackSize = vm.stack.size();
 
         unsigned localsBaseIndex = stackSize - method.arity;
         unsigned returnIndex = localsBaseIndex - 1; // where the receiver was
 
-        Object** args = stack.begin() + localsBaseIndex;
+        Object** args = vm.stack.begin() + localsBaseIndex;
+        Object* receiver = *(args - 1); // receiver is just before the locals
 
-            stack.set( returnIndex, method.fn( receiver, args ) );
-        stack.resize( localsBaseIndex );
+        vm.stack.set( returnIndex, method.fn( receiver, args ) );
+        vm.stack.resize( localsBaseIndex );
     }
 
 

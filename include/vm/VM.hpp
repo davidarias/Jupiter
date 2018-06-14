@@ -9,6 +9,7 @@
 
 #include <misc/common.hpp>
 #include <vm/Stack.hpp>
+#include <objects/Objects.hpp>
 
 namespace jupiter{
 
@@ -19,29 +20,35 @@ namespace jupiter{
     class Array;
     class Method;
 
+    class Frame;
 
     class VM{
+        friend class Frame;
+        friend class Evaluator;
     private:
         Stack stack;
+        Map& globals;
+
+        Object* cachedTrue();
+        Object* cachedFalse();
+        Object* cachedNil();
     public:
-        VM();
+        VM(Map& globals);
 
         void gc(bool full);
 
         void pop();
 
         Object* eval(Object* object);
-        Object* eval(Object* object, Object* self);
-        Object* eval(Method& method, Object* self);
+        Object* eval(Method& method);
 
     };
 
     class Evaluator{
     private:
-        Object* receiver;
-        Stack& stack;
+        VM& vm;
     public:
-        Evaluator(Object* receiver, Stack& stack);
+        Evaluator(VM& vm);
         void operator()(Map&);
         void operator()(Number&);
         void operator()(String&);

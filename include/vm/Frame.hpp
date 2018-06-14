@@ -9,6 +9,7 @@
 
 #include <misc/common.hpp>
 #include <vm/Stack.hpp>
+#include <vm/VM.hpp>
 
 namespace jupiter{
 
@@ -26,10 +27,13 @@ namespace jupiter{
 
     class Frame{
     private:
+        VM& vm;
+        Map& globals;
         Stack& stack;
         Method& method;
         std::shared_ptr<CompiledMethod> compiledMethod;
         Object* self;
+
         // where are located the locals in the stack
         unsigned localsBaseIndex;
         unsigned returnIndex;
@@ -58,7 +62,7 @@ namespace jupiter{
         void dispatch( Instruction instruction );
 
     public:
-        Frame(Stack& stack, Method& method, Object* self);
+        Frame(VM& vm, Method& method);
         ~Frame();
         void execute();
     };
