@@ -18,6 +18,10 @@ namespace jupiter{
     Array::Array(Object** start, Object** end)
         : values( start, end ) {}
 
+    void Array::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     void Array::mark(){
         marked = true;
         for(auto v : values){
@@ -119,11 +123,6 @@ namespace jupiter{
         return buffer.str();
     }
 
-
-
-    void Array::eval(Evaluator& evaluator){
-        evaluator(*this);
-    }
 
     Object* Array::transient(){
         return MemoryManager<ArrayTransient>::instance().get( values );

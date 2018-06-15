@@ -25,10 +25,10 @@ namespace jupiter{
         int cmp(Object&);
     public:
         NativeMethod(NativeFunction fn, unsigned arity);
+        void accept(ObjectVisitor&);
 
         Object* at(const std::string& selector);
         std::string toString();
-        void eval(Evaluator&);
 
     };
 

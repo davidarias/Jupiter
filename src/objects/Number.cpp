@@ -54,6 +54,10 @@ namespace jupiter{
         mpd_del( &value );
     }
 
+    void Number::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     void Number::addStatus(uint32_t status){
         auto context = getMpdContext();
         context->status |= status;
@@ -145,8 +149,5 @@ namespace jupiter{
         return buffer;
     }
 
-    void Number::eval(Evaluator& evaluator){
-        evaluator(*this);
-    }
 
 }

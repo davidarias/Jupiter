@@ -61,7 +61,7 @@ namespace jupiter{
         Evaluator evaluator(*this);
         try{
 
-            object->eval(evaluator);
+            object->accept(evaluator);
 
         }catch (const char* s) {
             std::cout << s << std::endl;
@@ -76,7 +76,7 @@ namespace jupiter{
 
     Object* VM::eval(Method& method){
         Evaluator evaluator(*this);
-        evaluator(method);
+        evaluator.visit(method);
         return stack.back();
     }
 
@@ -88,29 +88,29 @@ namespace jupiter{
     Evaluator::Evaluator(VM& vm)
         : vm(vm){}
 
-    void Evaluator::operator()(Map& obj){
+    void Evaluator::visit(Map& obj){
         vm.stack.back(&obj);
     }
 
-    void Evaluator::operator()(Number& obj){
+    void Evaluator::visit(Number& obj){
         vm.stack.back( &obj );
     }
 
-    void Evaluator::operator()(String& obj ){
+    void Evaluator::visit(String& obj ){
         vm.stack.back( &obj );
     }
 
-    void Evaluator::operator()(Array& obj ){
+    void Evaluator::visit(Array& obj ){
         vm.stack.back( &obj );
     }
 
-    void Evaluator::operator()(Method& obj ){
+    void Evaluator::visit(Method& obj ){
 
         Frame newFrame(vm, obj);
         newFrame.execute();
     }
 
-    void Evaluator::operator()(NativeMethod& method){
+    void Evaluator::visit(NativeMethod& method){
 
         auto stackSize = vm.stack.size();
 

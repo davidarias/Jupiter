@@ -13,6 +13,22 @@
 namespace jupiter{
 
     class Object;
+    class Number;
+    class String;
+    class Array;
+    class Map;
+    class Method;
+    class NativeMethod;
+
+    class ObjectVisitor{
+    public:
+        virtual void visit(Number&) = 0;
+        virtual void visit(String&) = 0;
+        virtual void visit(Array&) = 0;
+        virtual void visit(Map&) = 0;
+        virtual void visit(Method&) = 0;
+        virtual void visit(NativeMethod&) = 0;
+    };
 
     class GCObject{
     protected:
@@ -54,9 +70,10 @@ namespace jupiter{
         Object();
         virtual ~Object();
 
+        virtual void accept(ObjectVisitor&) = 0;
+
         virtual Object* at(const std::string& selector) = 0;
         virtual std::string toString() = 0;
-        virtual void eval(Evaluator& evaluator) = 0;
 
 
     };

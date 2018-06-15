@@ -13,6 +13,10 @@ namespace jupiter{
     NativeMethod::NativeMethod(NativeFunction fn, unsigned arity) :
         fn(fn), arity(arity) {}
 
+    void NativeMethod::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     bool NativeMethod::equal(Object& other){
         if (&other == this) return true;
         return false;
@@ -31,7 +35,4 @@ namespace jupiter{
         return buffer.str();
     }
 
-    void NativeMethod::eval(Evaluator& evaluator){
-        evaluator(*this);
-    }
 }

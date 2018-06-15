@@ -194,13 +194,13 @@ namespace jupiter{
         }else{
 
             Evaluator evaluator(vm);
-            nextMethod->eval( evaluator );
+            nextMethod->accept( evaluator );
         }
 
         #else
 
         Evaluator evaluator(receiver, stack, globals);
-        nextMethod->eval( evaluator );
+        nextMethod->accept( evaluator );
 
         #endif
 

@@ -58,8 +58,8 @@ namespace jupiter{
         return buffer.str();
     }
 
-    void Map::eval(Evaluator& evaluator){
-        evaluator(*this);
+    void Map::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
     }
 
     Object* Map::putAt(const std::string& key, Object* value){

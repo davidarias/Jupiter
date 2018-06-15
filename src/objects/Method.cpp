@@ -23,6 +23,10 @@ namespace jupiter{
 
     Method::~Method(){}
 
+    void Method::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     void Method::mark(){
         marked = true;
 
@@ -63,10 +67,6 @@ namespace jupiter{
         std::ostringstream buffer;
         buffer << "Method " << this;
         return buffer.str();
-    }
-
-    void Method::eval(Evaluator& evaluator){
-        evaluator(*this);
     }
 
 }

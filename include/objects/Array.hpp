@@ -28,6 +28,8 @@ namespace jupiter{
         Array(immer::flex_vector<Object*> values);
         Array(Object** start, Object** end);
 
+        void accept(ObjectVisitor&);
+
         void mark();
 
         Object* formatString(std::string& str);
@@ -40,7 +42,6 @@ namespace jupiter{
 
         Object* at(const std::string& selector);
         std::string toString();
-        void eval(Evaluator& evaluator);
 
     };
 

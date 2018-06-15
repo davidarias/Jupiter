@@ -38,6 +38,8 @@ namespace jupiter{
         Method(std::shared_ptr<CompiledMethod> compiledMethod);
         ~Method();
 
+        void accept(ObjectVisitor&);
+
         void mark();
 
         std::string& getName();
@@ -45,7 +47,6 @@ namespace jupiter{
 
         Object* at(const std::string& selector);
         std::string toString();
-        void eval(Evaluator& evaluator);
 
 
     };

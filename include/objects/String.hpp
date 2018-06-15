@@ -16,13 +16,14 @@ namespace jupiter{
         String();
         String(const std::string& value);
 
+        void accept(ObjectVisitor&);
+
         std::string& getValue();
 
         String* operator+(String& other);
 
         Object* at(const std::string& selector);
         std::string toString();
-        void eval(Evaluator& evaluator);
 
     };
 }

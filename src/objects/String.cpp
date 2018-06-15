@@ -8,6 +8,10 @@ namespace jupiter{
     String::String() {}
     String::String(const std::string& value): value(value) {}
 
+    void String::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     std::string& String::getValue(){
         return value;
     }
@@ -30,10 +34,6 @@ namespace jupiter{
 
     std::string String::toString(){
         return value;
-    }
-
-    void String::eval(Evaluator& evaluator){
-        evaluator(*this);
     }
 
 

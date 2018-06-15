@@ -44,17 +44,17 @@ namespace jupiter{
 
     };
 
-    class Evaluator{
+    class Evaluator : public ObjectVisitor{
     private:
         VM& vm;
     public:
         Evaluator(VM& vm);
-        void operator()(Map&);
-        void operator()(Number&);
-        void operator()(String&);
-        void operator()(Array&);
-        void operator()(Method&);
-        void operator()(NativeMethod&);
+        void visit(Map&);
+        void visit(Number&);
+        void visit(String&);
+        void visit(Array&);
+        void visit(Method&);
+        void visit(NativeMethod&);
 
     };
 }

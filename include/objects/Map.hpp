@@ -28,10 +28,11 @@ namespace jupiter{
         Map(Map& other);
         Map(immer::map<std::string, Object* > slots);
 
+        void accept(ObjectVisitor&);
+
         void mark();
 
         std::string toString();
-        void eval(Evaluator& evaluator);
 
         Object* at(const std::string& key);
         Object* putAt(const std::string& key, Object* value);
