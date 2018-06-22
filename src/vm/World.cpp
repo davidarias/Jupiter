@@ -46,22 +46,21 @@ namespace jupiter{
             if ( const char* path = getenv( "JUPITERHOME" )) {
 
                 // init Map prototype with an empty Map
-                prototypes.putAtMut("Map", MemoryManager<Map>::instance().get() );
+                prototypes.putAtMut("Map", make<Map>() );
 
                 loadPrototypes(std::string(path) + "/core-types");
                 //now in prototypes.at("Map") there is the real map prototype
 
 
                 // Create core types globals with the right type
-                globals.putAtMut("Number", MemoryManager<Number>::instance().permanent(0) );
-                globals.putAtMut("Array", MemoryManager<Array>::instance().permanent() );
-                globals.putAtMut("String", MemoryManager<String>::instance().permanent() );
+                globals.putAtMut("Number", make_permanent<Number>(0) );
+                globals.putAtMut("Array", make_permanent<Array>());
+                globals.putAtMut("String", make_permanent<String>() );
 
                 globals.putAtMut("Map",
-                                 MemoryManager<Map>::instance()
-                                 .permanent( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
+                                 make_permanent<Map>( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
 
-                globals.putAtMut("Method", MemoryManager<Method>::instance().permanent());
+                globals.putAtMut("Method", make_permanent<Method>());
 
                 loadPackage(std::string(path) + "/core");
 

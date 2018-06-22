@@ -103,7 +103,7 @@ namespace jupiter{
 
         auto compiledClosure = closure->getCompiledMethod();
 
-        Method* newClosure = MemoryManager<Method>::instance().get( compiledClosure );
+        Method* newClosure = make<Method>( compiledClosure );
 
         newClosure->upvalues.reserve( method.upvalues.size() + compiledClosure->upvalues.size() );
         newClosure->upvalues = method.upvalues; // copy enclosing context upvalues
@@ -143,7 +143,7 @@ namespace jupiter{
         auto start = stack.begin() + i;
         auto end = stack.begin() + size;
 
-        auto array = MemoryManager<Array>::instance().get(start, end);
+        auto array = make<Array>(start, end);
 
         stack.resize( size - n );
         stack.push( array );

@@ -23,7 +23,7 @@ namespace jupiter{
 
     VM::VM(Map& globals, Map& prototypes)
         : globals(globals), prototypes(prototypes) {
-        stack.push(MemoryManager<Map>::instance().get()); // to avoid stack underflow and crash
+        stack.push(make<Map>()); // to avoid stack underflow and crash
     }
 
     Object* VM::cachedTrue(){

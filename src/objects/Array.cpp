@@ -30,23 +30,23 @@ namespace jupiter{
     }
 
     Object* Array::push( Object* value ){
-        return MemoryManager<Array>::instance().get( values.push_back(value) );
+        return make<Array>( values.push_back(value) );
     }
 
     Object* Array::take( int elems ){
-        return MemoryManager<Array>::instance().get( values.take( elems ) );
+        return make<Array>( values.take( elems ) );
     }
 
     Object* Array::drop( int elems ){
-        return MemoryManager<Array>::instance().get( values.drop( elems ) );
+        return make<Array>( values.drop( elems ) );
     }
 
     Object* Array::size(){
-        return MemoryManager<Number>::instance().get( values.size() );
+        return make<Number>( values.size() );
     }
 
     Object* Array::formatString(std::string& str){
-        return MemoryManager<String>::instance().get( format( str, values ) );
+        return make<String>( format( str, values ) );
     }
 
     Object* Array::at( int index ){
@@ -125,7 +125,7 @@ namespace jupiter{
 
 
     Object* Array::transient(){
-        return MemoryManager<ArrayTransient>::instance().get( values );
+        return make<ArrayTransient>( values );
     }
 
     ArrayTransient::ArrayTransient() {}
@@ -146,7 +146,7 @@ namespace jupiter{
     }
 
     Object* ArrayTransient::persist(){
-        return MemoryManager<Array>::instance().get( values.persistent() );
+        return make<Array>( values.persistent() );
     }
 
     std::string ArrayTransient::toString(){

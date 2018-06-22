@@ -312,6 +312,15 @@ namespace jupiter{
 
     };
 
+    template<class T, typename... Args>
+    T* make(Args... args){
+        return MemoryManager<T>::instance().get(args...);
+    }
+
+    template<class T, typename... Args>
+    T* make_permanent(Args... args){
+        return MemoryManager<T>::instance().permanent(args...);
+    }
 
 }
 #endif

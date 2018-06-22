@@ -33,8 +33,7 @@ namespace jupiter{
 
                     if ( name != "." && name != ".." ){
 
-                        auto obj = MemoryManager<Map>::instance()
-                            .permanent( static_cast<Map&>( *( World::instance().prototypes.at("Map") ) ) );
+                        auto obj = make_permanent<Map>( static_cast<Map&>( *( World::instance().prototypes.at("Map") ) ) );
 
                         root->putAtMut(name, obj);
                         deserialize( path + "/" + name, obj);

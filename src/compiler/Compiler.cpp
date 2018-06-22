@@ -37,7 +37,7 @@ namespace jupiter{
 
             ast->accept( compiler );
 
-            return MemoryManager<Method>::instance().get( compiler.getCompiledMethod() );
+            return make<Method>( compiler.getCompiledMethod() );
 
         }catch (const char* s) {
             std::cout << "CompilerException: ";
@@ -76,8 +76,8 @@ namespace jupiter{
 
         ast->accept( compiler );
 
-        auto method = MemoryManager<Method>::instance().permanent( name, signature, source,
-                                                                   compiler.getCompiledMethod() );
+        auto method = make_permanent<Method>( name, signature, source,
+                                              compiler.getCompiledMethod() );
 
         return std::make_tuple(name, method);
     }
@@ -478,7 +478,7 @@ namespace jupiter{
         node.code->accept( closureCompiler );
         auto compiledMethod = closureCompiler.getCompiledMethod();
 
-        Method* methodObject = MemoryManager<Method>::instance().permanent( compiledMethod );
+        Method* methodObject = make_permanent<Method>( compiledMethod );
         auto index = method->addClosure( methodObject );
 
         method->addInstruction( PUSH_CLOSURE, index );

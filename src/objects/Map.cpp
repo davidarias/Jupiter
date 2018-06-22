@@ -63,7 +63,7 @@ namespace jupiter{
     }
 
     Object* Map::putAt(const std::string& key, Object* value){
-        return MemoryManager<Map>::instance().get( slots.set( key, value ) );
+        return make<Map>( slots.set( key, value ) );
     }
 
     void Map::putAtMut(const std::string& key, Object* value){
@@ -71,7 +71,7 @@ namespace jupiter{
     }
 
     Object* Map::transient(){
-        return MemoryManager<MapTransient>::instance().get( slots );
+        return make<MapTransient>( slots );
     }
 
     MapTransient::MapTransient() {}
@@ -99,7 +99,7 @@ namespace jupiter{
     }
 
     Object* MapTransient::persist(){
-        return MemoryManager<Map>::instance().get( slots );
+        return make<Map>( slots );
     }
 
     int MapTransient::cmp(Object&){

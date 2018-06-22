@@ -23,7 +23,7 @@ namespace jupiter{
     }
 
     String* String::operator+(String& other){
-        return MemoryManager<String>::instance().get(value + other.value);
+        return make<String>(value + other.value);
     }
 
     std::string String::toString(){

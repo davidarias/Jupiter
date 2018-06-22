@@ -33,7 +33,7 @@ namespace jupiter{
         std::random_device rd;
         std::mt19937 gen(rd());
         numberString << std::generate_canonical<double, 10>(gen);
-        return MemoryManager<Number>::instance().get(numberString.str());
+        return make<Number>(numberString.str());
     }
 
     Number::Number()/* value( mpd_qnew() )*/ {}
@@ -72,7 +72,7 @@ namespace jupiter{
 
     Number* Number::operator+(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager<Number>::instance().get();
+        Number* result = make<Number>();
         mpd_qadd( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -80,7 +80,7 @@ namespace jupiter{
 
     Number* Number::operator-(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager<Number>::instance().get();
+        Number* result = make<Number>();
         mpd_qsub( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -88,7 +88,7 @@ namespace jupiter{
 
     Number* Number::operator*(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager<Number>::instance().get();
+        Number* result = make<Number>();
         mpd_qmul( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -96,7 +96,7 @@ namespace jupiter{
 
     Number* Number::operator/(Number& other){
         uint32_t status = 0;
-        Number* result = MemoryManager<Number>::instance().get();
+        Number* result = make<Number>();
         mpd_qdiv( &result->value, &value, &other.value, getMpdContext(), &status );
         addStatus(status);
         return result;
@@ -104,7 +104,7 @@ namespace jupiter{
 
     Number* Number::sqrt(){
         uint32_t status = 0;
-        Number* result = MemoryManager<Number>::instance().get();
+        Number* result = make<Number>();
         mpd_qsqrt( &result->value, &value, getMpdContext(), &status);
         addStatus(status);
         return result;
