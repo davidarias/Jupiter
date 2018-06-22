@@ -26,12 +26,6 @@ namespace jupiter{
         return MemoryManager<String>::instance().get(value + other.value);
     }
 
-    Object* String::at(const std::string& selector){
-        // globas are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("String") ));
-        return behaviour.at( selector );
-    }
-
     std::string String::toString(){
         return value;
     }

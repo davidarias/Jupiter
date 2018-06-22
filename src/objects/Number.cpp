@@ -134,13 +134,6 @@ namespace jupiter{
        return intresult;
     }
 
-    Object* Number::at(const std::string& selector){
-        // globals are always maps
-        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("Number") ));
-        return behaviour.at( selector );
-    }
-
-
     std::string Number::toString(){
         char* result = mpd_to_sci(&value, 1);
         std::string buffer;

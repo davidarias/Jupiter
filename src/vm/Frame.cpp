@@ -160,7 +160,10 @@ namespace jupiter{
         Object* receiver = stack.get( receiverIndex );
 
         auto selector = getStringConstant( id );
-        auto nextMethod = receiver->at(selector);
+
+        MethodAt methodAtVisitor(vm, selector);
+        receiver->accept(methodAtVisitor);
+        auto nextMethod = methodAtVisitor.get();
 
         #ifndef NO_TAIL_CALL
         // tail call optimization

@@ -22,7 +22,6 @@ namespace jupiter{
 
         String* operator+(String& other);
 
-        Object* at(const std::string& selector);
         std::string toString();
 
     };

@@ -16,12 +16,13 @@ namespace jupiter{
 
 
     class Map: public Object{
+    private:
+        immer::map<std::string, Object* > slots;
     protected:
 
         int cmp(Object&);
         bool equal(Object& other);
 
-        immer::map<std::string, Object* > slots;
     public:
 
         Map();
@@ -41,13 +42,21 @@ namespace jupiter{
         Object* transient();
     };
 
-    class MapTransient : public Map{
+    class MapTransient : public Object{
+    private:
+        immer::map<std::string, Object* > slots;
+    protected:
+        int cmp(Object&);
     public:
         MapTransient();
         MapTransient(immer::map<std::string, Object* > slots);
         Object* at(const std::string& key);
         void putAt(const std::string& key, Object* value);
         Object* persist();
+
+        void mark();
+        void accept(ObjectVisitor&);
+        std::string toString();
     };
 
 }

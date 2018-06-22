@@ -21,7 +21,8 @@
 
 namespace jupiter{
 
-    VM::VM(Map& globals) : globals(globals) {
+    VM::VM(Map& globals, Map& prototypes)
+        : globals(globals), prototypes(prototypes) {
         stack.push(MemoryManager<Map>::instance().get()); // to avoid stack underflow and crash
     }
 
@@ -92,6 +93,10 @@ namespace jupiter{
         vm.stack.back(&obj);
     }
 
+    void Evaluator::visit(MapTransient& obj){
+        vm.stack.back(&obj);
+    }
+
     void Evaluator::visit(Number& obj){
         vm.stack.back( &obj );
     }
@@ -101,6 +106,10 @@ namespace jupiter{
     }
 
     void Evaluator::visit(Array& obj ){
+        vm.stack.back( &obj );
+    }
+
+    void Evaluator::visit(ArrayTransient& obj ){
         vm.stack.back( &obj );
     }
 
@@ -122,6 +131,58 @@ namespace jupiter{
 
         vm.stack.set( returnIndex, method.fn( receiver, args ) );
         vm.stack.resize( localsBaseIndex );
+    }
+
+    MethodAt::MethodAt(VM& vm, std::string& selector)
+        : vm(vm), selector(selector){}
+
+    Object* MethodAt::get(){
+        return method;
+    }
+
+    void MethodAt::visit(Map& obj){
+        method = obj.at(selector);
+    }
+
+    void MethodAt::visit(MapTransient& obj){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("MapTransient")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(Number& obj){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Number")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(String& obj ){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("String")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(Array& obj ){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Array")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(ArrayTransient& obj ){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("ArrayTransient")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(Method& obj ){
+        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Method")) );
+
+        method = behaviour.at(selector);
+    }
+
+    void MethodAt::visit(NativeMethod& method){
+
+        throw RuntimeException("Native Methods cannot receive messages");
     }
 
 

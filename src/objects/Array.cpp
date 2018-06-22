@@ -29,12 +29,6 @@ namespace jupiter{
         }
     }
 
-    Object* Array::at(const std::string& selector){
-        // globals are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("Array") ));
-        return behaviour.at( selector );
-    }
-
     Object* Array::push( Object* value ){
         return MemoryManager<Array>::instance().get( values.push_back(value) );
     }
@@ -85,15 +79,13 @@ namespace jupiter{
         return true;
     }
 
-    int Array::cmp(Object& other){
-        // we checked the type in the == operator
-        auto otherArray = static_cast<Array&>(other);
+    int cmpimmerVector(immer::flex_vector<Object*> values, immer::flex_vector<Object*> other){
 
         auto it1 = values.begin();
         auto it1End = values.end();
 
-        auto it2 = otherArray.values.begin();
-        auto it2End = otherArray.values.end();
+        auto it2 = other.begin();
+        auto it2End = other.end();
 
         while( it1 != it1End && it2 != it2End ){
             Object& a = *(*it1);
@@ -108,13 +100,20 @@ namespace jupiter{
         }
 
         // for now all values are the same, check the size to return
-        if ( values.size() == otherArray.values.size() ){
+        if ( values.size() == other.size() ){
             return 0;
-        }else if ( values.size() < otherArray.values.size() ){
+        }else if ( values.size() < other.size() ){
             return -1;
         }else{
             return 1;
         }
+    }
+
+    int Array::cmp(Object& other){
+        // we checked the type in the == operator
+        auto otherArray = static_cast<Array&>(other);
+
+        return cmpimmerVector(values, otherArray.values );
     }
 
     std::string Array::toString(){
@@ -129,14 +128,7 @@ namespace jupiter{
     }
 
     ArrayTransient::ArrayTransient() {}
-    ArrayTransient::ArrayTransient(immer::flex_vector<Object*> values) : Array( values ) {}
-
-    Object* ArrayTransient::at(const std::string& selector){
-
-        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("ArrayTransient") ));
-        return behaviour.at( selector );
-
-    }
+    ArrayTransient::ArrayTransient(immer::flex_vector<Object*> values) : values( values ) {}
 
     Object* ArrayTransient::push( Object* value){
         // transients can point to young objects
@@ -153,6 +145,30 @@ namespace jupiter{
 
     Object* ArrayTransient::persist(){
         return MemoryManager<Array>::instance().get( values );
+    }
+
+    std::string ArrayTransient::toString(){
+        std::ostringstream buffer;
+        buffer << "Array Transient" << this;
+        return buffer.str();
+    }
+
+    void ArrayTransient::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
+    int ArrayTransient::cmp(Object& other){
+        // we checked the type in the == operator
+        auto otherArray = static_cast<ArrayTransient&>(other);
+
+        return cmpimmerVector(values, otherArray.values );
+    }
+
+    void ArrayTransient::mark(){
+        marked = true;
+        for(auto v : values){
+            v->mark();
+        }
     }
 
 

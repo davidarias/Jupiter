@@ -16,7 +16,9 @@ namespace jupiter{
     class Number;
     class String;
     class Array;
+    class ArrayTransient;
     class Map;
+    class MapTransient;
     class Method;
     class NativeMethod;
 
@@ -25,7 +27,9 @@ namespace jupiter{
         virtual void visit(Number&) = 0;
         virtual void visit(String&) = 0;
         virtual void visit(Array&) = 0;
+        virtual void visit(ArrayTransient&) = 0;
         virtual void visit(Map&) = 0;
+        virtual void visit(MapTransient&) = 0;
         virtual void visit(Method&) = 0;
         virtual void visit(NativeMethod&) = 0;
     };
@@ -71,8 +75,6 @@ namespace jupiter{
         virtual ~Object();
 
         virtual void accept(ObjectVisitor&) = 0;
-
-        virtual Object* at(const std::string& selector) = 0;
         virtual std::string toString() = 0;
 
 

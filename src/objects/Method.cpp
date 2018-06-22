@@ -57,12 +57,6 @@ namespace jupiter{
         return name;
     }
 
-    Object* Method::at(const std::string& selector){
-        // globals are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().prototypes.at("Method") ));
-        return behaviour.at( selector );
-    }
-
     std::string Method::toString(){
         std::ostringstream buffer;
         buffer << "Method " << this;

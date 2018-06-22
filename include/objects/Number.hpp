@@ -60,7 +60,6 @@ namespace jupiter{
 
         int64_t truncate();
 
-        Object* at(const std::string& selector);
         std::string toString();
 
     };

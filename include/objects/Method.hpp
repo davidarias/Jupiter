@@ -45,7 +45,6 @@ namespace jupiter{
         std::string& getName();
         std::shared_ptr<CompiledMethod> getCompiledMethod();
 
-        Object* at(const std::string& selector);
         std::string toString();
 
 

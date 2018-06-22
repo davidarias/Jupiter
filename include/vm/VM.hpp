@@ -25,15 +25,17 @@ namespace jupiter{
     class VM{
         friend class Frame;
         friend class Evaluator;
+        friend class MethodAt;
     private:
         Stack stack;
         Map& globals;
+        Map& prototypes;
 
         Object* cachedTrue();
         Object* cachedFalse();
         Object* cachedNil();
     public:
-        VM(Map& globals);
+        VM(Map& globals, Map& prototypes);
 
         void gc(bool full);
 
@@ -50,9 +52,32 @@ namespace jupiter{
     public:
         Evaluator(VM& vm);
         void visit(Map&);
+        void visit(MapTransient&);
         void visit(Number&);
         void visit(String&);
         void visit(Array&);
+        void visit(ArrayTransient&);
+        void visit(Method&);
+        void visit(NativeMethod&);
+
+    };
+
+    class MethodAt : public ObjectVisitor{
+    private:
+        VM& vm;
+        std::string& selector;
+        Object* method;
+    public:
+        MethodAt(VM& vm, std::string& selector);
+
+        Object* get();
+
+        void visit(Map&);
+        void visit(MapTransient&);
+        void visit(Number&);
+        void visit(String&);
+        void visit(Array&);
+        void visit(ArrayTransient&);
         void visit(Method&);
         void visit(NativeMethod&);
 

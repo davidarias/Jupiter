@@ -18,7 +18,7 @@ namespace jupiter{
 
 
     class Array : public Object{
-    protected:
+    private:
         immer::flex_vector<Object*> values;
 
         int cmp(Object& other);
@@ -40,18 +40,24 @@ namespace jupiter{
         Object* size();
         Object* transient();
 
-        Object* at(const std::string& selector);
         std::string toString();
 
     };
 
-    class ArrayTransient : public Array{
+    class ArrayTransient : public Object{
+    private:
+        immer::flex_vector<Object*> values;
+    protected:
+        int cmp(Object&);
     public:
         ArrayTransient();
         ArrayTransient(immer::flex_vector<Object*> values);
-        Object* at(const std::string& key);
         Object* push( Object* value );
         Object* persist();
+
+        void mark();
+        void accept(ObjectVisitor&);
+        std::string toString();
     };
 
 

@@ -21,12 +21,9 @@ namespace jupiter{
         if (&other == this) return true;
         return false;
     }
+
     int NativeMethod::cmp(Object&){
         throw "Primitive methods cannot be compared";
-    }
-
-    Object* NativeMethod::at(const std::string& selector){
-        throw  "Selector \'" + selector + "\' not found in " + this->toString();
     }
 
     std::string NativeMethod::toString(){

@@ -26,7 +26,7 @@
 namespace jupiter{
 
 
-    World::World() : vm(globals){
+    World::World() : vm(globals, prototypes){
 
     }
 

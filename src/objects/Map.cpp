@@ -75,7 +75,7 @@ namespace jupiter{
     }
 
     MapTransient::MapTransient() {}
-    MapTransient::MapTransient(immer::map<std::string, Object* > slots) : Map(slots) {}
+    MapTransient::MapTransient(immer::map<std::string, Object* > slots) : slots(slots) {}
 
     Object* MapTransient::at(const std::string& selector){
 
@@ -102,4 +102,24 @@ namespace jupiter{
         return MemoryManager<Map>::instance().get( slots );
     }
 
+    int MapTransient::cmp(Object&){
+        throw "Object Maps cannot be compared";
+    }
+
+    std::string MapTransient::toString(){
+        std::ostringstream buffer;
+        buffer << "Map Transient " << this;
+        return buffer.str();
+    }
+
+    void MapTransient::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
+    void MapTransient::mark(){
+        marked = true;
+        for(auto& kv : slots){
+            (*kv.second).mark();
+        }
+    }
 }
