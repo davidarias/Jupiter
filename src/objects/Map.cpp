@@ -6,12 +6,13 @@
 
 #include <objects/Map.hpp>
 #include <vm/MemoryManager.hpp>
+#include <vm/ConstantsTable.hpp>
 
 namespace jupiter{
 
     Map::Map(){};
     Map::Map(Map& other) : slots( other.slots ){};
-    Map::Map(immer::map<std::string, Object* > slots) : slots(slots) {}
+    Map::Map(immer::map<unsigned, Object* > slots) : slots(slots) {};
 
     void Map::mark(){
         marked = true;
@@ -41,14 +42,22 @@ namespace jupiter{
 
     Object* Map::at(const std::string& selector){
         try{
-            return slots.at( selector );
+            return slots.at( ConstantsTable::instance().string(selector) );
         }catch(std::exception& e){
             throw  "Selector \'" + selector + "\' not found in " + this->toString();
         }
     }
 
+    Object* Map::at(const unsigned selector){
+        try{
+            return slots.at( selector );
+        }catch(std::exception& e){
+            throw  "Selector not found in " + this->toString();
+        }
+    }
+
     std::string Map::toString(){
-        auto o = slots.find( "toString" );
+        auto o = slots.find( ConstantsTable::instance().string("toString") );
         if ( o ){
             auto result = World::instance().eval(*o);
             return result->toString();
@@ -63,11 +72,11 @@ namespace jupiter{
     }
 
     Object* Map::putAt(const std::string& key, Object* value){
-        return make<Map>( slots.set( key, value ) );
+        return make<Map>( slots.set( ConstantsTable::instance().string(key), value ) );
     }
 
     void Map::putAtMut(const std::string& key, Object* value){
-        slots = std::move(slots).set( key, value );
+        slots = std::move(slots).set( ConstantsTable::instance().string(key), value );
     }
 
     Object* Map::transient(){
@@ -75,7 +84,7 @@ namespace jupiter{
     }
 
     MapTransient::MapTransient() {}
-    MapTransient::MapTransient(immer::map<std::string, Object* > slots) : slots(slots) {}
+    MapTransient::MapTransient(immer::map<unsigned, Object* > slots) : slots(slots) {}
 
     void MapTransient::putAt(const std::string& key, Object* value){
         // transients can point to young objects
@@ -86,7 +95,7 @@ namespace jupiter{
         if ( istenured() ){
             value->setTenured();
         }
-        slots = std::move(slots).set( key, value );
+        slots = std::move(slots).set( ConstantsTable::instance().string(key), value );
     }
 
     Object* MapTransient::persist(){

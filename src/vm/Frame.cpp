@@ -159,9 +159,7 @@ namespace jupiter{
         auto receiverIndex = stack.size() - receiverRelPos;
         Object* receiver = stack.get( receiverIndex );
 
-        auto selector = getStringConstant( id );
-
-        MethodAt methodAtVisitor(vm, selector);
+        MethodAt methodAtVisitor(vm, id);
         receiver->accept(methodAtVisitor);
         auto nextMethod = methodAtVisitor.get();
 

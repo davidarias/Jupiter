@@ -65,10 +65,10 @@ namespace jupiter{
     class MethodAt : public ObjectVisitor{
     private:
         VM& vm;
-        std::string& selector;
+        unsigned selector;
         Object* method;
     public:
-        MethodAt(VM& vm, std::string& selector);
+        MethodAt(VM& vm, unsigned selector);
 
         Object* get();
 

@@ -133,7 +133,7 @@ namespace jupiter{
         vm.stack.resize( localsBaseIndex );
     }
 
-    MethodAt::MethodAt(VM& vm, std::string& selector)
+    MethodAt::MethodAt(VM& vm, unsigned selector)
         : vm(vm), selector(selector){}
 
     Object* MethodAt::get(){
