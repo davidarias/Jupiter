@@ -79,7 +79,8 @@ namespace jupiter{
         return true;
     }
 
-    int cmpimmerVector(immer::flex_vector<Object*> values, immer::flex_vector<Object*> other){
+    template<class T>
+    int cmpimmerVector(T values, T other){
 
         auto it1 = values.begin();
         auto it1End = values.end();
@@ -128,7 +129,8 @@ namespace jupiter{
     }
 
     ArrayTransient::ArrayTransient() {}
-    ArrayTransient::ArrayTransient(immer::flex_vector<Object*> values) : values( values ) {}
+    ArrayTransient::ArrayTransient(immer::flex_vector<Object*> values) :
+        values( values.transient() ) {}
 
     Object* ArrayTransient::push( Object* value){
         // transients can point to young objects
@@ -139,12 +141,12 @@ namespace jupiter{
         if ( istenured() ){
             value->setTenured();
         }
-        values = std::move(values).push_back( value );
+        values.push_back( value );
         return this;
     }
 
     Object* ArrayTransient::persist(){
-        return MemoryManager<Array>::instance().get( values );
+        return MemoryManager<Array>::instance().get( values.persistent() );
     }
 
     std::string ArrayTransient::toString(){

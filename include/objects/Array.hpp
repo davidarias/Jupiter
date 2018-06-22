@@ -46,7 +46,7 @@ namespace jupiter{
 
     class ArrayTransient : public Object{
     private:
-        immer::flex_vector<Object*> values;
+        immer::flex_vector_transient<Object*> values;
     protected:
         int cmp(Object&);
     public:
