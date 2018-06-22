@@ -41,7 +41,7 @@ namespace jupiter{
         return nil;
     }
 
-    void VM::gc(bool full){
+    void VM::mark(bool full){
 
         if ( full ){
             for( auto it = stack.begin(); it != stack.end(); ++it){

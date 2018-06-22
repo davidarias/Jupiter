@@ -176,8 +176,6 @@ namespace jupiter{
             // vm.pop();
 
         }
-        // TODO pop last value of stack
-        vm.gc(true);
 
     }
 

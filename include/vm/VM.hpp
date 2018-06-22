@@ -37,7 +37,7 @@ namespace jupiter{
     public:
         VM(Map& globals, Map& prototypes);
 
-        void gc(bool full);
+        void mark(bool full);
 
         void pop();
 

@@ -150,9 +150,9 @@ namespace jupiter{
                 auto t1 = std::chrono::high_resolution_clock::now();
 
                 if (gcCycles % 15 == 0){
-                    World::instance().vm.gc(true);
+                    World::instance().vm.mark(true);
                 }else{
-                    World::instance().vm.gc(false);
+                    World::instance().vm.mark(false);
                 }
 
                 auto t2 = std::chrono::high_resolution_clock::now();
@@ -163,9 +163,9 @@ namespace jupiter{
                 #else
 
                 if (gcCycles % 15 == 0){
-                    World::instance().vm.gc(true);
+                    World::instance().vm.mark(true);
                 }else{
-                    World::instance().vm.gc(false);
+                    World::instance().vm.mark(false);
                 }
 
                 #endif
