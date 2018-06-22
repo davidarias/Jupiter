@@ -52,7 +52,9 @@ namespace jupiter{
         try{
             return slots.at( selector );
         }catch(std::exception& e){
-            throw  "Selector not found in " + this->toString();
+            throw  "Selector " +
+                ConstantsTable::instance().get(selector)->toString() +
+                " not found in " + this->toString();
         }
     }
 

@@ -57,14 +57,6 @@ namespace jupiter{
         stack.resize( localsBaseIndex );
     }
 
-
-    std::string& Frame::getStringConstant(unsigned id){
-        // TODO use interned strings
-        Object* obj = ConstantsTable::instance().get( id );
-        String& str = static_cast<String&>(*obj);
-        return str.getValue();
-    }
-
     Object* Frame::getLocal( unsigned index ){
         return stack.get( getLocalIndex( index ) );
     }
@@ -83,14 +75,15 @@ namespace jupiter{
 
 
     void Frame::pushGlobal(unsigned id){
-        auto globalSymbol = getStringConstant( id );
         try{
 
-            Object* global = globals.at(globalSymbol);
+            Object* global = globals.at(id);
             stack.push( global );
 
         }catch(std::exception& e){
-            throw "RuntimeException: Global object '"+ globalSymbol + "' not found";
+            throw "RuntimeException: Global object  " +
+                ConstantsTable::instance().get(id)->toString() +
+                " not found";
         }
     }
 

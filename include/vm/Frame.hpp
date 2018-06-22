@@ -40,7 +40,6 @@ namespace jupiter{
 
         unsigned instructionCounter;
 
-        std::string& getStringConstant( unsigned id);
         Object* getLocal( unsigned index );
         unsigned getLocalIndex( unsigned index );
 
