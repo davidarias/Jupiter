@@ -141,9 +141,7 @@ namespace jupiter{
             return i;
         }
 
-
-        template<typename... Args>
-        T* get(Args... args){
+        T* get(){
 
             if ( pool.empty() ){
                 #ifdef BENCHMARK
@@ -193,16 +191,13 @@ namespace jupiter{
 
             p->~T(); // reset/call destructor
 
-            new(p) T(args...); // reuse old memory
-
             eden.push_back(p);
             return p;
         }
 
         // allocate objects that are never garbage collected
-        template<typename... Args>
-        T* permanent(Args... args){
-            auto p = new T(args...);
+        T* permanent(){
+            auto p = new T;
             inmortal.push_back(p);
             return p;
         }
@@ -314,12 +309,15 @@ namespace jupiter{
 
     template<class T, typename... Args>
     T* make(Args... args){
-        return MemoryManager<T>::instance().get(args...);
+        auto p = MemoryManager<T>::instance().get();
+        return new(p) T(args...);
+
     }
 
     template<class T, typename... Args>
     T* make_permanent(Args... args){
-        return MemoryManager<T>::instance().permanent(args...);
+        auto p = MemoryManager<T>::instance().permanent();
+        return new(p) T(args...);
     }
 
 }
