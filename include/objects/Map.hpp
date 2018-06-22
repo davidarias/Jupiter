@@ -50,7 +50,6 @@ namespace jupiter{
     public:
         MapTransient();
         MapTransient(immer::map<std::string, Object* > slots);
-        Object* at(const std::string& key);
         void putAt(const std::string& key, Object* value);
         Object* persist();
 

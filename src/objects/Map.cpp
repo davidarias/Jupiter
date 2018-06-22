@@ -77,15 +77,6 @@ namespace jupiter{
     MapTransient::MapTransient() {}
     MapTransient::MapTransient(immer::map<std::string, Object* > slots) : slots(slots) {}
 
-    Object* MapTransient::at(const std::string& selector){
-
-        // globals are always maps
-        static Map& behaviour = static_cast<Map&>( *( World::instance().prototypes.at("MapTransient") ));
-
-        return behaviour.at( selector );
-
-    }
-
     void MapTransient::putAt(const std::string& key, Object* value){
         // transients can point to young objects
         // being tenured, so when adding an object
