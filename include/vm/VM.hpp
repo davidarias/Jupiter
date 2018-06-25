@@ -20,6 +20,8 @@ namespace jupiter{
     class Array;
     class Method;
 
+    class World;
+
     class Frame;
 
     class VM{
@@ -28,14 +30,10 @@ namespace jupiter{
         friend class MethodAt;
     private:
         Stack stack;
-        Map& globals;
-        Map& prototypes;
+        World& world;
 
-        Object* cachedTrue();
-        Object* cachedFalse();
-        Object* cachedNil();
     public:
-        VM(Map& globals, Map& prototypes);
+        VM(World& world);
 
         void mark(bool full);
 

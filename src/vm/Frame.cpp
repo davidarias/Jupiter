@@ -22,7 +22,7 @@ namespace jupiter{
 
 
     Frame::Frame(VM& vm, Method& method)
-        : vm(vm), globals(vm.globals), stack(vm.stack), method(method)
+        : vm(vm), stack(vm.stack), method(method)
     {
         compiledMethod = method.compiledMethod;
         // closures block have self of the context where was created
@@ -77,7 +77,7 @@ namespace jupiter{
     void Frame::pushGlobal(unsigned id){
         try{
 
-            Object* global = globals.at(id);
+            Object* global = vm.world.getGlobal(id);
             stack.push( global );
 
         }catch(std::exception& e){
@@ -193,7 +193,7 @@ namespace jupiter{
 
         #else
 
-        Evaluator evaluator(receiver, stack, globals);
+        Evaluator evaluator(vm);
         nextMethod->accept( evaluator );
 
         #endif
@@ -203,14 +203,14 @@ namespace jupiter{
 
     void Frame::jumpIfFalse( uint16_t id ){
         Object* obj = stack.pop();
-        if ( obj == vm.cachedFalse() ){
+        if ( obj == vm.world.getFalse() ){
             instructionCounter = id -1; // main loop will increment this right after this
         }
     }
 
     void Frame::jumpIfTrue( uint16_t id ){
         Object* obj = stack.pop();
-        if ( obj == vm.cachedTrue() ){
+        if ( obj == vm.world.getTrue() ){
             instructionCounter = id -1;
         }
     }

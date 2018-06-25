@@ -28,7 +28,6 @@ namespace jupiter{
     class Frame{
     private:
         VM& vm;
-        Map& globals;
         Stack& stack;
         Method& method;
         std::shared_ptr<CompiledMethod> compiledMethod;

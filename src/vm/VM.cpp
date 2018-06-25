@@ -21,24 +21,9 @@
 
 namespace jupiter{
 
-    VM::VM(Map& globals, Map& prototypes)
-        : globals(globals), prototypes(prototypes) {
+    VM::VM(World& world) : world(world) {
+
         stack.push(make<Map>()); // to avoid stack underflow and crash
-    }
-
-    Object* VM::cachedTrue(){
-        static auto trueObj = globals.at("true");
-        return trueObj;
-    }
-
-    Object* VM::cachedFalse(){
-        static auto falseObj = globals.at("false");
-        return falseObj;
-    }
-
-    Object* VM::cachedNil(){
-        static auto nil = globals.at("nil");
-        return nil;
     }
 
     void VM::mark(bool full){
@@ -145,37 +130,37 @@ namespace jupiter{
     }
 
     void MethodAt::visit(MapTransient& obj){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("MapTransient")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("MapTransient")) );
 
         method = behaviour.at(selector);
     }
 
     void MethodAt::visit(Number& obj){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Number")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Number")) );
 
         method = behaviour.at(selector);
     }
 
     void MethodAt::visit(String& obj ){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("String")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("String")) );
 
         method = behaviour.at(selector);
     }
 
     void MethodAt::visit(Array& obj ){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Array")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Array")) );
 
         method = behaviour.at(selector);
     }
 
     void MethodAt::visit(ArrayTransient& obj ){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("ArrayTransient")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("ArrayTransient")) );
 
         method = behaviour.at(selector);
     }
 
     void MethodAt::visit(Method& obj ){
-        static Map& behaviour = static_cast<Map&>( *(vm.prototypes.at("Method")) );
+        static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Method")) );
 
         method = behaviour.at(selector);
     }

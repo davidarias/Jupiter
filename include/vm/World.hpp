@@ -34,6 +34,10 @@ namespace jupiter{
         Object* getFalse();
         Object* getNil();
 
+        Object* getGlobal(const std::string& global);
+        Object* getGlobal(unsigned id);
+        Object* getPrototype(const std::string& prototypeName);
+
         static World& instance() {
             static World i;
             return i;

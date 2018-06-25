@@ -40,7 +40,9 @@ namespace jupiter{
 
     class SelectorNotFound : public RuntimeException {
     public:
-        SelectorNotFound ( std::string key ) : RuntimeException( "Selector \'" + key + "\' not found in object" ){}
+        unsigned key;
+        SelectorNotFound ( unsigned key ) :
+            RuntimeException( "Selector not found in object" ), key(key){}
     };
 
 }

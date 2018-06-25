@@ -35,12 +35,27 @@ namespace jupiter{
 
         std::string toString();
 
-        Object* at(const std::string& key);
         Object* at(const unsigned key);
-        Object* putAt(const std::string& key, Object* value);
-        void putAtMut(const std::string& key, Object* value);
+        Object* putAt(const unsigned key, Object* value);
+        void putAtMut(const unsigned key, Object* value);
 
         Object* transient();
+    };
+
+    class ConstantsTable;
+
+    // Map class uses unsigned int as keys, but usually we need to
+    // use strings keys, so this adapter helps with that using
+    // the table of interned strings ( for now the ConstantsTable class )
+    class MapStringAdapter{
+    private:
+        ConstantsTable& table;
+        Map& map;
+    public:
+        MapStringAdapter(ConstantsTable& table, Map& map);
+        Object* at(const std::string& key);
+        Object* putAt(const std::string& key, Object* value);
+        void putAtMut(const std::string& key, Object* value);
     };
 
     class MapTransient : public Object{
@@ -51,12 +66,23 @@ namespace jupiter{
     public:
         MapTransient();
         MapTransient(immer::map<unsigned, Object* > slots);
-        void putAt(const std::string& key, Object* value);
+        void putAt(const unsigned key, Object* value);
         Object* persist();
 
         void mark();
         void accept(ObjectVisitor&);
         std::string toString();
+    };
+    
+    
+    
+    class MapTransientStringAdapter{
+    private:
+        ConstantsTable& table;
+        MapTransient& map;
+    public:
+        MapTransientStringAdapter(ConstantsTable& table, MapTransient& map);
+        void putAt(const std::string& key, Object* value);
     };
 
 }

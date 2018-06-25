@@ -9,8 +9,8 @@
 #include <compiler/Compiler.hpp>
 #include <vm/VM.hpp>
 #include <vm/ObjectSerializer.hpp>
-
 #include <vm/MemoryManager.hpp>
+#include <vm/ConstantsTable.hpp>
 
 #include <misc/Exceptions.hpp>
 
@@ -26,7 +26,7 @@
 namespace jupiter{
 
 
-    World::World() : vm(globals, prototypes){
+    World::World() : vm(*this){
 
     }
 
@@ -44,23 +44,25 @@ namespace jupiter{
 
         if ( ! initialized ){
             if ( const char* path = getenv( "JUPITERHOME" )) {
+                MapStringAdapter prototypesAdapter(ConstantsTable::instance(), prototypes);
+                MapStringAdapter globalsAdapter(ConstantsTable::instance(), globals);
 
                 // init Map prototype with an empty Map
-                prototypes.putAtMut("Map", make<Map>() );
+                prototypesAdapter.putAtMut("Map", make<Map>() );
 
                 loadPrototypes(std::string(path) + "/core-types");
                 //now in prototypes.at("Map") there is the real map prototype
 
 
                 // Create core types globals with the right type
-                globals.putAtMut("Number", make_permanent<Number>(0) );
-                globals.putAtMut("Array", make_permanent<Array>());
-                globals.putAtMut("String", make_permanent<String>() );
+                globalsAdapter.putAtMut("Number", make_permanent<Number>(0) );
+                globalsAdapter.putAtMut("Array", make_permanent<Array>());
+                globalsAdapter.putAtMut("String", make_permanent<String>() );
 
-                globals.putAtMut("Map",
-                                 make_permanent<Map>( static_cast<Map&>( *( prototypes.at("Map") ) ) ) );
+                globalsAdapter.putAtMut("Map",
+                                 make_permanent<Map>( static_cast<Map&>( *( getPrototype("Map") ) ) ) );
 
-                globals.putAtMut("Method", make_permanent<Method>());
+                globalsAdapter.putAtMut("Method", make_permanent<Method>());
 
                 loadPackage(std::string(path) + "/core");
 
@@ -78,18 +80,36 @@ namespace jupiter{
     }
 
     Object* World::getTrue(){
-        static auto trueObj = globals.at("true");
+        static auto trueObj = getGlobal("true");
         return trueObj;
     }
 
     Object* World::getFalse(){
-        static auto falseObj = globals.at("false");
+        static auto falseObj = getGlobal("false");
         return falseObj;
     }
 
     Object* World::getNil(){
-        static auto nil = globals.at("nil");
+        static auto nil = getGlobal("nil");
         return nil;
+    }
+
+
+    Object* World::getGlobal(const std::string& globalName){
+        MapStringAdapter globalsAdapter(ConstantsTable::instance(), globals);
+
+        return globalsAdapter.at(globalName);
+    }
+
+    Object* World::getGlobal(unsigned id){
+
+        return globals.at(id);
+    }
+
+    Object* World::getPrototype(const std::string& prototypeName){
+        MapStringAdapter prototypesAdapter(ConstantsTable::instance(), prototypes);
+
+        return prototypesAdapter.at( prototypeName );
     }
 
     void World::loadPackage(const std::string& path){
@@ -125,6 +145,7 @@ namespace jupiter{
         }
 
     }
+
 
     Object* World::getNativeExtensionMethod(const std::string& lib, const std::string& name){
         auto librayHandle = nativeLibs.at(lib);
