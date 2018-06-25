@@ -43,10 +43,6 @@ namespace jupiter{
             return i;
         }
 
-        // to avoid recursive_init_error
-        void init();
-
-
         Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
 
         void loadPrototypes(const std::string& path);
