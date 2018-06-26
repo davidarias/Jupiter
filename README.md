@@ -86,7 +86,7 @@ The interpreter needs this environment variable to load the core library.
 Navigate to the project folder:
 ```bash
 $ cd jupiter-master/
-$ export JUPITERHOME=$PWD/lib/core
+$ export JUPITERHOME=$PWD/lib
 ```
 
 ## Docs and Tutorial
