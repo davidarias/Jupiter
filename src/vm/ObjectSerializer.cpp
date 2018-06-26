@@ -8,20 +8,23 @@
 
 #include <objects/Object.hpp>
 #include <vm/MemoryManager.hpp>
+#include <vm/ConstantsTable.hpp>
+#include <vm/World.hpp>
 #include <compiler/Compiler.hpp>
+
 
 #include <dirent.h>
 
 namespace jupiter{
 
-    ObjectSerializer::ObjectSerializer(){
-
-    }
+    ObjectSerializer::ObjectSerializer(World& world) : world(world){}
 
     void ObjectSerializer::deserialize(std::string path, Map* root){
         DIR *dir;
         struct dirent *entry;
 
+        Map& mapPrototype = static_cast<Map&>( *world.getPrototype("Map") );
+        MapStringAdapter rootAdapter( ConstantsTable::instance(), *root);
 
         if ( ( dir = opendir ( path.c_str() ) ) != NULL) {
 
@@ -33,9 +36,9 @@ namespace jupiter{
 
                     if ( name != "." && name != ".." ){
 
-                        auto obj = MemoryManager<Map>::instance().permanent();
+                        auto obj = make_permanent<Map>( mapPrototype );
 
-                        root->putAtMut(name, obj);
+                        rootAdapter.putAtMut(name, obj);
                         deserialize( path + "/" + name, obj);
 
                     }
@@ -97,7 +100,10 @@ namespace jupiter{
                 std::cout << "CompilerException: " << e.what() << std::endl << " in file: " << path << std::endl << std::endl;
             }
 
-            obj->putAtMut( name, method );
+            MapStringAdapter objAdapter( ConstantsTable::instance(), *obj);
+
+
+            objAdapter.putAtMut( name, method );
 
         }
 

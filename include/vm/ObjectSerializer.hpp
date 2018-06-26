@@ -13,10 +13,14 @@ namespace jupiter{
 
     class Map;
 
+    class World;
+
     class ObjectSerializer{
+    private:
+        World& world;
 
     public:
-        ObjectSerializer();
+        ObjectSerializer(World& world);
 
         void serialize(std::string path);
         void deserialize(std::string path, Map* root);

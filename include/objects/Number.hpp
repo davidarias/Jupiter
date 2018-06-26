@@ -49,6 +49,8 @@ namespace jupiter{
 
         ~Number();
 
+        void accept(ObjectVisitor&);
+
         Number* operator+(Number& other);
         Number* operator-(Number& other);
         Number* operator*(Number& other);
@@ -58,9 +60,7 @@ namespace jupiter{
 
         int64_t truncate();
 
-        Object* at(const std::string& selector);
         std::string toString();
-        void eval(Evaluator& evaler);
 
     };
 

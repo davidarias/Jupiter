@@ -9,6 +9,7 @@
 
 #include <misc/common.hpp>
 #include <vm/Stack.hpp>
+#include <objects/Objects.hpp>
 
 namespace jupiter{
 
@@ -19,80 +20,64 @@ namespace jupiter{
     class Array;
     class Method;
 
-    class NativeMethod;
+    class World;
 
-    class CompiledMethod;
-    class UpValue;
-
-    struct Instruction;
-
-    class ExecutionFrame{
-    private:
-        Stack& stack;
-        Method& method;
-        std::shared_ptr<CompiledMethod> compiledMethod;
-        Object* self;
-        // where are located the locals in the stack
-        unsigned localsBaseIndex;
-        unsigned returnIndex;
-
-        unsigned instructionCounter;
-
-        std::string& getStringConstant( unsigned id);
-        Object* getLocal( unsigned index );
-        unsigned getLocalIndex( unsigned index );
-
-        void pushConstant( unsigned id );
-        void pushLocal( unsigned id );
-        void pushGlobal( unsigned id );
-        void pushSelf();
-        void pushClosure( unsigned id );
-        void pushUpValue( unsigned id );
-        void popInto( unsigned id );
-        void pop();
-        void popNIntoArray( unsigned n );
-        void dup();
-        void send( uint16_t id, uint8_t receiverRelPos );
-        void jumpIfFalse( uint16_t id );
-        void jumpIfTrue( uint16_t id );
-        void jump( uint16_t id );
-
-        void dispatch( Instruction instruction );
-
-    public:
-        ExecutionFrame(Stack& stack, Method& method, Object* self);
-        ~ExecutionFrame();
-        void execute();
-    };
+    class Frame;
 
     class VM{
+        friend class Frame;
+        friend class Evaluator;
+        friend class MethodAt;
     private:
         Stack stack;
-    public:
-        VM();
+        World& world;
 
-        void gc(bool full);
+    public:
+        VM(World& world);
+
+        void mark(bool full);
 
         void pop();
 
         Object* eval(Object* object);
-        Object* eval(Object* object, Object* self);
-        Object* eval(Method& method, Object* self);
+        Object* eval(Method& method);
 
     };
 
-    class Evaluator{
+    class Evaluator : public ObjectVisitor{
     private:
-        Object* receiver;
-        Stack& stack;
+        VM& vm;
     public:
-        Evaluator(Object* receiver, Stack& stack);
-        void operator()(Map&);
-        void operator()(Number&);
-        void operator()(String&);
-        void operator()(Array&);
-        void operator()(Method&);
-        void operator()(NativeMethod&);
+        Evaluator(VM& vm);
+        void visit(Map&);
+        void visit(MapTransient&);
+        void visit(Number&);
+        void visit(String&);
+        void visit(Array&);
+        void visit(ArrayTransient&);
+        void visit(Method&);
+        void visit(NativeMethod&);
+
+    };
+
+    class MethodAt : public ObjectVisitor{
+    private:
+        VM& vm;
+        unsigned selector;
+        Object* method;
+    public:
+        MethodAt(VM& vm, unsigned selector);
+
+        Object* get();
+
+        void visit(Map&);
+        void visit(MapTransient&);
+        void visit(Number&);
+        void visit(String&);
+        void visit(Array&);
+        void visit(ArrayTransient&);
+        void visit(Method&);
+        void visit(NativeMethod&);
 
     };
 }

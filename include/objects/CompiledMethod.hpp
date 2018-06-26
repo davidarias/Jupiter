@@ -46,7 +46,7 @@ namespace jupiter{
 
     class CompiledMethod{
         friend class VM;
-        friend class ExecutionFrame;
+        friend class Frame;
     private:
         unsigned locals; // includes arguments
         unsigned arity;

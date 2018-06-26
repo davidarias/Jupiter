@@ -141,9 +141,7 @@ namespace jupiter{
             return i;
         }
 
-
-        template<typename... Args>
-        T* get(Args... args){
+        T* get(){
 
             if ( pool.empty() ){
                 #ifdef BENCHMARK
@@ -152,9 +150,9 @@ namespace jupiter{
                 auto t1 = std::chrono::high_resolution_clock::now();
 
                 if (gcCycles % 15 == 0){
-                    World::instance().vm.gc(true);
+                    World::instance().vm.mark(true);
                 }else{
-                    World::instance().vm.gc(false);
+                    World::instance().vm.mark(false);
                 }
 
                 auto t2 = std::chrono::high_resolution_clock::now();
@@ -165,9 +163,9 @@ namespace jupiter{
                 #else
 
                 if (gcCycles % 15 == 0){
-                    World::instance().vm.gc(true);
+                    World::instance().vm.mark(true);
                 }else{
-                    World::instance().vm.gc(false);
+                    World::instance().vm.mark(false);
                 }
 
                 #endif
@@ -193,16 +191,13 @@ namespace jupiter{
 
             p->~T(); // reset/call destructor
 
-            new(p) T(args...); // reuse old memory
-
             eden.push_back(p);
             return p;
         }
 
         // allocate objects that are never garbage collected
-        template<typename... Args>
-        T* permanent(Args... args){
-            auto p = new T(args...);
+        T* permanent(){
+            auto p = new T;
             inmortal.push_back(p);
             return p;
         }
@@ -312,6 +307,18 @@ namespace jupiter{
 
     };
 
+    template<class T, typename... Args>
+    T* make(Args... args){
+        auto p = MemoryManager<T>::instance().get();
+        return new(p) T(args...);
+
+    }
+
+    template<class T, typename... Args>
+    T* make_permanent(Args... args){
+        auto p = MemoryManager<T>::instance().permanent();
+        return new(p) T(args...);
+    }
 
 }
 #endif

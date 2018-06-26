@@ -10,16 +10,29 @@
 #include <misc/common.hpp>
 
 
-#include <immer/flex_vector.hpp>
-#include <immer/flex_vector_transient.hpp>
-
-#include <immer/box.hpp>
-#include <immer/map.hpp>
-
-
 namespace jupiter{
 
     class Object;
+    class Number;
+    class String;
+    class Array;
+    class ArrayTransient;
+    class Map;
+    class MapTransient;
+    class Method;
+    class NativeMethod;
+
+    class ObjectVisitor{
+    public:
+        virtual void visit(Number&) = 0;
+        virtual void visit(String&) = 0;
+        virtual void visit(Array&) = 0;
+        virtual void visit(ArrayTransient&) = 0;
+        virtual void visit(Map&) = 0;
+        virtual void visit(MapTransient&) = 0;
+        virtual void visit(Method&) = 0;
+        virtual void visit(NativeMethod&) = 0;
+    };
 
     class GCObject{
     protected:
@@ -61,139 +74,12 @@ namespace jupiter{
         Object();
         virtual ~Object();
 
-        virtual Object* at(const std::string& selector) = 0;
+        virtual void accept(ObjectVisitor&) = 0;
         virtual std::string toString() = 0;
-        virtual void eval(Evaluator& evaluator) = 0;
 
 
     };
 
-    class Map: public Object{
-    protected:
-
-        int cmp(Object&);
-        bool equal(Object& other);
-    public:
-        immer::map<std::string, Object* > slots;
-
-        Map();
-        Map(immer::map<std::string, Object* > slots);
-
-        void mark();
-
-        std::string toString();
-        void eval(Evaluator& evaluator);
-
-        Object* at(const std::string& key);
-        Object* putAt(const std::string& key, Object* value);
-        void putAtMut(const std::string& key, Object* value);
-
-        Object* transient();
-    };
-
-    class MapTransient : public Map{
-    public:
-        MapTransient();
-        MapTransient(immer::map<std::string, Object* > slots);
-        Object* at(const std::string& key);
-        void putAt(const std::string& key, Object* value);
-        Object* persist();
-    };
-
-
-
-    class Array : public Object{
-    protected:
-        immer::flex_vector<Object*> values;
-
-        int cmp(Object& other);
-        bool equal(Object& other);
-    public:
-        Array();
-        Array(immer::flex_vector<Object*> values);
-        Array(Object** start, Object** end);
-
-        void mark();
-
-        Object* formatString(std::string& str);
-        Object* at( int index );
-        Object* push( Object* value );
-        Object* take( int elems );
-        Object* drop( int elems );
-        Object* size();
-        Object* transient();
-
-        Object* at(const std::string& selector);
-        std::string toString();
-        void eval(Evaluator& evaluator);
-
-    };
-
-    class ArrayTransient : public Array{
-    public:
-        ArrayTransient();
-        ArrayTransient(immer::flex_vector<Object*> values);
-        Object* at(const std::string& key);
-        Object* push( Object* value );
-        Object* persist();
-    };
-
-
-    class CompiledMethod;
-
-    class Method : public Object {
-        friend class ExecutionFrame;
-    private:
-        std::string name;
-        std::string signature;
-        std::string source;
-        std::shared_ptr<CompiledMethod> compiledMethod;
-        Object* self;
-
-        // TODO optimize this ( maybe using a sparse vector? )
-        std::unordered_map<unsigned, Object*> upvalues;
-
-    protected:
-        int cmp(Object& other);
-        bool equal(Object& other);
-    public:
-        Method();
-        Method(std::string& name, std::string& signature, std::string& source,
-               std::shared_ptr<CompiledMethod> compiledMethod);
-
-        Method(std::shared_ptr<CompiledMethod> compiledMethod);
-        ~Method();
-
-        void mark();
-
-        std::string& getName();
-        std::shared_ptr<CompiledMethod> getCompiledMethod();
-
-        Object* at(const std::string& selector);
-        std::string toString();
-        void eval(Evaluator& evaluator);
-
-
-    };
-
-    typedef Object* (*NativeFunction)(Object*, Object**);
-
-    class NativeMethod : public Object {
-        friend struct Evaluator;
-    private:
-        NativeFunction fn;
-        unsigned arity;
-    protected:
-        bool equal(Object& other);
-        int cmp(Object&);
-    public:
-        NativeMethod(NativeFunction fn, unsigned arity);
-
-        Object* at(const std::string& selector);
-        std::string toString();
-        void eval(Evaluator&);
-
-    };
 
 
 }

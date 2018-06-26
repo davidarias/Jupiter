@@ -9,13 +9,12 @@
 
 #include <misc/common.hpp>
 #include <vm/VM.hpp>
-#include <objects/Object.hpp>
+#include <objects/Objects.hpp>
 
 namespace jupiter{
 
+
     class World{
-        // the primitive eval function can acces directly the vm
-        // friend Object* methodEval(PrimitiveArguments& arguments);
     private:
         World();
         ~World();
@@ -24,13 +23,20 @@ namespace jupiter{
 
         std::unordered_map<std::string, void*> nativeLibs;
 
+        bool initialized = false;
+
     public:
         Map globals;
+        Map prototypes;
         VM vm;
 
         Object* getTrue();
         Object* getFalse();
         Object* getNil();
+
+        Object* getGlobal(const std::string& global);
+        Object* getGlobal(unsigned id);
+        Object* getPrototype(const std::string& prototypeName);
 
         static World& instance() {
             static World i;
@@ -39,12 +45,12 @@ namespace jupiter{
 
         Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
 
+        void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
         void loadNative(const std::string& path);
 
         void eval(std::string);
         Object* eval(Object* o);
-        Object* eval(Object* o, Object* self);
 
     };
 }

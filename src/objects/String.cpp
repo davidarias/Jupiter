@@ -8,6 +8,10 @@ namespace jupiter{
     String::String() {}
     String::String(const std::string& value): value(value) {}
 
+    void String::accept(ObjectVisitor& visitor){
+        visitor.visit(*this);
+    }
+
     std::string& String::getValue(){
         return value;
     }
@@ -19,21 +23,11 @@ namespace jupiter{
     }
 
     String* String::operator+(String& other){
-        return MemoryManager<String>::instance().get(value + other.value);
-    }
-
-    Object* String::at(const std::string& selector){
-        // globas are always maps
-        static Map& behaviour =  static_cast<Map&>( *( World::instance().globals.at("String") ));
-        return behaviour.at( selector );
+        return make<String>(value + other.value);
     }
 
     std::string String::toString(){
         return value;
-    }
-
-    void String::eval(Evaluator& evaluator){
-        evaluator(*this);
     }
 
 

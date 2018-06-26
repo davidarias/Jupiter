@@ -9,6 +9,7 @@
 #include <objects/Objects.hpp>
 #include <objects/CompiledMethod.hpp>
 #include <vm/World.hpp>
+#include <vm/ConstantsTable.hpp>
 
 namespace jupiter{
 
@@ -204,15 +205,20 @@ namespace jupiter{
     Object* mapAt(Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto arg0 = dynamic_cast<String&>( *( args[0] ) );
+        
+        MapStringAdapter mapAdapter(ConstantsTable::instance(), _self);
 
-        return _self.at( arg0.getValue() );
+
+        return mapAdapter.at( arg0.getValue() );
     }
 
     Object* mapAtPut(Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto index = dynamic_cast<String&>( *( args[0] ) );
+        
+        MapStringAdapter mapAdapter(ConstantsTable::instance(), _self);
 
-        return _self.putAt( index.getValue(), args[1] );
+        return mapAdapter.putAt( index.getValue(), args[1] );
     }
 
     Object* mapTransient(Object* self, Object** args){
@@ -235,8 +241,10 @@ namespace jupiter{
         auto index = dynamic_cast<String&>( *( args[0] ) );
 
         if (self == nullptr ) throw std::bad_cast();
+        
+        MapTransientStringAdapter mapAdapter(ConstantsTable::instance(), *_self);
 
-        _self->putAt( index.getValue(), args[1] );
+        mapAdapter.putAt( index.getValue(), args[1] );
 
         return self;
     }
@@ -253,7 +261,7 @@ namespace jupiter{
         World& world = World::instance();
         Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
-        return world.vm.eval( method, nullptr );
+        return world.vm.eval( method );
     }
 
     Object* methodPrintByteCode(Object* self, Object** args){
