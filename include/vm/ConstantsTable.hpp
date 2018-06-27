@@ -14,25 +14,20 @@ namespace jupiter{
     class Object;
 
     class ConstantsTable{
+    private:
         std::unordered_map<std::string, unsigned> numbers;
         std::unordered_map<std::string, unsigned> strings;
 
         std::vector<Object*> constants;
 
     public:
-        static ConstantsTable& instance(){
-            static ConstantsTable i;
-            return i;
-        }
+        ConstantsTable();
 
         unsigned number(const std::string& number);
         unsigned string(const std::string& string);
         Object* get(unsigned index);
 
-    private:
-        ConstantsTable();
-        ConstantsTable(const ConstantsTable&) = delete;
-        void operator=(const ConstantsTable&) = delete;
+
     };
 
 }

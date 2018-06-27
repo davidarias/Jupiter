@@ -9,6 +9,7 @@
 
 #include <misc/common.hpp>
 #include <vm/VM.hpp>
+#include <vm/ConstantsTable.hpp>
 #include <objects/Objects.hpp>
 
 namespace jupiter{
@@ -25,9 +26,10 @@ namespace jupiter{
 
         bool initialized = false;
 
-    public:
         Map globals;
         Map prototypes;
+    public:
+        ConstantsTable constantsTable;
         VM vm;
 
         Object* getTrue();
@@ -51,6 +53,9 @@ namespace jupiter{
 
         void eval(std::string);
         Object* eval(Object* o);
+
+        Object* compile(std::string& source);
+        std::tuple<std::string, Object*> compile(std::string& signature, std::string& source);
 
     };
 }

@@ -106,14 +106,13 @@ namespace jupiter{
             auto currentInstruction = instructions[i];
             auto bytecode = currentInstruction.bytecode;
             auto argument = currentInstruction.argument;
+            auto shortArgument = currentInstruction.shortArgument;
 
             std::cout << std::setw(3) <<  i << " ";
             switch( bytecode ){
 
             case PUSH_CONSTANT:
-                LOG("PUSH_CONSTANT " << argument <<
-                    ": '"<< ConstantsTable::instance().get( argument )->toString() << "'"
-                    );
+                LOG("PUSH_CONSTANT " << argument );
                 break;
 
             case PUSH_LOCAL:
@@ -121,9 +120,7 @@ namespace jupiter{
                 break;
 
             case PUSH_GLOBAL:
-                LOG("PUSH_GLOBAL " << argument  <<
-                    ": '"<< ConstantsTable::instance().get( argument )->toString() << "'"
-                    );
+                LOG("PUSH_GLOBAL " << argument );
                 break;
 
             case PUSH_SELF:
@@ -159,10 +156,7 @@ namespace jupiter{
                 break;
 
             case SEND:
-                LOG("SEND " << argument
-                    <<
-                    ": '"<< ConstantsTable::instance().get( argument )->toString() << "'" <<
-                    ", arity: " << (unsigned) currentInstruction.shortArgument -1 );
+                LOG("SEND " << argument << ", " << shortArgument );
                 break;
 
             case JUMP_IFTRUE:

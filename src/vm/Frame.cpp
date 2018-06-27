@@ -20,7 +20,6 @@
 
 namespace jupiter{
 
-
     Frame::Frame(VM& vm, Method& method)
         : vm(vm), stack(vm.stack), method(method)
     {
@@ -82,13 +81,13 @@ namespace jupiter{
 
         }catch(std::exception& e){
             throw "RuntimeException: Global object  " +
-                ConstantsTable::instance().get(id)->toString() +
+                vm.world.constantsTable.get(id)->toString() +
                 " not found";
         }
     }
 
     void Frame::pushConstant(unsigned id){
-        stack.push( ConstantsTable::instance().get( id ) );
+        stack.push( vm.world.constantsTable.get( id ) );
     }
 
     void Frame::pushClosure( unsigned id ){

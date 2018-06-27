@@ -6,7 +6,10 @@
 
 #include <vm/World.hpp>
 
+#include <compiler/Lexer.hpp>
+#include <compiler/Parser.hpp>
 #include <compiler/Compiler.hpp>
+
 #include <vm/VM.hpp>
 #include <vm/ObjectSerializer.hpp>
 #include <vm/MemoryManager.hpp>
@@ -29,8 +32,8 @@ namespace jupiter{
     World::World() : vm(*this){
 
         if ( const char* path = getenv( "JUPITERHOME" )) {
-            MapStringAdapter prototypesAdapter(ConstantsTable::instance(), prototypes);
-            MapStringAdapter globalsAdapter(ConstantsTable::instance(), globals);
+            MapStringAdapter prototypesAdapter(constantsTable, prototypes);
+            MapStringAdapter globalsAdapter(constantsTable, globals);
 
             // init Map prototype with an empty Map
             prototypesAdapter.putAtMut("Map", make<Map>() );
@@ -86,7 +89,7 @@ namespace jupiter{
 
 
     Object* World::getGlobal(const std::string& globalName){
-        MapStringAdapter globalsAdapter(ConstantsTable::instance(), globals);
+        MapStringAdapter globalsAdapter(constantsTable, globals);
 
         return globalsAdapter.at(globalName);
     }
@@ -97,7 +100,7 @@ namespace jupiter{
     }
 
     Object* World::getPrototype(const std::string& prototypeName){
-        MapStringAdapter prototypesAdapter(ConstantsTable::instance(), prototypes);
+        MapStringAdapter prototypesAdapter(constantsTable, prototypes);
 
         return prototypesAdapter.at( prototypeName );
     }
@@ -161,7 +164,7 @@ namespace jupiter{
     void World::eval(std::string source){
         // TODO refactor exception capture ( also in Method::Method )
 
-        auto method = Compiler::compile( source );
+        auto method = compile( source );
 
         if ( method ){
             #ifdef BENCHMARK
@@ -192,6 +195,56 @@ namespace jupiter{
 
     Object* World::eval(Object* o){
         return vm.eval(o);
+    }
+
+    Object* World::compile(std::string& source){
+
+        try{
+
+            source = source;
+
+            auto tokens = Lexer( source ).tokenize();
+
+            auto ast = Parser( tokens ).parse();
+
+            Compiler compiler(constantsTable);
+
+            ast->accept( compiler );
+
+            return make<Method>( compiler.getCompiledMethod() );
+
+        }catch (std::exception& e) {
+            std::cout << "CompilerException: ";
+            std::cout << e.what() << std::endl;
+        }
+
+        return getNil();
+
+    }
+    std::tuple<std::string, Object*> World::compile(std::string& signature, std::string& source){
+
+        auto signatureTokens = Lexer( signature ).tokenize();
+        auto signatureAst = Parser( signatureTokens ).parseMethodSignature();
+
+        auto tokens = Lexer( source ).tokenize();
+        auto ast = Parser( tokens ).parse();
+
+        std::string& name = signatureAst->selector;
+
+        PragmaCompiler pragmaCompiler;
+        ast->accept(pragmaCompiler);
+        Object* primitive = pragmaCompiler.getPrimitive();
+
+        if (primitive) return std::make_tuple(name, primitive);
+
+        Compiler compiler(constantsTable, signatureAst );
+
+        ast->accept( compiler );
+
+        auto method = make_permanent<Method>( name, signature, source,
+                                              compiler.getCompiledMethod() );
+
+        return std::make_tuple(name, method);
     }
 
 }

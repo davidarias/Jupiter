@@ -16,7 +16,6 @@ namespace jupiter{
     class SymbolNode;
     class StringNode;
     class ArrayNode;
-    class ObjectLiteralNode;
     class CodeBlockNode;
     class AssignmentNode;
     class MessageExpressionNode;
@@ -32,7 +31,6 @@ namespace jupiter{
         virtual void visit( SymbolNode& ) = 0;
         virtual void visit( StringNode& ) = 0;
         virtual void visit( ArrayNode& ) = 0;
-        virtual void visit( ObjectLiteralNode& ) = 0;
         virtual void visit( CodeBlockNode& ) = 0;
         virtual void visit( AssignmentNode& ) = 0;
         virtual void visit( MessageExpressionNode& ) = 0;
@@ -95,19 +93,6 @@ namespace jupiter{
             visitor.visit(*this);
         }
     };
-
-    class ObjectLiteralNode : public ASTNode {
-    public:
-        std::vector<std::string> keys;
-        std::vector<std::shared_ptr<ASTNode> > values;
-
-        ObjectLiteralNode();
-
-        void accept(ASTVisitor& visitor) {
-            visitor.visit(*this);
-        }
-    };
-
 
     class CodeBlockNode : public ASTNode {
     public:
