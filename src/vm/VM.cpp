@@ -129,43 +129,43 @@ namespace jupiter{
         method = obj.at(selector);
     }
 
-    void MethodAt::visit(MapTransient& obj){
+    void MethodAt::visit(MapTransient&){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("MapTransient")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(Number& obj){
+    void MethodAt::visit(Number&){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Number")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(String& obj ){
+    void MethodAt::visit(String& ){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("String")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(Array& obj ){
+    void MethodAt::visit(Array& ){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Array")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(ArrayTransient& obj ){
+    void MethodAt::visit(ArrayTransient& ){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("ArrayTransient")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(Method& obj ){
+    void MethodAt::visit(Method& ){
         static Map& behaviour = static_cast<Map&>( *(vm.world.getPrototype("Method")) );
 
         method = behaviour.at(selector);
     }
 
-    void MethodAt::visit(NativeMethod& method){
+    void MethodAt::visit(NativeMethod&){
 
         throw RuntimeException("Native Methods cannot receive messages");
     }

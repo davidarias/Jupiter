@@ -463,9 +463,7 @@ namespace jupiter{
 
     }
 
-    void Compiler::visit( PragmaNode& node ){
-
-    }
+    void Compiler::visit( PragmaNode& ){}
 
     void Compiler::visit( ClosureBlockNode& node ){
         if ( enclosingMethodCompiler == nullptr ){ // top level compiler

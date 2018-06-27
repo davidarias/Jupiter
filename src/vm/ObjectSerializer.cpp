@@ -90,6 +90,10 @@ namespace jupiter{
 
             try{
                 std::tie(name, method) = Compiler::compile( signature, source );
+
+                MapStringAdapter objAdapter( ConstantsTable::instance(), *obj);
+                objAdapter.putAtMut( name, method );
+
             }catch (const char* s) {
                 std::cout << "CompilerException: "<< s  << std::endl << " in file: "<< path << std::endl << std::endl;
 
@@ -100,17 +104,9 @@ namespace jupiter{
                 std::cout << "CompilerException: " << e.what() << std::endl << " in file: " << path << std::endl << std::endl;
             }
 
-            MapStringAdapter objAdapter( ConstantsTable::instance(), *obj);
-
-
-            objAdapter.putAtMut( name, method );
 
         }
 
-
-    }
-
-    void ObjectSerializer::serialize(std::string path){
 
     }
 }

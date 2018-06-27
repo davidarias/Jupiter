@@ -19,7 +19,7 @@ namespace jupiter{
         return self;
     }
 
-    Object* endl(Object* self, Object** args){
+    Object* endl(Object* self, Object**){
 
         std::cout << std::endl;
         return self;
@@ -122,14 +122,14 @@ namespace jupiter{
     }
 
 
-    Object* sqrt(Object* self, Object** args){
+    Object* sqrt(Object* self, Object**){
         Number& _self = dynamic_cast<Number&>( *self );
 
         return _self.sqrt();
     }
 
 
-    Object* random(Object* self, Object** args){
+    Object* random(Object*, Object**){
         return Number::random();
     }
 
@@ -172,19 +172,19 @@ namespace jupiter{
         return _self.drop( arg0.truncate() );
     }
 
-    Object* arraySize(Object* self, Object** args){
+    Object* arraySize(Object* self, Object**){
         Array& _self = dynamic_cast<Array&>( *self );
 
         return _self.size();
     }
 
-    Object* arrayTransient(Object* self, Object** args){
+    Object* arrayTransient(Object* self, Object**){
         auto _self = dynamic_cast<Array&>( *self );
 
         return _self.transient();
     }
 
-    Object* arrayTransientPersist(Object* self, Object** args){
+    Object* arrayTransientPersist(Object* self, Object**){
         auto _self = dynamic_cast<ArrayTransient*>( self );
 
         if (_self == nullptr ) throw std::bad_cast();
@@ -205,7 +205,7 @@ namespace jupiter{
     Object* mapAt(Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto arg0 = dynamic_cast<String&>( *( args[0] ) );
-        
+
         MapStringAdapter mapAdapter(ConstantsTable::instance(), _self);
 
 
@@ -215,20 +215,20 @@ namespace jupiter{
     Object* mapAtPut(Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto index = dynamic_cast<String&>( *( args[0] ) );
-        
+
         MapStringAdapter mapAdapter(ConstantsTable::instance(), _self);
 
         return mapAdapter.putAt( index.getValue(), args[1] );
     }
 
-    Object* mapTransient(Object* self, Object** args){
+    Object* mapTransient(Object* self, Object**){
         auto _self = dynamic_cast<Map&>( *self );
 
         auto t = _self.transient();
         return t;
     }
 
-    Object* mapTransientPersist(Object* self, Object** args){
+    Object* mapTransientPersist(Object* self, Object**){
         auto _self = dynamic_cast<MapTransient*>( self );
 
         if (self == nullptr ) throw std::bad_cast();
@@ -241,7 +241,7 @@ namespace jupiter{
         auto index = dynamic_cast<String&>( *( args[0] ) );
 
         if (self == nullptr ) throw std::bad_cast();
-        
+
         MapTransientStringAdapter mapAdapter(ConstantsTable::instance(), *_self);
 
         mapAdapter.putAt( index.getValue(), args[1] );
@@ -257,14 +257,14 @@ namespace jupiter{
 
     }
 
-    Object* methodEval(Object* self, Object** args){
+    Object* methodEval(Object* self, Object**){
         World& world = World::instance();
         Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
         return world.vm.eval( method );
     }
 
-    Object* methodPrintByteCode(Object* self, Object** args){
+    Object* methodPrintByteCode(Object* self, Object**){
         Method& method = dynamic_cast<Method&>( *self );
 
         method.getCompiledMethod()->printBytecode();
@@ -272,14 +272,14 @@ namespace jupiter{
         return &method;
     }
 
-    Object* loadPath(Object* self, Object** args){
+    Object* loadPath(Object*, Object** args){
         auto path = dynamic_cast<String&>( *( args[0] ) );
         World::instance().loadPackage( path.toString() );
 
         return World::instance().getNil();
     }
 
-    Object* loadNative(Object* self, Object** args){
+    Object* loadNative(Object*, Object** args){
         auto path = dynamic_cast<String&>( *( args[0] ) );
 
         World::instance().loadNative( path.toString() );
