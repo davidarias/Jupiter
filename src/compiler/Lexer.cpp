@@ -6,6 +6,8 @@
 
 #include <compiler/Lexer.hpp>
 
+#include <misc/Exceptions.hpp>
+
 namespace jupiter{
 
     bool isDoubleQuote( char character ){
@@ -349,9 +351,9 @@ namespace jupiter{
 
         while( ! this->isEnd() ) this->scan();
 
-        if ( parensBalance != 0) throw "unbalanced parentheses";
-        if ( sqParensBalance != 0) throw "unbalanced squared parentheses";
-        if ( bracketsBalance != 0) throw "unbalanced brackets";
+        if ( parensBalance != 0) throw CompilerError("unbalanced parentheses");
+        if ( sqParensBalance != 0) throw CompilerError("unbalanced squared parentheses");
+        if ( bracketsBalance != 0) throw CompilerError("unbalanced brackets");
 
         // printTokens( tokenList );
 

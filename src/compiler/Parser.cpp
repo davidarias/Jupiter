@@ -43,7 +43,7 @@ namespace jupiter{
         advance(); //skip the '{' token
 
         if ( ! isEnd() && getCurrentToken()->is( MESSAGE_KEYWORD ) ){
-            throw "Unexpected key in array. Maybe you want to define a Map using literal syntax #{ ... }";
+            throw CompilerError("Unexpected key in array. Maybe you want to define a Map using literal syntax #{ ... }");
         }
 
         auto node =  std::make_shared<ArrayNode>();
@@ -132,7 +132,7 @@ namespace jupiter{
         case L_BRACKET:
             return parseArray();
         default:
-            throw "parseObject: Unexpected token: " + token->toString();
+            throw CompilerError("parseObject: Unexpected token: " + token->toString() );
         }
     }
 
@@ -145,7 +145,7 @@ namespace jupiter{
 
         if (! message ){
             if ( currentToken && currentToken->is( SEMICOLON ) ){
-                throw "Unexpected cascade on non-message node";
+                throw CompilerError("Unexpected cascade on non-message node");
             }else{
                 return node;
             }
@@ -159,7 +159,7 @@ namespace jupiter{
 
             currentToken = getNextToken();
 
-            if ( currentToken == nullptr ) throw "Unexpected end of input at message cascade";
+            if ( currentToken == nullptr ) throw CompilerError("Unexpected end of input at message cascade");
 
             switch( currentToken->getType()){
 
@@ -174,7 +174,7 @@ namespace jupiter{
                 messages.push_back( parseKeywordMessage( nullptr ) );
                 break;
             default:
-                throw "Unexpected token at message cascade";
+                throw CompilerError("Unexpected token at message cascade");
                 break;
             }
             currentToken = getCurrentToken();
@@ -277,9 +277,9 @@ namespace jupiter{
         auto currentToken = getNextToken();
 
         if ( currentToken == nullptr )
-            throw "parsePragma: unexpected end of input";
+            throw CompilerError("parsePragma: unexpected end of input");
         if ( ! currentToken->is( MESSAGE_KEYWORD ) )
-            throw "parsePragma: unexpected token" + currentToken->toString();
+            throw CompilerError("parsePragma: unexpected token" + currentToken->toString());
 
         auto node = std::make_shared<PragmaNode>();
 
@@ -296,7 +296,7 @@ namespace jupiter{
         if ( currentToken->is(OPERATOR) && currentToken->getValue() == ">" ){
             advance();
         }else{
-            throw "Unexpected end of pragma";
+            throw CompilerError("Unexpected end of pragma");
         }
 
         return node;
@@ -364,7 +364,7 @@ namespace jupiter{
         auto currentToken = getCurrentToken();
 
         if ( currentToken == nullptr )
-            throw "parsePragma: unexpected end of input";
+            throw CompilerError("parsePragma: unexpected end of input");
 
         auto node = std::make_shared<MethodSignature>();
 
@@ -394,13 +394,13 @@ namespace jupiter{
             node->selector += currentToken->getValue();
             advance();
             if ( isEnd() )
-                throw "Unexpected end of input in method signature: Missing argument name for binary message";
+                throw CompilerError("Unexpected end of input in method signature: Missing argument name for binary message");
             node->arguments.push_back( parseArgumentName() );
 
             break;
 
         default:
-            throw "parseMethodSignature: Unexpected token: " + currentToken->toString();
+            throw CompilerError("parseMethodSignature: Unexpected token: " + currentToken->toString());
         }
 
         return node;
@@ -429,7 +429,7 @@ namespace jupiter{
         if ( ! isEnd() && ++tokensIterator != tokensEnd ){
             return &(*tokensIterator);
         }else{
-            throw "getNextTokenOrThrow: Unexpected end of input";
+            throw CompilerError("getNextTokenOrThrow: Unexpected end of input");
         }
     }
 
