@@ -114,7 +114,7 @@ namespace jupiter{
         Object** args = vm.stack.begin() + localsBaseIndex;
         Object* receiver = *(args - 1); // receiver is just before the locals
 
-        vm.stack.set( returnIndex, method.fn( receiver, args ) );
+        vm.stack.set( returnIndex, method.fn( &(vm.world), receiver, args ) );
         vm.stack.resize( localsBaseIndex );
     }
 

@@ -13,7 +13,9 @@
 
 namespace jupiter{
 
-    typedef Object* (*NativeFunction)(Object*, Object**);
+    class World;
+
+    typedef Object* (*NativeFunction)(World*, Object*, Object**);
 
     class NativeMethod : public Object {
         friend struct Evaluator;

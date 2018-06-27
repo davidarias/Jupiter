@@ -13,79 +13,91 @@
 
 namespace jupiter{
 
-    Object* print(Object* self, Object** args){
+    Object* print(World*, Object* self, Object** args){
 
         std::cout << args[0]->toString();
         return self;
     }
 
-    Object* endl(Object* self, Object**){
+    Object* endl(World*, Object* self, Object**){
 
         std::cout << std::endl;
         return self;
     }
 
 
-    Object* equals(Object* self, Object** args){
+    Object* equals(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( *self == *( args[0] ) ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
 
-    Object* greater(Object* self, Object** args){
+    Object* greater(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( *self > *( args[0] ) ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
 
-    Object* less(Object* self, Object** args){
+    Object* less(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( *self < *( args[0] ) ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
 
-    Object* greaterOrEqual(Object* self, Object** args){
+    Object* greaterOrEqual(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( *self >= *( args[0] ) ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
 
-    Object* lessOrEqual(Object* self, Object** args){
+    Object* lessOrEqual(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( *self <= *( args[0] ) ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
 
-    Object* isIdenticalTo(Object* self, Object** args){
+    Object* isIdenticalTo(World* world, Object* self, Object** args){
+        static auto _true = world->getTrue();
+        static auto _false = world->getFalse();
 
         if ( self == args[0] ){
-            return World::instance().getTrue();
+            return _true;
         }else{
-            return World::instance().getFalse();
+            return _false;
         }
     }
 
-    Object* plus(Object* self, Object** args){
+    Object* plus(World*, Object* self, Object** args){
 
         Number& _self = dynamic_cast<Number&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
@@ -94,7 +106,7 @@ namespace jupiter{
 
     }
 
-    Object* minus(Object* self, Object** args){
+    Object* minus(World*, Object* self, Object** args){
 
         Number& _self = dynamic_cast<Number&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
@@ -103,7 +115,7 @@ namespace jupiter{
 
     }
 
-    Object* multiply(Object* self, Object** args){
+    Object* multiply(World*, Object* self, Object** args){
 
         Number& _self = dynamic_cast<Number&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
@@ -112,7 +124,7 @@ namespace jupiter{
 
     }
 
-    Object* divide(Object* self, Object** args){
+    Object* divide(World*, Object* self, Object** args){
 
         Number& _self = dynamic_cast<Number&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
@@ -122,18 +134,18 @@ namespace jupiter{
     }
 
 
-    Object* sqrt(Object* self, Object**){
+    Object* sqrt(World*, Object* self, Object**){
         Number& _self = dynamic_cast<Number&>( *self );
 
         return _self.sqrt();
     }
 
 
-    Object* random(Object*, Object**){
+    Object* random(World*, Object*, Object**){
         return Number::random();
     }
 
-    Object* stringConcat(Object* self, Object** args){
+    Object* stringConcat(World*, Object* self, Object** args){
 
         String& _self = dynamic_cast<String&>( *self );
         String& arg0 = dynamic_cast<String&>( *( args[0] ) );
@@ -143,21 +155,21 @@ namespace jupiter{
     }
 
 
-    Object* arrayAt(Object* self, Object** args){
+    Object* arrayAt(World*, Object* self, Object** args){
         Array& _self = dynamic_cast<Array&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
         return _self.at( arg0.truncate() );
     }
 
-    Object* arrayPush(Object* self, Object** args){
+    Object* arrayPush(World*, Object* self, Object** args){
 
         Array& _self = dynamic_cast<Array&>( *self );
 
         return _self.push( args[0] );
     }
 
-    Object* arrayTake(Object* self, Object** args){
+    Object* arrayTake(World*, Object* self, Object** args){
 
         Array& _self = dynamic_cast<Array&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
@@ -165,26 +177,26 @@ namespace jupiter{
         return _self.take( arg0.truncate() );
     }
 
-    Object* arrayDrop(Object* self, Object** args){
+    Object* arrayDrop(World*, Object* self, Object** args){
         Array& _self = dynamic_cast<Array&>( *self );
         Number& arg0 = dynamic_cast<Number&>( *( args[0] ) );
 
         return _self.drop( arg0.truncate() );
     }
 
-    Object* arraySize(Object* self, Object**){
+    Object* arraySize(World*, Object* self, Object**){
         Array& _self = dynamic_cast<Array&>( *self );
 
         return _self.size();
     }
 
-    Object* arrayTransient(Object* self, Object**){
+    Object* arrayTransient(World*, Object* self, Object**){
         auto _self = dynamic_cast<Array&>( *self );
 
         return _self.transient();
     }
 
-    Object* arrayTransientPersist(Object* self, Object**){
+    Object* arrayTransientPersist(World*, Object* self, Object**){
         auto _self = dynamic_cast<ArrayTransient*>( self );
 
         if (_self == nullptr ) throw std::bad_cast();
@@ -193,7 +205,7 @@ namespace jupiter{
 
     }
 
-    Object* arrayTransientPush(Object* self, Object** args){
+    Object* arrayTransientPush(World*, Object* self, Object** args){
         auto _self = dynamic_cast<ArrayTransient*>( self );
 
         if (_self == nullptr ) throw std::bad_cast();
@@ -202,7 +214,7 @@ namespace jupiter{
     }
 
 
-    Object* mapAt(Object* self, Object** args){
+    Object* mapAt(World*, Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto arg0 = dynamic_cast<String&>( *( args[0] ) );
 
@@ -212,7 +224,7 @@ namespace jupiter{
         return mapAdapter.at( arg0.getValue() );
     }
 
-    Object* mapAtPut(Object* self, Object** args){
+    Object* mapAtPut(World*, Object* self, Object** args){
         auto _self = dynamic_cast<Map&>( *self );
         auto index = dynamic_cast<String&>( *( args[0] ) );
 
@@ -221,14 +233,14 @@ namespace jupiter{
         return mapAdapter.putAt( index.getValue(), args[1] );
     }
 
-    Object* mapTransient(Object* self, Object**){
+    Object* mapTransient(World*, Object* self, Object**){
         auto _self = dynamic_cast<Map&>( *self );
 
         auto t = _self.transient();
         return t;
     }
 
-    Object* mapTransientPersist(Object* self, Object**){
+    Object* mapTransientPersist(World*, Object* self, Object**){
         auto _self = dynamic_cast<MapTransient*>( self );
 
         if (self == nullptr ) throw std::bad_cast();
@@ -236,7 +248,7 @@ namespace jupiter{
         return _self->persist();;
     }
 
-    Object* mapTransientAtPut(Object* self, Object** args){
+    Object* mapTransientAtPut(World*, Object* self, Object** args){
         auto _self = dynamic_cast<MapTransient*>( self );
         auto index = dynamic_cast<String&>( *( args[0] ) );
 
@@ -249,7 +261,7 @@ namespace jupiter{
         return self;
     }
 
-    Object* arrayFormatString(Object* self, Object** args){
+    Object* arrayFormatString(World*, Object* self, Object** args){
         auto _self = dynamic_cast<Array&>( *self );
         auto arg0 = dynamic_cast<String&>( *( args[0] ) );
 
@@ -257,14 +269,13 @@ namespace jupiter{
 
     }
 
-    Object* methodEval(Object* self, Object**){
-        World& world = World::instance();
+    Object* methodEval(World* world, Object* self, Object**){
         Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
-        return world.vm.eval( method );
+        return world->vm.eval( method );
     }
 
-    Object* methodPrintByteCode(Object* self, Object**){
+    Object* methodPrintByteCode(World*, Object* self, Object**){
         Method& method = dynamic_cast<Method&>( *self );
 
         method.getCompiledMethod()->printBytecode();
@@ -272,19 +283,20 @@ namespace jupiter{
         return &method;
     }
 
-    Object* loadPath(Object*, Object** args){
+    Object* loadPath(World* world, Object* self, Object** args){
         auto path = dynamic_cast<String&>( *( args[0] ) );
-        World::instance().loadPackage( path.toString() );
 
-        return World::instance().getNil();
+        world->loadPackage( path.toString() );
+
+        return self;
     }
 
-    Object* loadNative(Object*, Object** args){
+    Object* loadNative(World* world, Object* self, Object** args){
         auto path = dynamic_cast<String&>( *( args[0] ) );
 
-        World::instance().loadNative( path.toString() );
+        world->loadNative( path.toString() );
 
-        return World::instance().getNil();
+        return self;
     }
 
 
