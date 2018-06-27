@@ -55,7 +55,7 @@ namespace jupiter{
             std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
             std::cout << "| Core library is not loaded, you probably can't do much without it" << std::endl;
             std::cout << "| Try the following command ( assuming you are in the Jupiter source code folder )" << std::endl;
-            std::cout << "| export JUPITERHOME=$PWD/lib/core" << std::endl << std::endl;
+            std::cout << "| export JUPITERHOME=$PWD/lib" << std::endl << std::endl;
         }
 
     }
