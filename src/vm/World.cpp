@@ -231,7 +231,7 @@ namespace jupiter{
 
         std::string& name = signatureAst->selector;
 
-        PragmaCompiler pragmaCompiler;
+        PragmaCompiler pragmaCompiler(primitives);
         ast->accept(pragmaCompiler);
         Object* primitive = pragmaCompiler.getPrimitive();
 

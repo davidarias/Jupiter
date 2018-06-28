@@ -409,7 +409,8 @@ namespace jupiter{
         method->addInstruction( PUSH_CLOSURE, index );
     }
 
-    PragmaCompiler::PragmaCompiler() : primitive(nullptr) {}
+    PragmaCompiler::PragmaCompiler(Primitives& primitives)
+        : primitives(primitives), primitive(nullptr) {}
 
     Object* PragmaCompiler::getPrimitive(){
         return primitive;
@@ -421,7 +422,6 @@ namespace jupiter{
         // TODO capture std::out_of_range exception
 
         arguments.push_back(node.value);
-        //primitive = Primitives::instance().get( node.value );
     }
 
     void PragmaCompiler::visit( StringNode& node ){
@@ -429,7 +429,6 @@ namespace jupiter{
         // TODO capture std::out_of_range exception
 
         arguments.push_back(node.value);
-        //primitive = Primitives::instance().get( node.value );
     }
 
     void PragmaCompiler::visit( CodeBlockNode& node ){
@@ -452,7 +451,7 @@ namespace jupiter{
         }
 
         if ( node.selector == "primitive:"){
-            primitive = Primitives::instance().get( arguments[0] );
+            primitive = primitives.get( arguments[0] );
         }else if( node.selector == "nativeExtension:function:" ){
             primitive = World::instance().getNativeExtensionMethod(arguments[0], arguments[1]);
         }else{

@@ -12,6 +12,8 @@
 #include <vm/ConstantsTable.hpp>
 #include <objects/Objects.hpp>
 
+#include <primitives/primitives.hpp>
+
 namespace jupiter{
 
 
@@ -23,8 +25,7 @@ namespace jupiter{
         void operator=(const World& ) = delete;
 
         std::unordered_map<std::string, void*> nativeLibs;
-
-        bool initialized = false;
+        Primitives primitives;
 
         Map globals;
         Map prototypes;

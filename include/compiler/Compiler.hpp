@@ -10,6 +10,8 @@
 #include "ASTNode.hpp"
 #include "SymbolTable.hpp"
 
+#include <primitives/primitives.hpp>
+
 namespace jupiter{
 
     class Object;
@@ -73,10 +75,11 @@ namespace jupiter{
     // TODO better pragma compiler, check errors etc..
     class PragmaCompiler : public ASTVisitor {
     private:
+        Primitives& primitives;
         Object* primitive;
         std::vector<std::string> arguments;
     public:
-        PragmaCompiler();
+        PragmaCompiler(Primitives& primitives);
         Object* getPrimitive();
 
         void visit( NumberNode& ){};

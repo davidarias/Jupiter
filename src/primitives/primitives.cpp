@@ -14,8 +14,6 @@
 namespace jupiter{
 
     Primitives::Primitives(){
-        primitives.reserve(22);
-
         // common
         add("print", 1, print);
         add("endl", 0, endl );
@@ -69,8 +67,6 @@ namespace jupiter{
         add("loadPath", 1, loadPath );
         add("loadNative", 1, loadNative );
     }
-
-    Primitives::~Primitives(){}
 
     void Primitives::add(std::string name, unsigned arity, NativeFunction primitiveFunction){
         NativeMethod primitive(primitiveFunction, arity);

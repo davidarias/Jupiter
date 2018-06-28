@@ -18,20 +18,12 @@ namespace jupiter{
     class Primitives{
 
     private:
-        Primitives();
-        ~Primitives();
-        Primitives(const Primitives& ) = delete;
-        void operator=(const Primitives& ) = delete;
 
         std::vector<NativeMethod> primitives;
         std::unordered_map<std::string, unsigned> primitivesMap;
 
     public:
-
-        static Primitives& instance() {
-            static Primitives i;
-            return i;
-        }
+        Primitives();
 
         void add(std::string name, unsigned arity, NativeFunction primitiveFunction);
         Object* get(std::string& name);
