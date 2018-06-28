@@ -65,10 +65,6 @@ namespace jupiter{
 
     World::~World(){
 
-        // close open libraries
-        for(auto& pair : nativeLibs ){
-            dlclose(pair.second);
-        }
 
     }
 
@@ -119,47 +115,8 @@ namespace jupiter{
 
     void World::loadNative(const std::string& path){
 
-        void* handle = dlopen (path.c_str(), RTLD_LAZY);
-
-        if (!handle) {
-
-            std::ostringstream message;
-            message << "Error loading native library: " << path;
-            message << " | dlopen error: " << dlerror();
-
-            throw RuntimeException(message.str());
-
-        }else{
-
-            auto fileName = getFileName(path);
-            LOG("native lib filename " << fileName );
-            nativeLibs[fileName] = handle;
-
-        }
-
+        nativeLibs.load(path);
     }
-
-
-    Object* World::getNativeExtensionMethod(const std::string& lib, const std::string& name){
-        auto librayHandle = nativeLibs.at(lib);
-
-        // FIXME clear memory
-        auto sym = dlsym( librayHandle, name.c_str() );
-        auto method =
-            new NativeMethod (reinterpret_cast<NativeFunction>( sym ), 0 );
-
-        char *error = NULL;
-        if ( (error = dlerror() ) != NULL)  {
-            std::ostringstream message;
-            message << "Error loading native method in library: " << lib;
-            message << " | dlerror: " << error;
-
-            throw RuntimeException(message.str());
-        }
-
-        return method;
-    }
-
 
     void World::eval(std::string source){
         // TODO refactor exception capture ( also in Method::Method )
@@ -231,7 +188,7 @@ namespace jupiter{
 
         std::string& name = signatureAst->selector;
 
-        PragmaCompiler pragmaCompiler(primitives);
+        PragmaCompiler pragmaCompiler(primitives, nativeLibs);
         ast->accept(pragmaCompiler);
         Object* primitive = pragmaCompiler.getPrimitive();
 

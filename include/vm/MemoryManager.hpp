@@ -20,14 +20,6 @@
 
 namespace jupiter{
 
-    class Object;
-    class Number;
-    class String;
-    class Array;
-    class Method;
-    class CompiledMethod;
-    class UpValue;
-
     template<class T>
     class ObjectPool{
 
@@ -125,7 +117,6 @@ namespace jupiter{
         std::vector<T*> from;
         std::vector<T*> to;
 
-        std::vector<T*> inmortal;
         ObjectPool<T> pool;
 
         unsigned gcCycles = 0;
@@ -195,14 +186,6 @@ namespace jupiter{
             return p;
         }
 
-        // allocate objects that are never garbage collected
-        T* permanent(){
-            auto p = new T;
-            inmortal.push_back(p);
-            return p;
-        }
-
-
         ~MemoryManager(){
 
             #ifdef BENCHMARK
@@ -224,10 +207,6 @@ namespace jupiter{
             }
 
             for (auto obj : to ){
-                delete obj;
-            }
-
-            for (auto obj : inmortal ){
                 delete obj;
             }
 
@@ -314,9 +293,38 @@ namespace jupiter{
 
     }
 
+    template<class T>
+    class MemoryManagerPermanent{
+        // allocate objects that are never garbage collected
+    private:
+        MemoryManagerPermanent(){}
+        MemoryManagerPermanent(const MemoryManagerPermanent& ) = delete;
+        void operator=(const MemoryManagerPermanent& ) = delete;
+
+        std::vector<T*> inmortal;
+    public:
+        static MemoryManagerPermanent& instance() {
+            static MemoryManagerPermanent i;
+            return i;
+        }
+
+        T* get(){
+            auto p = reinterpret_cast<T*>( std::malloc(sizeof(T)) );
+            inmortal.push_back(p);
+            return p;
+        }
+
+
+        ~MemoryManagerPermanent(){
+            for (auto obj : inmortal ){
+                std::free(obj);
+            }
+        }
+    };
+
     template<class T, typename... Args>
     T* make_permanent(Args... args){
-        auto p = MemoryManager<T>::instance().permanent();
+        auto p = MemoryManagerPermanent<T>::instance().get();
         return new(p) T(args...);
     }
 

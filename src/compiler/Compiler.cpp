@@ -13,6 +13,7 @@
 #include <vm/ConstantsTable.hpp>
 
 #include <primitives/primitives.hpp>
+#include <extensions/NativeLibraries.hpp>
 
 #include <compiler/Compiler.hpp>
 
@@ -409,8 +410,8 @@ namespace jupiter{
         method->addInstruction( PUSH_CLOSURE, index );
     }
 
-    PragmaCompiler::PragmaCompiler(Primitives& primitives)
-        : primitives(primitives), primitive(nullptr) {}
+    PragmaCompiler::PragmaCompiler(Primitives& primitives, NativeLibraries& nativeLibs)
+        : primitives(primitives), nativeLibs(nativeLibs), primitive(nullptr) {}
 
     Object* PragmaCompiler::getPrimitive(){
         return primitive;
@@ -453,7 +454,7 @@ namespace jupiter{
         if ( node.selector == "primitive:"){
             primitive = primitives.get( arguments[0] );
         }else if( node.selector == "nativeExtension:function:" ){
-            primitive = World::instance().getNativeExtensionMethod(arguments[0], arguments[1]);
+            primitive = nativeLibs.getMethod(arguments[0], arguments[1]);
         }else{
             std::string message = "Pragma selector not found: " + node.selector;
             throw CompilerError(message);

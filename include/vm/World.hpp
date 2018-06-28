@@ -13,6 +13,7 @@
 #include <objects/Objects.hpp>
 
 #include <primitives/primitives.hpp>
+#include <extensions/NativeLibraries.hpp>
 
 namespace jupiter{
 
@@ -24,8 +25,8 @@ namespace jupiter{
         World(const World& ) = delete;
         void operator=(const World& ) = delete;
 
-        std::unordered_map<std::string, void*> nativeLibs;
         Primitives primitives;
+        NativeLibraries nativeLibs;
 
         Map globals;
         Map prototypes;
@@ -45,8 +46,6 @@ namespace jupiter{
             static World i;
             return i;
         }
-
-        Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
 
         void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
