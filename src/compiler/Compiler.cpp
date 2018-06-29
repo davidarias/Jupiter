@@ -9,7 +9,7 @@
 #include <objects/CompiledMethod.hpp>
 
 #include <vm/VM.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 
 #include <primitives/primitives.hpp>

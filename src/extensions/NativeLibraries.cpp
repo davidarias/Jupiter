@@ -8,7 +8,7 @@
 #include <misc/Exceptions.hpp>
 #include <utils/files.hpp>
 #include <objects/NativeMethod.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 
 #include <dlfcn.h>
 #include <sstream>

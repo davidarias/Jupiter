@@ -19,20 +19,21 @@ namespace jupiter{
 
 
     class World{
+        friend class GC;
     private:
-        World();
-        ~World();
-        World(const World& ) = delete;
-        void operator=(const World& ) = delete;
 
         Primitives primitives;
         NativeLibraries nativeLibs;
 
         Map globals;
         Map prototypes;
+        VM vm;
+
     public:
         ConstantsTable constantsTable;
-        VM vm;
+
+        World();
+        ~World();
 
         Object* getTrue();
         Object* getFalse();
@@ -42,17 +43,13 @@ namespace jupiter{
         Object* getGlobal(unsigned id);
         Object* getPrototype(const std::string& prototypeName);
 
-        static World& instance() {
-            static World i;
-            return i;
-        }
-
         void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
         void loadNative(const std::string& path);
 
         void eval(std::string);
         Object* eval(Object* o);
+        Object* eval(Method& method);
 
         Object* compile(std::string& source);
         std::tuple<std::string, Object*> compile(std::string& signature, std::string& source);

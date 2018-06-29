@@ -8,7 +8,7 @@
 #include <objects/Number.hpp>
 #include <objects/CompiledMethod.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 
 #include <iomanip>

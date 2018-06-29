@@ -7,7 +7,7 @@
 #include <vm/ObjectSerializer.hpp>
 
 #include <objects/Object.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 #include <vm/World.hpp>
 #include <compiler/Compiler.hpp>

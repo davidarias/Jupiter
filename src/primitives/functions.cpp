@@ -272,7 +272,7 @@ namespace jupiter{
     Object* methodEval(World* world, Object* self, Object**){
         Method& method = dynamic_cast<Method&>( *self );
         // TODO check arity
-        return world->vm.eval( method );
+        return world->eval( method );
     }
 
     Object* methodPrintByteCode(World*, Object* self, Object**){

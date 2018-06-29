@@ -5,7 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <objects/Map.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <misc/Exceptions.hpp>
 #include <vm/ConstantsTable.hpp>
 

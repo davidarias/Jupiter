@@ -8,7 +8,7 @@
 
 #include <misc/common.hpp>
 #include <objects/Objects.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 
 namespace jupiter{
 

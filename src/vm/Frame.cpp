@@ -7,7 +7,7 @@
 #include <vm/Frame.hpp>
 #include <vm/VM.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/Stack.hpp>
 #include <vm/ConstantsTable.hpp>
 

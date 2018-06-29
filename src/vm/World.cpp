@@ -12,7 +12,7 @@
 
 #include <vm/VM.hpp>
 #include <vm/ObjectSerializer.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 
 #include <misc/Exceptions.hpp>
@@ -152,6 +152,10 @@ namespace jupiter{
 
     Object* World::eval(Object* o){
         return vm.eval(o);
+    }
+
+    Object* World::eval(Method& method){
+        return vm.eval(method);
     }
 
     Object* World::compile(std::string& source){

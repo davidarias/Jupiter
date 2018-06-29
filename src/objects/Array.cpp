@@ -7,7 +7,7 @@
 #include <objects/Array.hpp>
 #include <objects/Map.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <utils/format.hpp>
 
 namespace jupiter{
