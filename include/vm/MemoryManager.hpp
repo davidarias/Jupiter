@@ -297,16 +297,9 @@ namespace jupiter{
     class MemoryManagerPermanent{
         // allocate objects that are never garbage collected
     private:
-        MemoryManagerPermanent(){}
-        MemoryManagerPermanent(const MemoryManagerPermanent& ) = delete;
-        void operator=(const MemoryManagerPermanent& ) = delete;
-
         std::vector<T*> inmortal;
     public:
-        static MemoryManagerPermanent& instance() {
-            static MemoryManagerPermanent i;
-            return i;
-        }
+        MemoryManagerPermanent(){}
 
         T* get(){
             auto p = reinterpret_cast<T*>( std::malloc(sizeof(T)) );
@@ -324,7 +317,8 @@ namespace jupiter{
 
     template<class T, typename... Args>
     T* make_permanent(Args... args){
-        auto p = MemoryManagerPermanent<T>::instance().get();
+        static MemoryManagerPermanent<T> permanent;
+        auto p = permanent.get();
         return new(p) T(args...);
     }
 
