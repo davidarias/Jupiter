@@ -251,12 +251,7 @@ namespace jupiter{
 
             for ( auto obj : eden ){
 
-                // transients can point to young objects
-                // being tenured, so when adding an object
-                // to a tenured transient we also mark
-                // this object as tenured. when minor gc cycle
-                // is executed, we move this object to tenured space
-                if (! obj->isMarked() && ! obj->istenured() ){
+                if (! obj->isMarked() ){
 
                     pool.release( obj );
 
