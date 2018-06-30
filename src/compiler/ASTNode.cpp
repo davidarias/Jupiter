@@ -14,7 +14,6 @@ namespace jupiter{
     SymbolNode::SymbolNode( std::string& value ) : value( value ){}
     StringNode::StringNode( std::string& value ) : value( value ){}
     ArrayNode::ArrayNode(){}
-    ObjectLiteralNode::ObjectLiteralNode(){}
     CodeBlockNode::CodeBlockNode(){}
     AssignmentNode::AssignmentNode(){}
     MessageExpressionNode::MessageExpressionNode( ){}

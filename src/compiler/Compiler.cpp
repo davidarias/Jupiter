@@ -9,10 +9,11 @@
 #include <objects/CompiledMethod.hpp>
 
 #include <vm/VM.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 
 #include <primitives/primitives.hpp>
+#include <extensions/NativeLibraries.hpp>
 
 #include <compiler/Compiler.hpp>
 
@@ -23,72 +24,14 @@
 
 namespace jupiter{
 
-    Object* Compiler::compile(std::string& source){
-
-        try{
-
-            source = source;
-
-            auto tokens = Lexer( source ).tokenize();
-
-            auto ast = Parser( tokens ).parse();
-
-            Compiler compiler;
-
-            ast->accept( compiler );
-
-            return make<Method>( compiler.getCompiledMethod() );
-
-        }catch (const char* s) {
-            std::cout << "CompilerException: ";
-            std::cout << s << std::endl;
-
-        }catch (std::string s) {
-            std::cout << "CompilerException: ";
-            std::cout << s << std::endl;
-
-        }catch (std::exception& e) {
-            std::cout << "CompilerException: ";
-            std::cout << e.what() << std::endl;
-
-        }
-
-        return nullptr;
-    }
-
-    std::tuple<std::string, Object*> Compiler::compile(std::string& signature, std::string& source){
-
-        auto signatureTokens = Lexer( signature ).tokenize();
-        auto signatureAst = Parser( signatureTokens ).parseMethodSignature();
-
-        auto tokens = Lexer( source ).tokenize();
-        auto ast = Parser( tokens ).parse();
-
-        std::string& name = signatureAst->selector;
-
-        PragmaCompiler pragmaCompiler;
-        ast->accept(pragmaCompiler);
-        Object* primitive = pragmaCompiler.getPrimitive();
-
-        if (primitive) return std::make_tuple(name, primitive);
-
-        Compiler compiler( signatureAst );
-
-        ast->accept( compiler );
-
-        auto method = make_permanent<Method>( name, signature, source,
-                                              compiler.getCompiledMethod() );
-
-        return std::make_tuple(name, method);
-    }
-
-    Compiler::Compiler() : enclosingMethodCompiler(nullptr) {
+    Compiler::Compiler(ConstantsTable& constantsTable)
+        : constantsTable(constantsTable), enclosingMethodCompiler(nullptr) {
         method = std::make_shared<CompiledMethod>();
         upvalues = std::make_shared<SymbolTable>();
     }
 
-    Compiler::Compiler(std::shared_ptr<MethodSignature> signature)
-        : enclosingMethodCompiler(nullptr)
+    Compiler::Compiler(ConstantsTable& constantsTable, std::shared_ptr<MethodSignature> signature)
+        : constantsTable(constantsTable), enclosingMethodCompiler(nullptr)
     {
         method = std::make_shared<CompiledMethod>();
         addArgumentsToLocals( signature->arguments );
@@ -97,7 +40,8 @@ namespace jupiter{
 
     Compiler::Compiler(std::vector<std::shared_ptr<SymbolNode> >& arguments,
                        Compiler* enclosingMethodCompiler)
-        : upvalues(enclosingMethodCompiler->upvalues),
+        : constantsTable(enclosingMethodCompiler->constantsTable),
+          upvalues(enclosingMethodCompiler->upvalues),
           enclosingMethodCompiler(enclosingMethodCompiler)
     {
         method = std::make_shared<CompiledMethod>();
@@ -117,28 +61,28 @@ namespace jupiter{
     void Compiler::checkArgumentsLimit( unsigned n ){
         // because the second argument in SEND instruction is a uint8_t
         if ( n > 254 )
-            throw "Messages are limited to 254 arguments. If you have reached this limit, you're probably doing something crazy.";
+            throw CompilerError("Messages are limited to 254 arguments. If you have reached this limit, you're probably doing something crazy.");
     }
 
     void Compiler::checkConstantsLimit( unsigned n ){
 
         // because first argument in send method is a uint16_t
         if ( n >= 65536 - 1 )
-            throw "The number of Constants is limited to 65536 per method. If you have reached this limit, you're probably doing something crazy.";
+            throw CompilerError("The number of Constants is limited to 65536 per method. If you have reached this limit, you're probably doing something crazy.");
     }
 
     void Compiler::checkLocalsLimit( unsigned n ){
 
         // because first argument in send method is a uint16_t
         if ( n >= 65536 - 1 )
-            throw "The number of locals is limited to 65536 per method. If you have reached this limit, you're probably doing something crazy.";
+            throw CompilerError("The number of locals is limited to 65536 per method. If you have reached this limit, you're probably doing something crazy.");
     }
 
     void Compiler::checkLiteralArrayLimit( unsigned n ){
 
         // because first argument in send method is a uint16_t
         if ( n >= 65536 - 1 )
-            throw "The number of elements in a literal array is limited to 65536. If you have reached this limit, you're probably doing something crazy.";
+            throw CompilerError("The number of elements in a literal array is limited to 65536. If you have reached this limit, you're probably doing something crazy.");
 
     }
 
@@ -146,7 +90,7 @@ namespace jupiter{
 
         // because first argument in send method is a uint16_t
         if ( n >= 32768 - 1 )
-            throw "The number of elements in a literal object is limited to 32768. If you have reached this limit, you're probably doing something crazy.";
+            throw CompilerError("The number of elements in a literal object is limited to 32768. If you have reached this limit, you're probably doing something crazy.");
 
     }
 
@@ -185,13 +129,13 @@ namespace jupiter{
     }
 
     void Compiler::visit( NumberNode& node ){
-        unsigned index = ConstantsTable::instance().number( node.value );
+        unsigned index = constantsTable.number( node.value );
         checkConstantsLimit(index);
         method->addInstruction( PUSH_CONSTANT, index );
     }
 
     void Compiler::visit( StringNode& node ){
-        unsigned index = ConstantsTable::instance().string( node.value );
+        unsigned index = constantsTable.string( node.value );
         checkConstantsLimit( index );
         method->addInstruction( PUSH_CONSTANT, index );
     }
@@ -218,7 +162,7 @@ namespace jupiter{
             return;
         }
 
-        auto globalConstIndex = ConstantsTable::instance().string( node.value );
+        auto globalConstIndex = constantsTable.string( node.value );
         method->addInstruction( PUSH_GLOBAL, globalConstIndex );
 
     }
@@ -233,22 +177,6 @@ namespace jupiter{
 
         method->addInstruction( POP_N_INTO_ARRAY, node.values.size() );
     }
-
-    void Compiler::visit( ObjectLiteralNode& node ){
-
-        checkLiteralObjectLimit( node.keys.size() );
-
-        for ( unsigned i = 0; i < node.keys.size(); i++ ){
-
-            unsigned index = ConstantsTable::instance().string( node.keys.at( i ) );
-            checkConstantsLimit( index );
-            method->addInstruction( PUSH_CONSTANT, index );
-
-            node.values.at( i )->accept(*this);
-        }
-
-        method->addInstruction( POP_N_INTO_OBJECT, node.keys.size() * 2 );
-     }
 
     void Compiler::visit( CodeBlockNode& node ){
 
@@ -329,14 +257,14 @@ namespace jupiter{
             throw CompilerError("Error Compiling if inline. Argument(s) must be 2 at most");
         }
 
-        auto ifFalse = ConstantsTable::instance().string( "ifFalse:" );
-        auto ifFalseelse = ConstantsTable::instance().string( "ifFalse:else:" );
-        auto ifFalseifTrue = ConstantsTable::instance().string( "ifFalse:ifTrue:" );
-        auto ifTrue = ConstantsTable::instance().string( "ifTrue:" );
-        auto ifTrueelse = ConstantsTable::instance().string( "ifTrue:else:" );
-        auto ifTrueifFalse = ConstantsTable::instance().string( "ifTrue:ifFalse:" );
+        auto ifFalse = constantsTable.string( "ifFalse:" );
+        auto ifFalseelse = constantsTable.string( "ifFalse:else:" );
+        auto ifFalseifTrue = constantsTable.string( "ifFalse:ifTrue:" );
+        auto ifTrue = constantsTable.string( "ifTrue:" );
+        auto ifTrueelse = constantsTable.string( "ifTrue:else:" );
+        auto ifTrueifFalse = constantsTable.string( "ifTrue:ifFalse:" );
 
-        auto selector = ConstantsTable::instance().string( node.selector );
+        auto selector = constantsTable.string( node.selector );
 
         if ( selector == ifFalse ){
             // save to add later the jump index
@@ -421,7 +349,7 @@ namespace jupiter{
             node->accept(*this);
         }
 
-        auto index = ConstantsTable::instance().string( node.selector );
+        auto index = constantsTable.string( node.selector );
         checkConstantsLimit( index );
 
         // receiver is just before the arguments
@@ -446,7 +374,7 @@ namespace jupiter{
                 argument->accept(*this);
             }
 
-            auto index = ConstantsTable::instance().string( message->selector );
+            auto index = constantsTable.string( message->selector );
             checkConstantsLimit( index );
 
             method->addInstruction( SEND, index, message->arguments.size() + 1 );
@@ -482,7 +410,8 @@ namespace jupiter{
         method->addInstruction( PUSH_CLOSURE, index );
     }
 
-    PragmaCompiler::PragmaCompiler() : primitive(nullptr) {}
+    PragmaCompiler::PragmaCompiler(Primitives& primitives, NativeLibraries& nativeLibs)
+        : primitives(primitives), nativeLibs(nativeLibs), primitive(nullptr) {}
 
     Object* PragmaCompiler::getPrimitive(){
         return primitive;
@@ -494,7 +423,6 @@ namespace jupiter{
         // TODO capture std::out_of_range exception
 
         arguments.push_back(node.value);
-        //primitive = Primitives::instance().get( node.value );
     }
 
     void PragmaCompiler::visit( StringNode& node ){
@@ -502,7 +430,6 @@ namespace jupiter{
         // TODO capture std::out_of_range exception
 
         arguments.push_back(node.value);
-        //primitive = Primitives::instance().get( node.value );
     }
 
     void PragmaCompiler::visit( CodeBlockNode& node ){
@@ -525,9 +452,9 @@ namespace jupiter{
         }
 
         if ( node.selector == "primitive:"){
-            primitive = Primitives::instance().get( arguments[0] );
+            primitive = primitives.get( arguments[0] );
         }else if( node.selector == "nativeExtension:function:" ){
-            primitive = World::instance().getNativeExtensionMethod(arguments[0], arguments[1]);
+            primitive = nativeLibs.getMethod(arguments[0], arguments[1]);
         }else{
             std::string message = "Pragma selector not found: " + node.selector;
             throw CompilerError(message);

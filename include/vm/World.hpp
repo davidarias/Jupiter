@@ -9,26 +9,31 @@
 
 #include <misc/common.hpp>
 #include <vm/VM.hpp>
+#include <vm/ConstantsTable.hpp>
 #include <objects/Objects.hpp>
+
+#include <primitives/primitives.hpp>
+#include <extensions/NativeLibraries.hpp>
 
 namespace jupiter{
 
 
     class World{
+        friend class GC;
     private:
-        World();
-        ~World();
-        World(const World& ) = delete;
-        void operator=(const World& ) = delete;
 
-        std::unordered_map<std::string, void*> nativeLibs;
+        Primitives primitives;
+        NativeLibraries nativeLibs;
 
-        bool initialized = false;
-
-    public:
         Map globals;
         Map prototypes;
         VM vm;
+
+    public:
+        ConstantsTable constantsTable;
+
+        World();
+        ~World();
 
         Object* getTrue();
         Object* getFalse();
@@ -38,19 +43,16 @@ namespace jupiter{
         Object* getGlobal(unsigned id);
         Object* getPrototype(const std::string& prototypeName);
 
-        static World& instance() {
-            static World i;
-            return i;
-        }
-
-        Object* getNativeExtensionMethod(const std::string& lib, const std::string& name);
-
         void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
         void loadNative(const std::string& path);
 
         void eval(std::string);
         Object* eval(Object* o);
+        Object* eval(Method& method);
+
+        Object* compile(std::string& source);
+        std::tuple<std::string, Object*> compile(std::string& signature, std::string& source);
 
     };
 }

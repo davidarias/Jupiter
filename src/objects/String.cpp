@@ -1,6 +1,6 @@
 #include <objects/String.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/World.hpp>
 
 namespace jupiter{

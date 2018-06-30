@@ -7,7 +7,7 @@
 #include <vm/Frame.hpp>
 #include <vm/VM.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/Stack.hpp>
 #include <vm/ConstantsTable.hpp>
 
@@ -19,7 +19,6 @@
 #include <misc/Exceptions.hpp>
 
 namespace jupiter{
-
 
     Frame::Frame(VM& vm, Method& method)
         : vm(vm), stack(vm.stack), method(method)
@@ -82,13 +81,13 @@ namespace jupiter{
 
         }catch(std::exception& e){
             throw "RuntimeException: Global object  " +
-                ConstantsTable::instance().get(id)->toString() +
+                vm.world.constantsTable.get(id)->toString() +
                 " not found";
         }
     }
 
     void Frame::pushConstant(unsigned id){
-        stack.push( ConstantsTable::instance().get( id ) );
+        stack.push( vm.world.constantsTable.get( id ) );
     }
 
     void Frame::pushClosure( unsigned id ){

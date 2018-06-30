@@ -6,7 +6,7 @@
 
 #include <objects/Number.hpp>
 
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/World.hpp>
 
 #include <random>

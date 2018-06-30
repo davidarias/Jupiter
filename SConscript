@@ -30,6 +30,8 @@ sources += get_sources('src/objects', 'cpp')
 sources += get_sources('src/primitives', 'cpp')
 sources += get_sources('src/utils', 'cpp')
 sources += get_sources('src/vm', 'cpp')
+sources += get_sources('src/memory', 'cpp')
+sources += get_sources('src/extensions', 'cpp')
 sources += ['src/main.cpp']
 
 env.Program(

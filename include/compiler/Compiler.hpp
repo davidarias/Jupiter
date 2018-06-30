@@ -14,15 +14,13 @@ namespace jupiter{
 
     class Object;
     class CompiledMethod;
+    class ConstantsTable;
 
     class Compiler : public ASTVisitor {
 
-    public:
-        static Object* compile(std::string& source);
-        static std::tuple<std::string, Object*> compile(std::string& signature, std::string& source);
-
     private:
         SymbolTable locals;
+        ConstantsTable& constantsTable;
 
         std::shared_ptr<SymbolTable> upvalues; // shared between nested compiler instances
 
@@ -47,8 +45,9 @@ namespace jupiter{
         int createUpValuesRecursive( std::string& value );
 
     public:
-        Compiler();
-        Compiler(std::shared_ptr<MethodSignature> signature);
+        Compiler(ConstantsTable& constantsTable);
+        Compiler(ConstantsTable& constantsTable, std::shared_ptr<MethodSignature> signature);
+
         Compiler(std::vector<std::shared_ptr<SymbolNode> >& arguments,
                  Compiler* enclosingMethodCompiler);
 
@@ -58,7 +57,6 @@ namespace jupiter{
         void visit( SymbolNode& node );
         void visit( StringNode& node );
         void visit( ArrayNode& node );
-        void visit( ObjectLiteralNode& node );
         void visit( CodeBlockNode& node );
         void visit( AssignmentNode& node );
         void visit( MessageExpressionNode& node );
@@ -72,20 +70,24 @@ namespace jupiter{
 
     };
 
-    // TODO better pragma compiler, check errors etc..
+    class Primitives;
+    class NativeLibraries;
+
     class PragmaCompiler : public ASTVisitor {
     private:
+        Primitives& primitives;
+        NativeLibraries& nativeLibs;
+
         Object* primitive;
         std::vector<std::string> arguments;
     public:
-        PragmaCompiler();
+        PragmaCompiler(Primitives& primitives, NativeLibraries& nativeLibs);
         Object* getPrimitive();
 
         void visit( NumberNode& ){};
         void visit( SymbolNode& node );
         void visit( StringNode& node);
         void visit( ArrayNode& ){};
-        void visit( ObjectLiteralNode& ){};
         void visit( CodeBlockNode& );
         void visit( AssignmentNode& ){};
         void visit( MessageExpressionNode& ){};

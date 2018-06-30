@@ -7,7 +7,7 @@
 #include <vm/ObjectSerializer.hpp>
 
 #include <objects/Object.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <vm/ConstantsTable.hpp>
 #include <vm/World.hpp>
 #include <compiler/Compiler.hpp>
@@ -24,7 +24,7 @@ namespace jupiter{
         struct dirent *entry;
 
         Map& mapPrototype = static_cast<Map&>( *world.getPrototype("Map") );
-        MapStringAdapter rootAdapter( ConstantsTable::instance(), *root);
+        MapStringAdapter rootAdapter( world.constantsTable, *root);
 
         if ( ( dir = opendir ( path.c_str() ) ) != NULL) {
 
@@ -89,16 +89,10 @@ namespace jupiter{
             std::string name;
 
             try{
-                std::tie(name, method) = Compiler::compile( signature, source );
+                std::tie(name, method) = world.compile( signature, source );
 
-                MapStringAdapter objAdapter( ConstantsTable::instance(), *obj);
+                MapStringAdapter objAdapter( world.constantsTable, *obj);
                 objAdapter.putAtMut( name, method );
-
-            }catch (const char* s) {
-                std::cout << "CompilerException: "<< s  << std::endl << " in file: "<< path << std::endl << std::endl;
-
-            }catch (std::string s) {
-                std::cout << "CompilerException: " << s << std::endl << " in file: " << path << std::endl << std::endl;
 
             }catch (std::exception& e) {
                 std::cout << "CompilerException: " << e.what() << std::endl << " in file: " << path << std::endl << std::endl;

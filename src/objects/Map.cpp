@@ -5,7 +5,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <objects/Map.hpp>
-#include <vm/MemoryManager.hpp>
+#include <memory/memory.hpp>
 #include <misc/Exceptions.hpp>
 #include <vm/ConstantsTable.hpp>
 
@@ -90,14 +90,15 @@ namespace jupiter{
     MapTransient::MapTransient(immer::map<unsigned, Object* > slots) : slots(slots) {}
 
     void MapTransient::putAt(const unsigned key, Object* value){
-        // transients can point to young objects
-        // being tenured, so when adding an object
-        // to a tenured transient we also mark
-        // this object as tenured. when minor gc cycle
-        // is executed, we move this object to tenured space
-        if ( istenured() ){
-            value->setTenured();
-        }
+        // transients can point to younger objects
+        // breaking the invariant of innmutable containers
+        // ( adding objects will make new containers)
+        // to avoid invalid collection of elements
+        // on minor cycles (since this object can be tenured
+        // its elements won't be marked )
+        // we mark all objects added as a precaution
+        // making them tenured
+        value->mark();
         slots = std::move(slots).set( key, value );
     }
 
