@@ -9,6 +9,10 @@
 
 #include <vm/World.hpp>
 
+#ifdef BENCHMARK
+#include <chrono>
+#endif
+
 namespace jupiter{
 
     GC::GC(){}
@@ -26,18 +30,37 @@ namespace jupiter{
             std::free( obj );
         }
 
+#ifdef BENCHMARK
+        LOG("GC MARK TIME " << markTime);
+        LOG("GC SWEEP TIME " << sweepTime);
+#endif
+
     }
 
     void GC::setWorld(World* world){
-        world = world;
+        this->world = world;
     }
 
     void GC::mark(bool full){
+#ifdef BENCHMARK
+        auto t1 = std::chrono::high_resolution_clock::now();
+#endif
         world->vm.mark(full);
+
+#ifdef BENCHMARK
+        auto t2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> executionTime =  t2 - t1;
+
+        markTime += executionTime.count();
+#endif
+
     }
 
     void GC::sweep(bool full){
 
+#ifdef BENCHMARK
+        auto t1 = std::chrono::high_resolution_clock::now();
+#endif
         if ( full ){
 
             if ( to.size() == 0){
@@ -91,6 +114,14 @@ namespace jupiter{
         }
 
         eden.clear();
+
+#ifdef BENCHMARK
+        auto t2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> executionTime =  t2 - t1;
+
+        sweepTime += executionTime.count();
+#endif
+
     }
 
     void GC::add(Object* obj){
@@ -98,7 +129,7 @@ namespace jupiter{
     }
 
     void GC::collect(){
-        if ( cycles % 15){
+        if ( cycles % 15 == 0){
             mark(true);
             sweep(true);
         }else{

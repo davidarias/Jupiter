@@ -22,6 +22,10 @@ namespace jupiter{
         std::vector<Object*> to;
 
         unsigned cycles = 0;
+        #ifdef BENCHMARK
+        double sweepTime = 0;
+        double markTime = 0;
+        #endif
 
         World* world; // to trigger mark phase
 
@@ -29,11 +33,11 @@ namespace jupiter{
         void sweep(bool full);
 
         GC();
+        ~GC();
         GC(const GC& ) = delete;
         void operator=(const GC& ) = delete;
 
     public:
-        ~GC();
 
         static GC& instance() {
             static GC i;

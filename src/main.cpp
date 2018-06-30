@@ -28,7 +28,7 @@ void intro(){
     std::cout << std::endl;
 }
 
-void repl(World& world, std::string prompt){
+void repl(World* world, std::string prompt){
 
     std::string input;
 
@@ -37,22 +37,22 @@ void repl(World& world, std::string prompt){
         std::cout << prompt;
         std::getline(std::cin, input, '\n');
 
-        world.eval( input );
+        world->eval( input );
 
     } while (!std::cin.eof());
 
 }
 
 int main(int argc, char* argv[]){
-    World world;
+    World* world = new World();
 
     // garbage colelctor needs the world isntance to trigger the mark phase
-    GC::instance().setWorld(&world); //
+    GC::instance().setWorld(world); //
 
     if ( argc > 2){
         if (std::string(argv[1]) == "-e" ){
 
-            world.eval( argv[2] );
+            world->eval( argv[2] );
             return 0;
         }
     }

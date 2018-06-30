@@ -28,15 +28,15 @@ namespace jupiter{
 
         if ( pool.empty() ){
             gc.collect();
+
+            if ( pool.size() < pool.getCapacity() * 0.1 ){
+                // if pool size after collect is less than 10% of capacity,
+                // we need a bigger pool
+                pool.grow();
+            }
         }
 
-        if ( pool.size() < pool.getCapacity() * 0.1 ){
-            // if pool size after collect is less than 10% of capacity,
-            // we need a bigger pool
-            pool.grow();
-        }
-
-        auto p = PoolSingleton<T>::instance().obtain();
+        auto p = pool.obtain();
         gc.add(p);
 
         return p;
