@@ -55,6 +55,7 @@ namespace jupiter{
 
     Object* loadPath(World* world, Object* self, Object** args);
     Object* loadNative(World* world, Object* self, Object** args);
+    Object* evalString(World* world, Object* self, Object** args);
 }
 
 #endif

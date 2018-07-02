@@ -299,5 +299,13 @@ namespace jupiter{
         return self;
     }
 
+    Object* evalString(World* world, Object* self, Object** args){
+        auto code = dynamic_cast<String&>( *( args[0] ) );
+
+        world->eval( code.toString() );
+
+        return self;
+    }
+
 
 }

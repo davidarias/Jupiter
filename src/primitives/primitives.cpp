@@ -66,6 +66,7 @@ namespace jupiter{
 
         add("loadPath", 1, loadPath );
         add("loadNative", 1, loadNative );
+        add("evalString", 1, evalString );
     }
 
     void Primitives::add(std::string name, unsigned arity, NativeFunction primitiveFunction){
