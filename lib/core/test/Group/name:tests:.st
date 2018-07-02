@@ -1,19 +1,19 @@
 name: groupName tests: testArray
 
     ( '- Test group: {1}' format: { groupName } ) print.
-    os cout endl.
+    io stdout endl.
 
     errors := testArray reduce: [ :errors :case |
         description := case at: 'description'.
         block := case at: 'assert'.
         block value
             ifTrue: [
-                os cout write: '  ✔ ';
+                io stdout write: '  ✔ ';
                         write: description;
                         endl.
                         errors.
             ] ifFalse: [
-                os cout write: '  ✘ ';
+                io stdout write: '  ✘ ';
                         write: description;
                         endl.
                         errors + 1
@@ -23,9 +23,9 @@ name: groupName tests: testArray
     total := testArray size.
     passed := total - errors.
 
-    os cout endl.
+    io stdout endl.
 
     ( '  {1}/{2} Test passed' format: { passed, total } ) print.
 
-    os cout endl.
+    io stdout endl.
     errors

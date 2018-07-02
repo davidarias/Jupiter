@@ -9,11 +9,11 @@ like reading data from external sources.
 
 ## Examples
 ```smalltalk
-[true] whileTrue: [ os cout writeln: 'initniteeee!' ].
+[true] whileTrue: [ io stdout writeln: 'initniteeee!' ].
 
 "resource hasData is a hypothetical method that checks an external data source
 that can be mutated over time, like network requests, files etc... "
-[ resource hasData ] whileTrue: [ os cout writeln: resource data  ]
+[ resource hasData ] whileTrue: [ io stdout writeln: resource data  ]
 
 ```
 

@@ -1,2 +1,2 @@
 print
-    os cout writeln: self
+    io stdout writeln: self
