@@ -123,30 +123,20 @@ namespace jupiter{
 
         auto method = compile( source );
 
-        if ( method ){
-            #ifdef BENCHMARK
+#ifdef BENCHMARK
+        auto t1 = std::chrono::high_resolution_clock::now();
+#endif
 
-            auto t1 = std::chrono::high_resolution_clock::now();
+        auto result = vm.eval(method);
 
-            auto result = vm.eval(method);
-            auto t2 = std::chrono::high_resolution_clock::now();
+#ifdef BENCHMARK
+        auto t2 = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> executionTime =  t2 - t1;
+        LOG("BENCHMARK: " << executionTime.count() << " s");
+#endif
 
-            std::chrono::duration<double> executionTime =  t2 - t1;
+        std::cout << result->toString() << std::endl;
 
-            LOG("BENCHMARK: " << executionTime.count() << " s");
-
-            #else
-
-            auto result = vm.eval(method);
-
-            #endif
-
-            if ( result != nullptr ){
-                std::cout << result->toString() << std::endl;
-            }
-            // vm.pop();
-
-        }
 
     }
 

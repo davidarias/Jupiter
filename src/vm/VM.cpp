@@ -46,13 +46,13 @@ namespace jupiter{
     Object* VM::eval(Object* object){
         Evaluator evaluator(*this);
         try{
-
             object->accept(evaluator);
 
-        }catch (const char* s) {
-            std::cout << s << std::endl;
-        }catch (std::string s) {
-            std::cout << s << std::endl;
+        }catch(SelectorNotFound& e){
+
+            std::string selector = world.constantsTable.get(e.key)->toString();
+            std::cout << "Selector '" << selector << "' not found "<< std::endl;
+
         }catch (std::exception& e) {
             std::cout << e.what() << std::endl;
         }
@@ -62,7 +62,17 @@ namespace jupiter{
 
     Object* VM::eval(Method& method){
         Evaluator evaluator(*this);
-        evaluator.visit(method);
+        try{
+            evaluator.visit(method);
+        }catch(SelectorNotFound& e){
+
+            std::string selector = world.constantsTable.get(e.key)->toString();
+            std::cout << "Selector '" << selector << "' not found "<< std::endl;
+
+        }catch (std::exception& e) {
+            std::cout << e.what() << std::endl;
+        }
+
         return stack.back();
     }
 

@@ -36,7 +36,6 @@ namespace jupiter{
         case '|':
         case '&':
         case '?':
-        case '!':
             return true;
         default:
             return false;
@@ -49,6 +48,7 @@ namespace jupiter{
         }
         switch (character){
         case '$':
+        case '!':
             return true;
         default:
             return false;

@@ -1,2 +1,2 @@
-push: value
+!push: value
     <primitive: arrayTransientPush>
