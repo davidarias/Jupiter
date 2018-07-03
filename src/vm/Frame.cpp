@@ -80,9 +80,9 @@ namespace jupiter{
             stack.push( global );
 
         }catch(std::exception& e){
-            throw "RuntimeException: Global object  " +
-                vm.world.constantsTable.get(id)->toString() +
-                " not found";
+            throw RuntimeException("Global object " +
+                                   vm.world.constantsTable.get(id)->toString() +
+                                   " not found");
         }
     }
 

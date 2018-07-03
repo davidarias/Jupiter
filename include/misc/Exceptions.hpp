@@ -30,7 +30,7 @@ namespace jupiter{
 
     class RuntimeException : public DisturbanceInTheForce {
     public:
-        RuntimeException ( std::string what ) : DisturbanceInTheForce( "(Runtime error) " + what ){}
+        RuntimeException ( std::string what ) : DisturbanceInTheForce( "Runtime Exception | " + what ){}
     };
 
     class KeyNotFound : public RuntimeException{

@@ -6,6 +6,8 @@
 
 #include <objects/Object.hpp>
 
+#include <misc/Exceptions.hpp>
+
 namespace jupiter{
 
     void GCObject::mark(){
@@ -47,14 +49,14 @@ namespace jupiter{
     }
 
     bool operator>(Object& a, Object& b){
-        if ( typeid( a ) != typeid( b ) ) throw "Diferent types are not comparable";
+        if ( typeid( a ) != typeid( b ) ) throw RuntimeException("Diferent types are not comparable");
         if (  a.cmp( b ) > 0 ){
             return true;
         }
         return false;
     }
     bool operator<(Object& a, Object& b){
-        if ( typeid( a ) != typeid( b ) ) throw "Diferent types are not comparable";
+        if ( typeid( a ) != typeid( b ) ) throw RuntimeException("Diferent types are not comparable");
         if ( a.cmp( b ) < 0 ){
             return true;
         }
@@ -62,13 +64,13 @@ namespace jupiter{
     }
 
     bool operator<=(Object& a, Object& b){
-        if ( typeid( a ) != typeid( b ) ) throw "Diferent types are not comparable";
+        if ( typeid( a ) != typeid( b ) ) throw RuntimeException("Diferent types are not comparable");
         if ( a.cmp(b) < 0 || a.equal(b) ) return true;
         return false;
     }
 
     bool operator>=(Object& a, Object& b){
-        if ( typeid( a ) != typeid( b ) ) throw "Diferent types are not comparable";
+        if ( typeid( a ) != typeid( b ) ) throw RuntimeException("Diferent types are not comparable");
         if ( a.cmp(b) > 0 || a.equal(b) ) return true;
         return false;
     }

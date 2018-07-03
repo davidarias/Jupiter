@@ -12,6 +12,8 @@
 #include <vm/World.hpp>
 #include <compiler/Compiler.hpp>
 
+#include <misc/Exceptions.hpp>
+
 
 #include <dirent.h>
 
@@ -52,7 +54,7 @@ namespace jupiter{
             }
             closedir (dir);
         } else {
-            throw "could not open file or directory";
+            throw RuntimeException("could not open file or directory");
         }
 
     }
@@ -80,7 +82,7 @@ namespace jupiter{
 
 
             }else{
-                throw "could not open file: " + path;
+                throw RuntimeException("could not open file: " + path);
             }
 
             fileReader.close();

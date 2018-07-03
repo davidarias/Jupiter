@@ -8,6 +8,8 @@
 
 #include <vm/World.hpp>
 
+#include <misc/Exceptions.hpp>
+
 namespace jupiter{
 
     NativeMethod::NativeMethod(NativeFunction fn, unsigned arity) :
@@ -23,7 +25,7 @@ namespace jupiter{
     }
 
     int NativeMethod::cmp(Object&){
-        throw "Primitive methods cannot be compared";
+        throw RuntimeException("Primitive methods cannot be compared");
     }
 
     std::string NativeMethod::toString(){

@@ -23,7 +23,7 @@ namespace jupiter{
     }
 
     int Map::cmp(Object&){
-        throw "Object Maps cannot be compared";
+        throw RuntimeException("Object Maps cannot be compared");
     }
 
     bool Map::equal(Object& other){
@@ -107,7 +107,7 @@ namespace jupiter{
     }
 
     int MapTransient::cmp(Object&){
-        throw "Object Maps cannot be compared";
+        throw RuntimeException("Object Maps cannot be compared");
     }
 
     std::string MapTransient::toString(){

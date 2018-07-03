@@ -10,6 +10,8 @@
 
 #include <vm/World.hpp>
 
+#include <misc/Exceptions.hpp>
+
 namespace jupiter{
 
     Method::Method() {}
@@ -50,7 +52,7 @@ namespace jupiter{
     }
 
     int Method::cmp(Object&){
-        throw "Methods cannot be compared";
+        throw RuntimeException("Methods cannot be compared");
     }
 
     std::string& Method::getName(){
