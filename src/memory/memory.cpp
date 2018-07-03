@@ -51,6 +51,11 @@ namespace jupiter{
                 obj.~NativeMethod();
                 PoolSingleton<NativeMethod>::instance().release(&obj);
             }
+
+            void visit(UserData& obj){
+                obj.~UserData();
+                PoolSingleton<UserData>::instance().release(&obj);
+            }
         };
         ReleaseObject releaser;
         obj->accept(releaser);

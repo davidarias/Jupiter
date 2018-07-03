@@ -57,6 +57,7 @@ namespace jupiter{
         void visit(ArrayTransient&);
         void visit(Method&);
         void visit(NativeMethod&);
+        void visit(UserData&);
 
     };
 
@@ -78,6 +79,7 @@ namespace jupiter{
         void visit(ArrayTransient&);
         void visit(Method&);
         void visit(NativeMethod&);
+        void visit(UserData&);
 
     };
 }

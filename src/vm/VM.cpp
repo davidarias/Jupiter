@@ -128,6 +128,10 @@ namespace jupiter{
         vm.stack.resize( localsBaseIndex );
     }
 
+    void Evaluator::visit(UserData& obj){
+        vm.stack.back( &obj );
+    }
+
     MethodAt::MethodAt(VM& vm, unsigned selector)
         : vm(vm), selector(selector){}
 
@@ -178,6 +182,10 @@ namespace jupiter{
     void MethodAt::visit(NativeMethod&){
 
         throw RuntimeException("Native Methods cannot receive messages");
+    }
+
+    void MethodAt::visit(UserData&){
+        throw RuntimeException("User data cannot receive messages");
     }
 
 

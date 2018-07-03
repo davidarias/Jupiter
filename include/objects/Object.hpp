@@ -21,6 +21,7 @@ namespace jupiter{
     class MapTransient;
     class Method;
     class NativeMethod;
+    class UserData;
 
     class ObjectVisitor{
     public:
@@ -32,6 +33,7 @@ namespace jupiter{
         virtual void visit(MapTransient&) = 0;
         virtual void visit(Method&) = 0;
         virtual void visit(NativeMethod&) = 0;
+        virtual void visit(UserData&) = 0;
     };
 
     class GCObject{

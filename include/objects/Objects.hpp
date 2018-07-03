@@ -14,5 +14,6 @@
 #include <objects/Array.hpp>
 #include <objects/Method.hpp>
 #include <objects/NativeMethod.hpp>
+#include <objects/UserData.hpp>
 
 #endif
