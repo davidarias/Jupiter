@@ -5,7 +5,7 @@ Jupiter is A dynamic object-oriented programming language based on Smalltalk/Sel
 ## Features
 
 * A set of simple core types:
-  - Decimal floating point Numbers: See: [https://0.30000000000000004.com/](https://0.30000000000000004.com/).
+  - Decimal floating point Numbers to avoid this: [https://0.30000000000000004.com/](https://0.30000000000000004.com/).
   - Strings.
   - Arrays: Number indexed collections.
   - Maps: String indexed collections.
