@@ -18,7 +18,7 @@ namespace jupiter{
     typedef Object* (*NativeFunction)(World*, Object*, Object**);
 
     class NativeMethod : public Object {
-        friend struct Evaluator;
+        friend class Evaluator;
     private:
         NativeFunction fn;
         unsigned arity;
