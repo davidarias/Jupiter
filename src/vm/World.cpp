@@ -31,41 +31,32 @@ namespace jupiter{
 
     World::World() : vm(*this){
 
-        if ( const char* path = getenv( "JUPITERHOME" )) {
-            MapStringAdapter prototypesAdapter(constantsTable, prototypes);
-            MapStringAdapter globalsAdapter(constantsTable, globals);
-
-            // init Map prototype with an empty Map
-            prototypesAdapter.putAtMut("Map", make<Map>() );
-
-            loadPrototypes(std::string(path) + "/core-types");
-            //now in prototypes.at("Map") there is the real map prototype
-
-
-            // Create core types globals with the right type
-            globalsAdapter.putAtMut("Number", make_permanent<Number>(0) );
-            globalsAdapter.putAtMut("Array", make_permanent<Array>());
-            globalsAdapter.putAtMut("String", make_permanent<String>() );
-
-            globalsAdapter.putAtMut("Map",
-                                    make_permanent<Map>( static_cast<Map&>( *( getPrototype("Map") ) ) ) );
-
-            globalsAdapter.putAtMut("Method", make_permanent<Method>());
-
-            loadPackage(std::string(path) + "/core");
-
-        }else{
-            std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
-            std::cout << "| Core library is not loaded, you probably can't do much without it" << std::endl;
-            std::cout << "| Try the following command ( assuming you are in the Jupiter source code folder )" << std::endl;
-            std::cout << "| export JUPITERHOME=$PWD/lib" << std::endl << std::endl;
-        }
-
     }
 
-    World::~World(){
+    World::~World(){}
+
+    void World::loadCore(const std::string &path){
+        MapStringAdapter prototypesAdapter(constantsTable, prototypes);
+        MapStringAdapter globalsAdapter(constantsTable, globals);
+
+        // init Map prototype with an empty Map
+        prototypesAdapter.putAtMut("Map", make<Map>() );
+
+        loadPrototypes(path + "/core-types");
+        //now in prototypes.at("Map") there is the real map prototype
 
 
+        // Create core types globals with the right type
+        globalsAdapter.putAtMut("Number", make_permanent<Number>(0) );
+        globalsAdapter.putAtMut("Array", make_permanent<Array>());
+        globalsAdapter.putAtMut("String", make_permanent<String>() );
+
+        globalsAdapter.putAtMut("Map",
+                                make_permanent<Map>( static_cast<Map&>( *( getPrototype("Map") ) ) ) );
+
+        globalsAdapter.putAtMut("Method", make_permanent<Method>());
+
+        loadPackage(path + "/core");
     }
 
     Object* World::getTrue(){

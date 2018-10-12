@@ -46,6 +46,20 @@ void repl(World* world, std::string prompt){
 int main(int argc, char* argv[]){
     World* world = new World();
 
+    const char* coreLibPath = getenv( "JUPITERHOME" );
+
+    if ( coreLibPath && ! std::string(coreLibPath).empty() ){
+
+        world->loadCore(std::string(coreLibPath));
+
+    }else{
+        std::cout << "| WARNING: JUPITERHOME environment variable is not set" << std::endl;
+        std::cout << "| Core library is not loaded, you can't do much without it" << std::endl;
+        std::cout << "| Try the following command ( assuming you are in the Jupiter source code folder )" << std::endl;
+        std::cout << "| export JUPITERHOME=$PWD/lib" << std::endl << std::endl;
+        return 0;
+    }
+
     // garbage colelctor needs the world isntance to trigger the mark phase
     GC::instance().setWorld(world); //
 

@@ -22,7 +22,6 @@
 namespace jupiter{
 
     VM::VM(World& world) : world(world) {
-
         stack.push(make<Map>()); // to avoid stack underflow and crash
     }
 

@@ -43,6 +43,8 @@ namespace jupiter{
         Object* getGlobal(unsigned id);
         Object* getPrototype(const std::string& prototypeName);
 
+        void loadCore(const std::string& path);
+
         void loadPrototypes(const std::string& path);
         void loadPackage(const std::string& path);
         void loadNative(const std::string& path);
