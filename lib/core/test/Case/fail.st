@@ -1,0 +1,2 @@
+fail
+	self succeed not

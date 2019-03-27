@@ -1,26 +1,15 @@
-name: groupName tests: testArray
+name: groupName tests: tests
 
     ( '- Test group: {1}' format: { groupName } ) print.
     io stdout endl.
-
-    errors := testArray reduce: [ :errors :case |
-        description := case at: 'description'.
-        block := case at: 'assert'.
-        block value
-            ifTrue: [
-                io stdout write: '  ✔ ';
-                        write: description;
-                        endl.
-                        errors.
-            ] ifFalse: [
-                io stdout write: '  ✘ ';
-                        write: description;
-                        endl.
-                        errors + 1
-            ]
+	
+    tests do: [ :case | case toString print ].
+    
+    errors := tests reduce: [ :errors :case |
+        [ errors + 1 ] if: case fail else: errors
     ] initial: 0.
 
-    total := testArray size.
+    total := tests size.
     passed := total - errors.
 
     io stdout endl.
