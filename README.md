@@ -73,8 +73,8 @@ of objects ( cloning or copying prototypes ) is trivial.
 
 ## Build requirements
 
-- A ```C++``` compiler with ```C++14``` support ( I tested it with ```g++ 7.2.0``` )
-- [Scons](http://scons.org/) ( a better construction tool that use python scripts )
+- A ```C++``` compiler with ```C++14``` support
+- CMake https://cmake.org/
 - mpdecimal http://www.bytereef.org/mpdecimal/ (sudo apt-get install libmpdec-dev for Ubuntu/Debian users)
 - immer https://github.com/arximboldi/immer
 
