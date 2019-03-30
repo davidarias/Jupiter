@@ -1,13 +1,13 @@
 run
 
     tests := {
-        self numbers,
-        self strings,
-        self controlStructures,
-        self closureBlocks,
-        self arrays,
-        self objects,
-        self points
+        self numbers run,
+        self strings run,
+        self controlStructures run,
+        self closureBlocks run,
+        self arrays run,
+        self objects run,
+        self points run
     }.
 
     totalErrors := tests reduce: [ :acc :n | acc + n ].
